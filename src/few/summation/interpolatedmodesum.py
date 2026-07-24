@@ -67,14 +67,17 @@ class CubicSplineInterpolant(FewBackendConsumer):
         lower_diag = self.xp.zeros_like(B)
 
         if t.ndim == 1:
-            if len(t) < 2:
+            # The batched tridiagonal solve (cusparseDgtsv2StridedBatch on GPU)
+            # requires system size >= 3; fewer points (near-plunge trajectories)
+            # would hard-exit inside the CUDA layer, so reject them here.
+            if len(t) < 3:
                 raise ValueError("t must have length greater than 2.")
 
             # could save memory by adjusting c code to treat 1D differently
             self.t = self.xp.tile(t, (ninterps, 1)).flatten().astype(self.xp.float64)
 
         elif t.ndim == 2:
-            if t.shape[1] < 2:
+            if t.shape[1] < 3:
                 raise ValueError("t must have length greater than 2 along time axis.")
 
             self.t = t.flatten().copy().astype(self.xp.float64)
