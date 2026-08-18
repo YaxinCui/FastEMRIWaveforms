@@ -98,6 +98,7 @@ jobs:
             cuda_major: 12
             cuda_minor: 4
             cuda_repo_arch: x86_64
+            host_gcc: 13
           - release: cpu
             os: ubuntu-24.04-arm
             arch: aarch64
@@ -109,6 +110,7 @@ jobs:
             cuda_major: 12
             cuda_minor: 4
             cuda_repo_arch: sbsa
+            host_gcc: 13
           - release: cpu
             os: macos-14
             kind: core
@@ -211,22 +213,24 @@ jobs:
             cmake.define.FEW_LAPACKE_FETCH=OFF
             cmake.define.FEW_WITH_GPU=ONLY
             cmake.define.FEW_CUDA_ARCH=all
+            cmake.define.CMAKE_CUDA_HOST_COMPILER=/opt/rh/gcc-toolset-${{ matrix.host_gcc }}/root/usr/bin/g++
           CIBW_BEFORE_ALL: >
-            yum install -y gcc gcc-c++ make &&
+            yum install -y make &&
+            yum install -y gcc-toolset-${{ matrix.host_gcc }}-gcc gcc-toolset-${{ matrix.host_gcc }}-gcc-c++ &&
             yum install -y yum-utils &&
             yum-config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/rhel8/${{ matrix.cuda_repo_arch }}/cuda-rhel8.repo &&
             yum install -y cuda-compiler-${{ matrix.cuda_major }}-${{ matrix.cuda_minor }} cuda-libraries-${{ matrix.cuda_major }}-${{ matrix.cuda_minor }} cuda-libraries-devel-${{ matrix.cuda_major }}-${{ matrix.cuda_minor }}
           CIBW_BEFORE_BUILD: >
-            gcc --version && g++ --version && nvcc --version
+            ${CC} --version && ${CXX} --version && nvcc --version
           CIBW_ENVIRONMENT: >
-            PATH="/usr/local/cuda/bin:${PATH}"
-            LD_LIBRARY_PATH="/usr/local/cuda/lib64:${LD_LIBRARY_PATH}"
+            PATH="/opt/rh/gcc-toolset-${{ matrix.host_gcc }}/root/usr/bin:/usr/local/cuda/bin:${PATH}"
+            LD_LIBRARY_PATH="/opt/rh/gcc-toolset-${{ matrix.host_gcc }}/root/usr/lib64:/usr/local/cuda/lib64:${LD_LIBRARY_PATH}"
             CUDA_HOME=/usr/local/cuda
             CUDA_ROOT=/usr/local/cuda
             CUDA_PATH=/usr/local/cuda
             CUDADIR=/usr/local/cuda
-            CC=gcc
-            CXX=g++
+            CC=/opt/rh/gcc-toolset-${{ matrix.host_gcc }}/root/usr/bin/gcc
+            CXX=/opt/rh/gcc-toolset-${{ matrix.host_gcc }}/root/usr/bin/g++
             SETUPTOOLS_SCM_PRETEND_VERSION="${{ needs.version.outputs.version }}"
           CIBW_REPAIR_WHEEL_COMMAND: auditwheel repair -w {dest_dir} {wheel} --exclude "libcudart.so.${{ matrix.cuda_major }}" --exclude "libcusparse.so.${{ matrix.cuda_major }}" --exclude "libcublas.so.${{ matrix.cuda_major }}" --exclude "libnvJitLink.so.${{ matrix.cuda_major }}" --exclude "libcublasLt.so.${{ matrix.cuda_major }}"
       # =====================
