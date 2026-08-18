@@ -96,9 +96,14 @@ jobs:
             arch: x86_64
             kind: cuda_plugin
             cuda_major: 12
-            cuda_minor: 4
-            cuda_repo_arch: x86_64
-            host_gcc: 13
+            # CUDA toolkit version of the manylinux_cuda container images
+            # (see https://cibuildwheel.pypa.io/en/stable/faq/#building-wheels-with-cuda-on-linux)
+            cuda_image_tag: '12_9'
+            # Same version, in the form used by the NVIDIA yum/dnf repository
+            cuda_pkg_tag: '12-9'
+            # cuSPARSE soversion: it does not follow the CUDA major version
+            # (CUDA 13 still ships libcusparse.so.12)
+            cusparse_soversion: 12
           - release: cpu
             os: ubuntu-24.04-arm
             arch: aarch64
@@ -108,9 +113,25 @@ jobs:
             arch: aarch64
             kind: cuda_plugin
             cuda_major: 12
-            cuda_minor: 4
-            cuda_repo_arch: sbsa
-            host_gcc: 13
+            cuda_image_tag: '12_9'
+            cuda_pkg_tag: '12-9'
+            cusparse_soversion: 12
+          - release: cuda13x
+            os: ubuntu-latest
+            arch: x86_64
+            kind: cuda_plugin
+            cuda_major: 13
+            cuda_image_tag: '13_1'
+            cuda_pkg_tag: '13-1'
+            cusparse_soversion: 12
+          - release: cuda13x
+            os: ubuntu-24.04-arm
+            arch: aarch64
+            kind: cuda_plugin
+            cuda_major: 13
+            cuda_image_tag: '13_1'
+            cuda_pkg_tag: '13-1'
+            cusparse_soversion: 12
           - release: cpu
             os: macos-14
             kind: core
@@ -206,33 +227,32 @@ jobs:
         uses: pypa/cibuildwheel@v4.2.0
         env:
           CIBW_ARCHS_LINUX: ${{ matrix.arch }}
+          # musllinux and PyPy have no matching CUDA image
           CIBW_SKIP: '*musllinux*'
-          CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_28
-          CIBW_MANYLINUX_AARCH64_IMAGE: manylinux_2_28
+          # Official manylinux images shipping the CUDA toolkit. They provide
+          # nvcc, cudart, cublas and a compatible host compiler (gcc-toolset-14)
+          # already set up on PATH/LD_LIBRARY_PATH, so no toolchain setup is
+          # needed here.
+          CIBW_MANYLINUX_X86_64_IMAGE: >-
+            quay.io/manylinux_cuda/manylinux_2_28_x86_64_cuda${{ matrix.cuda_image_tag }}:latest
+          CIBW_MANYLINUX_AARCH64_IMAGE: >-
+            quay.io/manylinux_cuda/manylinux_2_28_aarch64_cuda${{ matrix.cuda_image_tag }}:latest
           CIBW_CONFIG_SETTINGS: >
             cmake.define.FEW_LAPACKE_FETCH=OFF
             cmake.define.FEW_WITH_GPU=ONLY
             cmake.define.FEW_CUDA_ARCH=all
-            cmake.define.CMAKE_CUDA_HOST_COMPILER=/opt/rh/gcc-toolset-${{ matrix.host_gcc }}/root/usr/bin/g++
+          # cuSPARSE is the only FEW dependency missing from the CUDA images.
+          # The NVIDIA repository is already configured within them.
           CIBW_BEFORE_ALL: >
-            yum install -y make &&
-            yum install -y gcc-toolset-${{ matrix.host_gcc }}-gcc gcc-toolset-${{ matrix.host_gcc }}-gcc-c++ &&
-            yum install -y yum-utils &&
-            yum-config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/rhel8/${{ matrix.cuda_repo_arch }}/cuda-rhel8.repo &&
-            yum install -y cuda-compiler-${{ matrix.cuda_major }}-${{ matrix.cuda_minor }} cuda-libraries-${{ matrix.cuda_major }}-${{ matrix.cuda_minor }} cuda-libraries-devel-${{ matrix.cuda_major }}-${{ matrix.cuda_minor }}
+            dnf install -y --setopt=obsoletes=0 libcusparse-devel-${{ matrix.cuda_pkg_tag }}
           CIBW_BEFORE_BUILD: >
-            ${CC} --version && ${CXX} --version && nvcc --version
+            ${CXX:-g++} --version && nvcc --version
           CIBW_ENVIRONMENT: >
-            PATH="/opt/rh/gcc-toolset-${{ matrix.host_gcc }}/root/usr/bin:/usr/local/cuda/bin:${PATH}"
-            LD_LIBRARY_PATH="/opt/rh/gcc-toolset-${{ matrix.host_gcc }}/root/usr/lib64:/usr/local/cuda/lib64:${LD_LIBRARY_PATH}"
-            CUDA_HOME=/usr/local/cuda
-            CUDA_ROOT=/usr/local/cuda
-            CUDA_PATH=/usr/local/cuda
-            CUDADIR=/usr/local/cuda
-            CC=/opt/rh/gcc-toolset-${{ matrix.host_gcc }}/root/usr/bin/gcc
-            CXX=/opt/rh/gcc-toolset-${{ matrix.host_gcc }}/root/usr/bin/g++
             SETUPTOOLS_SCM_PRETEND_VERSION="${{ needs.version.outputs.version }}"
-          CIBW_REPAIR_WHEEL_COMMAND: auditwheel repair -w {dest_dir} {wheel} --exclude "libcudart.so.${{ matrix.cuda_major }}" --exclude "libcusparse.so.${{ matrix.cuda_major }}" --exclude "libcublas.so.${{ matrix.cuda_major }}" --exclude "libnvJitLink.so.${{ matrix.cuda_major }}" --exclude "libcublasLt.so.${{ matrix.cuda_major }}"
+          # The NVIDIA libraries are provided by the user at runtime (through
+          # CuPy or the nvidia-*-cu${{ matrix.cuda_major }} wheels) and must not
+          # be vendored into the plugin wheel.
+          CIBW_REPAIR_WHEEL_COMMAND: auditwheel repair -w {dest_dir} {wheel} --exclude "libcudart.so.${{ matrix.cuda_major }}" --exclude "libcublas.so.${{ matrix.cuda_major }}" --exclude "libcublasLt.so.${{ matrix.cuda_major }}" --exclude "libnvJitLink.so.${{ matrix.cuda_major }}" --exclude "libcusparse.so.${{ matrix.cusparse_soversion }}"
       # =====================
       # = IV. Upload wheels =
       # =====================

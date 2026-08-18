@@ -26,10 +26,11 @@ When installing `few` from sources, or simply building a wheel package, the main
 
 By default, CMake will always compile at least the `CPU` backend, and will try to also compile the `GPU` backend if required dependencies are available. This results in a single wheel which contains (1) the pure-python core package, (2) the compiled `CPU` backend and optionally (3) a compiled `GPU` CUDA backend.
 
-This is ideal for local development and installation from source, but different from how FEW is released on PyPI where 2 packages are deployed:
+This is ideal for local development and installation from source, but different from how FEW is released on PyPI where 3 packages are deployed:
 
 - `fastemriwaveforms`: contains the python code and the CPU backend
 - `fastemriwaveforms-cuda12x`: contains only the `cuda12x` GPU backend
+- `fastemriwaveforms-cuda13x`: contains only the `cuda13x` GPU backend
 
 The process for building these differenciated wheels is defined in `.github/workflows/publish.yml` which handles this build process and package deployment to PyPI.
 The core logic is handled by tweaking slightly the `pyproject.toml` file before building each category of wheels.
@@ -66,7 +67,8 @@ The `manylinux` wheels will be put into `./wheelhouse`.
 
 ### Building the GPU plugin packages
 
-To build GPU plugin packages, multiple modifications to `pyproject.toml` must be applied:
+To build GPU plugin packages, multiple modifications to `pyproject.toml` must be applied.
+The example below builds the `cuda12x` plugin; replace `12` by `13` throughout to build the `cuda13x` one.
 
 ```sh
 # Change the project name to add the `-cuda12x` suffix
@@ -82,6 +84,28 @@ sed -i 's|#@DEPS_FEWCORE@|"fastemriwaveforms"|g' pyproject.toml
 # that line instruct scikit-build-core to add the directory src/few to the wheel
 # so deleting it removes all python sources from the generated wheel
 sed -i '/@SKIP_PLUGIN@/d' pyproject.toml
+```
+
+The build requires the CUDA Toolkit (`nvcc`, cuRAND, cuBLAS, cuSPARSE) and a host compiler supported by it.
+In CI, this is provided by the official [manylinux CUDA container images](https://cibuildwheel.pypa.io/en/stable/faq/#building-wheels-with-cuda-on-linux)
+which *cibuildwheel* is pointed at with:
+
+```yaml
+# CUDA 12 plugin (use ..._cuda13_1:latest for the CUDA 13 plugin)
+CIBW_MANYLINUX_X86_64_IMAGE: quay.io/manylinux_cuda/manylinux_2_28_x86_64_cuda12_9:latest
+CIBW_MANYLINUX_AARCH64_IMAGE: quay.io/manylinux_cuda/manylinux_2_28_aarch64_cuda12_9:latest
+```
+
+The `cuda12x` plugin is built with the CUDA 12.9 images and the `cuda13x` plugin with the CUDA 13.1 images.
+CMake derives the backend name from the toolkit version found in the image, so `few_backend_cuda12x` and
+`few_backend_cuda13x` come out of the same sources with no CMake change.
+
+These images already expose `nvcc` on the `PATH`, set `LD_LIBRARY_PATH` to the CUDA libraries and ship a
+compatible host compiler, so no CUDA toolchain installation is needed in the workflow. They do not include
+cuSPARSE, which FEW requires, so it is installed from the (already configured) NVIDIA repository before building:
+
+```sh
+dnf install -y --setopt=obsoletes=0 libcusparse-devel-12-9  # or libcusparse-devel-13-1
 ```
 
 The wheels are then built for python 3.9 to 3.13 with the command:
@@ -101,12 +125,18 @@ for whl in ./dist/*.whl; do
     auditwheel repair "${whl}" -w /wheelhouse/ \
         --plat manylinux_2_27_x86_64 \
         --exclude "libcudart.so.12" \
-        --exclude "libcusparse.so.12" \
         --exclude "libcublas.so.12" \
+        --exclude "libcublasLt.so.12" \
         --exclude "libnvJitLink.so.12" \
-        --exclude "libcublasLt.so.12"
+        --exclude "libcusparse.so.12"
 done
 ```
+
+:::{warning}
+The soversions do not all follow the CUDA major version. For the `cuda13x` plugin, the excludes become
+`libcudart.so.13`, `libcublas.so.13`, `libcublasLt.so.13` and `libnvJitLink.so.13`, but cuSPARSE kept its
+soversion so it remains `libcusparse.so.12`. Getting this wrong silently vendors the library into the wheel.
+:::
 
 ## Understanding the CMake compilation mechanism
 

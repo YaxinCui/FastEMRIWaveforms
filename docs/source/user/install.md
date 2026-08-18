@@ -70,7 +70,7 @@ backend with
 ```sh
 pip install fastemriwaveforms-cuda12x  # For CUDA 12.x support
 # or
-pip install fastemriwaveforms-cuda11x  # For CUDA 11.x support
+pip install fastemriwaveforms-cuda13x  # For CUDA 13.x support
 ```
 
 :::{attention}
@@ -146,6 +146,8 @@ To install FEW from source in any environment, follow these steps:
     ```sh
     pip install -e '.[testing]' --config-settings=cmake.define.FEW_WITH_GPU=ON
     pip install cupy-cuda12x 'nvidia-cuda-runtime-cu12==12.4.*' # Replace 12.4 by the CUDA driver version returned by nvidia-smi, keep the '.*' at the end
+    # With a CUDA 13 driver, use instead (NVIDIA dropped the '-cuXX' suffix in CUDA 13):
+    pip install cupy-cuda13x 'nvidia-cuda-runtime==13.*'
     ```
 
   - Many options can be passed to the `pip install` command, see [below](#advanced-installation-options)
@@ -514,7 +516,7 @@ pip install . \
 
 If you enabled `GPU` support (or it was automatically enabled by the `AUTO` mode), you will also need to install the `nvidia-cuda-runtime`
 package corresponding to the CUDA version detected by `nvidia-smi` as explained in the *Getting Started* section above.
-You will also need to manually install `cupy-cuda11x` or `cupy-cuda12x` according to your CUDA version.
+You will also need to manually install `cupy-cuda12x` or `cupy-cuda13x` according to your CUDA version.
 
 ### conda vs pip installation
 
