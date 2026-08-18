@@ -567,11 +567,14 @@ class Integrate(ABC):
 
         # The trajectory spline is always evaluated on the CPU (dopr853 is numpy-only),
         # so bring a GPU-backend t_new onto the CPU and send the result back afterwards.
-        on_gpu = _is_cupy_array(t_new)
-        t_new_cpu = t_new.get() if on_gpu else t_new
+        try:
+            t_new = t_new.get()
+            on_gpu = True
+        except AttributeError:
+            on_gpu = False
 
         result = self.dopr.eval_derivative(
-            t_new_cpu, t_old, self.integrator_spline_coeff, order=order
+            t_new, t_old, self.integrator_spline_coeff, order=order
         )
 
         if not self.generating_trajectory:
