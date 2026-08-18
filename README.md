@@ -109,7 +109,7 @@ on how to start with this software.
 To install this software from source, you will need:
 
 - A C++ compiler (g++, clang++, ...)
-- A Python version supported by [scikit-build-core](https://github.com/scikit-build/scikit-build-core) (>=3.7 as of Jan. 2025)
+- Python 3.12 or newer (wheels are built and tested for 3.12, 3.13 and 3.14)
 
 Some installation steps require the external library `LAPACK` along with its C-bindings provided by `LAPACKE`.
 If these libraries and their header files (in particular `lapacke.h`) are available on your system, they will be detected
