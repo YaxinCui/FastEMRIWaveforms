@@ -114,12 +114,6 @@ To install this software from source, you will need:
 - A C++ compiler (g++, clang++, ...)
 - Python 3.12 or newer (wheels are built and tested for 3.12, 3.13 and 3.14)
 
-Some installation steps require the external library `LAPACK` along with its C-bindings provided by `LAPACKE`.
-If these libraries and their header files (in particular `lapacke.h`) are available on your system, they will be detected
-and used automatically. If they are available on a non-standard location, see below for some options to help detecting them.
-Note that by default, if `LAPACKE` is not available on your system, the installation step will attempt to download its sources
-and add them to the compilation tree. This makes the installation a bit longer but a lot easier.
-
 If you want to enable GPU support in FEW, you will also need the NVIDIA CUDA Compiler `nvcc` in your path as well as
 the [CUDA toolkit](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html) (with, in particular, the
 libraries `CUDA Runtime Library`, `cuBLAS` and `cuSPARSE`).
@@ -141,8 +135,7 @@ adjustements can be needed, refer to the
 [detailed installation documentation](https://fastemriwaveforms.readthedocs.io/en/stable/user/install.html) for more information):
 
 ```
-conda create -n few_env -y -c conda-forge --override-channels |
-    cxx-compiler pkgconfig conda-forge/label/lapack_rc::liblapacke
+conda create -n few_env -y -c conda-forge --override-channels cxx-compiler
 ```
 
 activate the environment

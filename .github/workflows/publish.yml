@@ -174,21 +174,13 @@ jobs:
       # =====================
       # = III. Build wheels =
       # =====================
-      - uses: fortran-lang/setup-fortran@v1
-        if: matrix.kind == 'core'
-        id: setup-fortran
-        with:
-          compiler: gcc
-          version: 14
       - name: Build core wheels (macOS)
         if: runner.os == 'macOS' && matrix.kind == 'core'
         uses: pypa/cibuildwheel@v4.2.0
         env:
           CIBW_ARCHS_MACOS: ${{ matrix.arch }}
           CIBW_CONFIG_SETTINGS: >
-            cmake.define.FEW_LAPACKE_FETCH=ON
             cmake.define.FEW_WITH_GPU=OFF
-            cmake.define.CMAKE_Fortran_COMPILER=${{ steps.setup-fortran.outputs.fc }}
           CIBW_TEST_COMMAND: python -m few.tests --disable testfile
           CIBW_ENVIRONMENT: >
             SETUPTOOLS_SCM_PRETEND_VERSION="${{ needs.version.outputs.version }}"
@@ -202,18 +194,8 @@ jobs:
           CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_28
           CIBW_MANYLINUX_AARCH64_IMAGE: manylinux_2_28
           CIBW_CONFIG_SETTINGS: >
-            cmake.define.FEW_LAPACKE_FETCH=OFF
-            cmake.define.FEW_LAPACKE_DETECT_WITH=PKGCONFIG
             cmake.define.FEW_WITH_GPU=OFF
-          CIBW_BEFORE_ALL: >
-            git clone https://github.com/Reference-LAPACK/lapack &&
-            git -C lapack reset --hard 6ec7f2bc4ecf4c4a93496aa2fa519575bc0e39ca &&
-            cmake -B lapack/build -S lapack -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DLAPACKE=ON -DCMAKE_INSTALL_PREFIX=/opt/lapack &&
-            cmake --build lapack/build -- -j &&
-            cmake --install lapack/build &&
-            rm -Rf lapack
           CIBW_ENVIRONMENT: >
-            PKG_CONFIG_PATH="/opt/lapack/lib64/pkgconfig/:${PKG_CONFIG_PATH}"
             SETUPTOOLS_SCM_PRETEND_VERSION="${{ needs.version.outputs.version }}"
           CIBW_TEST_COMMAND: python -m few.tests --disable testfile
       - name: Build cuda plugin wheels (Linux)
@@ -232,7 +214,6 @@ jobs:
           CIBW_MANYLINUX_AARCH64_IMAGE: >-
             quay.io/manylinux_cuda/manylinux_2_28_aarch64_cuda${{ matrix.cuda_image_tag }}:latest
           CIBW_CONFIG_SETTINGS: >
-            cmake.define.FEW_LAPACKE_FETCH=OFF
             cmake.define.FEW_WITH_GPU=ONLY
             cmake.define.FEW_CUDA_ARCH=all
           # cuSPARSE is the only FEW dependency missing from the CUDA images.
