@@ -77,6 +77,7 @@ class SummationTest(FewBackendTest):
         m1 = 1e6
         m2 = 1e1
         nu = m1 * m2 / (m1 + m2) ** 2
+        _ = traj_module(m1, m2, 0.4, 20.0, 0.6, 1.0, T=0.1, err=1e-15)
         t_spl = traj_module.inspiral_generator.integrator_t_cache
         coeff_spl = (
             traj_module.inspiral_generator.integrator_spline_coeff[:, 3:6, :] / nu
