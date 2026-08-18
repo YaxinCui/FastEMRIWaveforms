@@ -117,7 +117,7 @@ pip wheel ./ --no-deps -w ./dist \
 
 The option `FEW_WITH_GPU=ONLY` instructs CMake to build a GPU backend and to skip the CPU one. therefore, in the end, the wheel contains only the compiled modules for the GPU backend.
 
-Just like for the core package, the wheels must be *repaired* to become `manylinux` wheels. Since they have a dependencies on NVIDIA dynamic libraries, they are not strictly-speaking `manylinux` compatible but mechanisms are in place on the core package Python code to detect issues with these dependencies and advise the user about required steps.
+Just like for the core package, the wheels must be *repaired* to become `manylinux` wheels. Since they depend on NVIDIA dynamic libraries, they are not strictly-speaking `manylinux` compatible, but mechanisms are in place on the core package Python code to detect issues with these dependencies and advise the user about required steps.
 `auditwheel` must be instructed to ignore those external dependencies like so:
 
 ```sh
@@ -133,10 +133,18 @@ done
 ```
 
 :::{warning}
-The soversions do not all follow the CUDA major version. For the `cuda13x` plugin, the excludes become
-`libcudart.so.13`, `libcublas.so.13`, `libcublasLt.so.13` and `libnvJitLink.so.13`, but cuSPARSE kept its
-soversion so it remains `libcusparse.so.12`. Getting this wrong silently vendors the library into the wheel.
+Those soversions are the ones of a CUDA 12 build, and they do not all follow the CUDA major version: a CUDA 13
+build links `libcudart.so.13` and `libcublas.so.13`, but cuSPARSE kept its soversion and remains
+`libcusparse.so.12`. An `--exclude` that matches nothing is not an error: auditwheel simply vendors the library
+into the wheel (at great expense in terms of distribution size), which is why this should not be written out by hand.
 :::
+
+The CI does not hard-code this list. `.github/scripts/repair-cuda-wheel.sh` reads the `NEEDED`
+entries of the freshly built extension modules with `patchelf --print-needed`, keeps the ones whose soname stem
+is an NVIDIA library that must stay external (`libcudart`, `libcublas`, `libcublasLt`, `libcusparse`,
+`libnvJitLink`), and passes exactly those to `auditwheel repair`. The excludes are therefore always in sync with
+what was actually linked, whatever CUDA version the container provides, and the script fails loudly if it finds
+no NVIDIA library at all rather than producing a wheel with the toolkit baked in.
 
 ## Understanding the CMake compilation mechanism
 

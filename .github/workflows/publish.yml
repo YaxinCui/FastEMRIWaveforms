@@ -101,9 +101,6 @@ jobs:
             cuda_image_tag: '12_9'
             # Same version, in the form used by the NVIDIA yum/dnf repository
             cuda_pkg_tag: '12-9'
-            # cuSPARSE soversion: it does not follow the CUDA major version
-            # (CUDA 13 still ships libcusparse.so.12)
-            cusparse_soversion: 12
           - release: cpu
             os: ubuntu-24.04-arm
             arch: aarch64
@@ -115,7 +112,6 @@ jobs:
             cuda_major: 12
             cuda_image_tag: '12_9'
             cuda_pkg_tag: '12-9'
-            cusparse_soversion: 12
           - release: cuda13x
             os: ubuntu-latest
             arch: x86_64
@@ -123,7 +119,6 @@ jobs:
             cuda_major: 13
             cuda_image_tag: '13_1'
             cuda_pkg_tag: '13-1'
-            cusparse_soversion: 12
           - release: cuda13x
             os: ubuntu-24.04-arm
             arch: aarch64
@@ -131,7 +126,6 @@ jobs:
             cuda_major: 13
             cuda_image_tag: '13_1'
             cuda_pkg_tag: '13-1'
-            cusparse_soversion: 12
           - release: cpu
             os: macos-14
             kind: core
@@ -250,9 +244,11 @@ jobs:
           CIBW_ENVIRONMENT: >
             SETUPTOOLS_SCM_PRETEND_VERSION="${{ needs.version.outputs.version }}"
           # The NVIDIA libraries are provided by the user at runtime (through
-          # CuPy or the nvidia-*-cu${{ matrix.cuda_major }} wheels) and must not
-          # be vendored into the plugin wheel.
-          CIBW_REPAIR_WHEEL_COMMAND: auditwheel repair -w {dest_dir} {wheel} --exclude "libcudart.so.${{ matrix.cuda_major }}" --exclude "libcublas.so.${{ matrix.cuda_major }}" --exclude "libcublasLt.so.${{ matrix.cuda_major }}" --exclude "libnvJitLink.so.${{ matrix.cuda_major }}" --exclude "libcusparse.so.${{ matrix.cusparse_soversion }}"
+          # CuPy or the nvidia-* wheels) and must not be vendored into the
+          # plugin wheel. The script reads the sonames to exclude from the built
+          # modules themselves, as NVIDIA soversions do not all follow the CUDA
+          # major version.
+          CIBW_REPAIR_WHEEL_COMMAND: bash .github/scripts/repair-cuda-wheel.sh {wheel} {dest_dir}
       # =====================
       # = IV. Upload wheels =
       # =====================
