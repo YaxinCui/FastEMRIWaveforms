@@ -14,7 +14,7 @@ from typing import Optional, Sequence, TypeVar, Union
 import numpy as np
 
 # Python imports
-from ..cutils import Backend
+from ..cutils import CUDA_BACKENDS, Backend
 from ..utils.citations import REFERENCE, Citable
 from ..utils.globals import get_backend, get_first_backend, get_logger
 from ..utils.mappings.kerrecceq import kerrecceq_forward_map
@@ -67,17 +67,17 @@ class ParallelModuleBase(Citable):
     @staticmethod
     def GPU_RECOMMENDED() -> list[str]:
         """List of supported backends for GPU-recommended class with CPU support"""
-        return ["cuda13x", "cuda12x", "cpu"]
+        return [*CUDA_BACKENDS, "cpu"]
 
     @staticmethod
     def CPU_RECOMMENDED_WITH_GPU_SUPPORT() -> list[str]:
         """List of supported backends for CPU-recommended class with GPU support"""
-        return ["cpu", "cuda13x", "cuda12x"]
+        return ["cpu", *CUDA_BACKENDS]
 
     @staticmethod
     def GPU_ONLY() -> list[str]:
         """List of supported backends for GPU-only class"""
-        return ["cuda13x", "cuda12x"]
+        return [*CUDA_BACKENDS]
 
     @property
     def xp(self) -> types.ModuleType:

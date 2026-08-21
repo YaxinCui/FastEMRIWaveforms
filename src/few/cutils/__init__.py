@@ -465,7 +465,14 @@ class _CudaMajorBackend(_CudaBackend):
         ("nvrtc", "libnvrtc.so", "cuda-nvrtc", "cuda_nvrtc"),
         ("cufftw", "libcufftw.so", "cufft", "cufft"),
     )
-    """NVIDIA dynamic libraries the compiled backend links against."""
+    """NVIDIA dynamic libraries the compiled backend links against.
+
+    Keep the library file names here in sync with external_stems in
+    .github/scripts/repair-cuda-wheel.sh, which excludes these sonames from
+    the built wheel so they stay external. That list is a superset of this
+    one (it also lists libcublasLt, which ships alongside libcublas in the
+    same pip component and so has no separate entry here).
+    """
 
     @classmethod
     def backend_name(cls) -> str:
@@ -587,6 +594,14 @@ KNOWN_BACKENDS = {
     "cpu": CpuBackend,
 }
 """List of existing backends, per default order of preference."""
+
+CUDA_BACKENDS: typing.List[str] = [
+    name for name in KNOWN_BACKENDS if name != "cpu"
+]
+"""Names of CUDA backends, per default order of preference (newest CUDA major
+first). Single source of truth for CUDA-backend ordering; other modules
+should derive their backend-preference lists from this instead of
+hard-coding "cuda13x"/"cuda12x" literals."""
 
 
 class BackendStatus:

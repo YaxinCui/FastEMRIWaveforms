@@ -19,7 +19,13 @@ dest_dir="$2"
 
 # NVIDIA libraries that must stay external, matched on the soname stem only.
 # The soversion is whatever the build actually linked against.
-external_stems=(libcudart libcublas libcublasLt libcusparse libnvJitLink)
+#
+# Keep this in sync with REQUIRED_LIBS in src/few/cutils/__init__.py. It is a
+# superset of REQUIRED_LIBS's library file names (libcublasLt is pulled in
+# transitively by libcublas and ships in the same pip component/directory, so
+# it has no separate REQUIRED_LIBS entry, but still shows up in a compiled
+# .so's NEEDED list and must be excluded here).
+external_stems=(libcudart libcublas libcublasLt libcusparse libnvJitLink libnvrtc libcufftw)
 
 tmpdir="$(mktemp -d)"
 trap 'rm -rf "${tmpdir}"' EXIT

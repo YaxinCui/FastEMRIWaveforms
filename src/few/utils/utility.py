@@ -8,6 +8,7 @@ import numpy as np
 from numba import njit
 from scipy.optimize import brentq
 
+from few.cutils import CUDA_BACKENDS
 from few.utils.exceptions import TrajectoryOffGridException
 from few.utils.globals import get_first_backend, get_logger
 
@@ -506,7 +507,7 @@ def wrapper(*args, **kwargs):
     targs = []
     tkwargs = {}
 
-    best_backend = get_first_backend(["cuda13x", "cuda12x", "cpu"])
+    best_backend = get_first_backend([*CUDA_BACKENDS, "cpu"])
 
     # args first
     for arg in args:
