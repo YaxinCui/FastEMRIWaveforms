@@ -48,7 +48,7 @@ sed -i 's|local_scheme = "node-and-date"|local_scheme = "no-local-version"|g' py
 
 ### Building the core package
 
-To build the core package wheel, the following command is executed after the common steps for python 3.9 to 3.13:
+To build the core package wheel, the following command is executed after the common steps for python 3.12 to 3.14:
 
 ```sh
 pip wheel ./ --no-deps -w ./dist \
@@ -108,7 +108,7 @@ cuSPARSE, which FEW requires, so it is installed from the (already configured) N
 dnf install -y --setopt=obsoletes=0 libcusparse-devel-12-9  # or libcusparse-devel-13-1
 ```
 
-The wheels are then built for python 3.9 to 3.13 with the command:
+The wheels are then built for python 3.12 to 3.14 with the command:
 
 ```sh
 pip wheel ./ --no-deps -w ./dist \
