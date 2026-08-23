@@ -206,9 +206,22 @@ void fit_wrap(int m, int n, double *a, double *b, double *c, double *d_in)
   cusparseHandle_t handle;
   void *pBuffer;
 
+  // cusparseDgtsv2StridedBatch requires system size m >= 3; smaller systems
+  // (1-2 sparse trajectory points) return CUSPARSE_STATUS_INVALID_VALUE.
+  // CubicSplineInterpolant guards this Python-side; this backstop keeps any
+  // other caller catchable instead of failing inside cuSPARSE.
+  if (m < 3)
+  {
+    char msg[256];
+    snprintf(msg, sizeof(msg),
+             "fit_wrap: tridiagonal system size m=%d, but the batched solve requires m >= 3", m);
+    fprintf(stderr, "%s\n", msg);
+    throw std::invalid_argument(msg);
+  }
+
   CUSPARSE_CALL(cusparseCreate(&handle));
   CUSPARSE_CALL(cusparseDgtsv2StridedBatch_bufferSizeExt(handle, m, a, b, c, d_in, n, m, &bufferSizeInBytes));
-  gpuErrchk(cudaMalloc(&pBuffer, bufferSizeInBytes));
+  CUDA_CALL(cudaMalloc(&pBuffer, bufferSizeInBytes));
 
   // solve banded matrix problem
   CUSPARSE_CALL(cusparseDgtsv2StridedBatch(handle,
@@ -222,7 +235,7 @@ void fit_wrap(int m, int n, double *a, double *b, double *c, double *d_in)
                                            pBuffer));
 
   CUSPARSE_CALL(cusparseDestroy(handle));
-  gpuErrchk(cudaFree(pBuffer));
+  CUDA_CALL(cudaFree(pBuffer));
 
 #else
 

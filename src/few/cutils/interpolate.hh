@@ -5,22 +5,48 @@
 
 #ifdef __CUDACC__
 #include "cusparse.h"
+#include <stdexcept>
 
 /*
-CuSparse error checking
+CUDA / cuSPARSE error checking.
+
+These throw std::runtime_error (propagated to Python as RuntimeError via the
+`except +` declarations in pyinterp.pyx) instead of exit(-1): a hard exit
+kills the whole sampler process with no status and no traceback, and cannot
+be intercepted by any Python-level guard. The message carries the actual
+status so INVALID_VALUE / ALLOC_FAILED / EXECUTION_FAILED are distinguishable.
 */
-#define ERR_NE(X, Y)                                                                 \
-    do                                                                               \
-    {                                                                                \
-        if ((X) != (Y))                                                              \
-        {                                                                            \
-            fprintf(stderr, "Error in %s at %s:%d\n", __func__, __FILE__, __LINE__); \
-            exit(-1);                                                                \
-        }                                                                            \
+#define CUDA_CALL(X)                                                          \
+    do                                                                        \
+    {                                                                         \
+        cudaError_t _few_status = (X);                                        \
+        if (_few_status != cudaSuccess)                                       \
+        {                                                                     \
+            char _few_msg[512];                                               \
+            snprintf(_few_msg, sizeof(_few_msg),                              \
+                     "CUDA error in %s at %s:%d: %s (status %d)",             \
+                     __func__, __FILE__, __LINE__,                            \
+                     cudaGetErrorString(_few_status), (int)_few_status);      \
+            fprintf(stderr, "%s\n", _few_msg);                                \
+            throw std::runtime_error(_few_msg);                               \
+        }                                                                     \
     } while (0)
 
-#define CUDA_CALL(X) ERR_NE((X), cudaSuccess)
-#define CUSPARSE_CALL(X) ERR_NE((X), CUSPARSE_STATUS_SUCCESS)
+#define CUSPARSE_CALL(X)                                                      \
+    do                                                                        \
+    {                                                                         \
+        cusparseStatus_t _few_status = (X);                                   \
+        if (_few_status != CUSPARSE_STATUS_SUCCESS)                           \
+        {                                                                     \
+            char _few_msg[512];                                               \
+            snprintf(_few_msg, sizeof(_few_msg),                              \
+                     "cuSPARSE error in %s at %s:%d: %s (status %d)",         \
+                     __func__, __FILE__, __LINE__,                            \
+                     cusparseGetErrorString(_few_status), (int)_few_status);  \
+            fprintf(stderr, "%s\n", _few_msg);                                \
+            throw std::runtime_error(_few_msg);                               \
+        }                                                                     \
+    } while (0)
 
 #endif
 
