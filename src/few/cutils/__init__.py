@@ -5,7 +5,7 @@ import typing
 
 from ..utils.exceptions import FewException
 
-from gpubackendtools.gpubackendtools import BackendMethods, CpuBackend, Cuda11xBackend, Cuda12xBackend
+from gpubackendtools.gpubackendtools import BackendMethods, CpuBackend, Cuda11xBackend, Cuda12xBackend, Cuda13xBackend
 from gpubackendtools.exceptions import *
 
 @dataclasses.dataclass
@@ -85,6 +85,46 @@ class FEWCpuBackend(CpuBackend, FEWBackend):
             neural_layer_wrap=few_backend_cpu.pymatmul.neural_layer_wrap,
             transform_output_wrap=few_backend_cpu.pymatmul.transform_output_wrap,
             xp=numpy,
+        )
+
+
+class FEWCuda13xBackend(Cuda13xBackend, FEWBackend):
+    """Implementation of CUDA 13.x backend"""
+    _backend_name : str = "few_backend_cuda13x"
+    _name = "few_cuda13x"
+
+    def __init__(self, *args, **kwargs):
+        Cuda13xBackend.__init__(self, *args, **kwargs)
+        FEWBackend.__init__(self, self.cuda13x_module_loader())
+
+    @staticmethod
+    def cuda13x_module_loader():
+        try:
+            import few_backend_cuda13x.pyAAK
+            import few_backend_cuda13x.pyAmpInterp2D
+            import few_backend_cuda13x.pyinterp
+            import few_backend_cuda13x.pymatmul
+        except (ModuleNotFoundError, ImportError) as e:
+            raise BackendUnavailableException(
+                "'cuda13x' backend could not be imported."
+            ) from e
+
+        try:
+            import cupy
+        except (ModuleNotFoundError, ImportError) as e:
+            raise MissingDependencies(
+                "'cuda13x' backend requires cupy", pip_deps=["cupy-cuda13x"]
+            ) from e
+
+        return FewBackendMethods(
+            pyWaveform=few_backend_cuda13x.pyAAK.pyWaveform,
+            interp2D=few_backend_cuda13x.pyAmpInterp2D.interp2D,
+            interpolate_arrays_wrap=few_backend_cuda13x.pyinterp.interpolate_arrays_wrap,
+            get_waveform_wrap=few_backend_cuda13x.pyinterp.get_waveform_wrap,
+            get_waveform_generic_fd_wrap=few_backend_cuda13x.pyinterp.get_waveform_generic_fd_wrap,
+            neural_layer_wrap=few_backend_cuda13x.pymatmul.neural_layer_wrap,
+            transform_output_wrap=few_backend_cuda13x.pymatmul.transform_output_wrap,
+            xp=cupy,
         )
 
 
@@ -168,6 +208,7 @@ class FEWCuda11xBackend(Cuda11xBackend, FEWBackend):
         )
 
 KNOWN_BACKENDS = {
+    "cuda13x": FEWCuda13xBackend,
     "cuda12x": FEWCuda12xBackend,
     "cuda11x": FEWCuda11xBackend,
     "cpu": FEWCpuBackend,

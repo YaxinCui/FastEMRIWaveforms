@@ -103,6 +103,19 @@ jobs:
             cuda_major: 12
             cuda_minor: 4
             reqpython: '>=3.9'
+          # cuda13x wheels need the cuda_plugin build steps moved off the
+          # rhel7 CUDA repo / manylinux2014 image first: NVIDIA ships no
+          # CUDA >= 13 packages for rhel7 (requires manylinux_2_28 +
+          # cuda-rhel8.repo). Source builds (pip install from sdist/git with
+          # a CUDA 13 toolkit) already work — the backend registry knows
+          # 'cuda13x'.
+          # - release: cuda13x
+          #   os: ubuntu-latest
+          #   arch: x86_64
+          #   kind: cuda_plugin
+          #   cuda_major: 13
+          #   cuda_minor: 0
+          #   reqpython: '>=3.10'
           - release: cpu
             os: ubuntu-24.04-arm
             arch: aarch64
