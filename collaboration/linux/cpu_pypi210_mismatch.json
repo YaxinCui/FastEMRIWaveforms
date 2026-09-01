@@ -1,0 +1,154 @@
+{
+  "metadata_checks": {
+    "data_files": true,
+    "schema": true,
+    "seed": true
+  },
+  "passed": false,
+  "reference": "collaboration/mac/apple_silicon_reference.npz",
+  "reference_metadata": {
+    "backend": "cpu",
+    "data_files": [
+      {
+        "bytes": 49517,
+        "name": "AmplitudeVectorNorm.dat",
+        "sha256": "df04fd629353703d140fad80b6877e0b51e0944f1ba60c50412d66df422752e1"
+      },
+      {
+        "bytes": 61494,
+        "name": "FluxNewMinusPNScaled_fixed_y_order.dat",
+        "sha256": "c551ace42fbc79febbda132a78868e20900a0a97a06fa4f4d4bf23b12cc1517c"
+      },
+      {
+        "bytes": 12885136,
+        "name": "SchwarzschildEccentricInput.hdf5",
+        "sha256": "edb90365f3a5ee39b92ea1ebeb96c916d059f0835234b768087d9b7e80d1bede"
+      },
+      {
+        "bytes": 102881792,
+        "name": "Teuk_amps_a0.0_lmax_10_nmax_30_new.h5",
+        "sha256": "b3e7d7b215dd2ac472b598e6fee762935dd9909a23a321b894c7b372bc0ca247"
+      }
+    ],
+    "few_version": "2.1.0.post1.dev91+g47e4fea4b.d20260901",
+    "machine": "arm64",
+    "numpy": "2.5.2",
+    "platform": "macOS-26.5.2-arm64-arm-64bit",
+    "python": "3.12.12",
+    "schema": 1,
+    "seed": 20260901,
+    "timings_seconds": {
+      "aak_waveform": 2.983411749941297,
+      "bicubic_amplitudes": 0.021700915996916592,
+      "roman_amplitudes": 0.012074332917109132,
+      "schwarzschild_waveform": 7.050467082997784
+    }
+  },
+  "reference_sha256": "2a596c5dc11d2af7e895fe144876dd6c9846a3bee5a93a046d1f44d969cea2b2",
+  "results": {
+    "aak_waveform": {
+      "flat_weight_mismatch": 0.0,
+      "max_abs": 2.8093164058659167e-35,
+      "normalized_limit": 5e-11,
+      "normalized_max_abs": 3.488175935499251e-14,
+      "passed": true,
+      "relative_l2": 9.146441912658394e-15,
+      "shape": [
+        3156
+      ]
+    },
+    "bicubic_amplitudes": {
+      "max_abs": 2.2887833992611187e-16,
+      "normalized_limit": 5e-12,
+      "normalized_max_abs": 4.2115409352503383e-16,
+      "passed": true,
+      "relative_l2": 2.8336383574315557e-16,
+      "shape": [
+        128,
+        3843
+      ]
+    },
+    "complex_projection": {
+      "max_abs": 1.3985787785349405e-17,
+      "normalized_limit": 5e-13,
+      "normalized_max_abs": 3.941539001764486e-16,
+      "passed": true,
+      "relative_l2": 2.736157126142674e-16,
+      "shape": [
+        193,
+        73
+      ]
+    },
+    "neural_layer": {
+      "max_abs": 7.105427357601002e-15,
+      "normalized_limit": 5e-13,
+      "normalized_max_abs": 2.889225026966189e-16,
+      "passed": true,
+      "relative_l2": 1.7154068691270715e-16,
+      "shape": [
+        257,
+        61
+      ]
+    },
+    "roman_amplitudes": {
+      "max_abs": 0.0009488148526636996,
+      "normalized_limit": 5e-12,
+      "normalized_max_abs": 0.0017461076472187656,
+      "passed": false,
+      "relative_l2": 0.0011098996817479286,
+      "shape": [
+        128,
+        3843
+      ]
+    },
+    "schwarzschild_waveform": {
+      "flat_weight_mismatch": 6.076318065373343e-06,
+      "max_abs": 1.6399590738510569e-24,
+      "normalized_limit": 5e-11,
+      "normalized_max_abs": 0.00725691349289031,
+      "passed": false,
+      "relative_l2": 0.0034860611846405983,
+      "shape": [
+        21039
+      ]
+    }
+  },
+  "runtime": {
+    "backend": "cpu",
+    "data_files": [
+      {
+        "bytes": 49517,
+        "name": "AmplitudeVectorNorm.dat",
+        "sha256": "df04fd629353703d140fad80b6877e0b51e0944f1ba60c50412d66df422752e1"
+      },
+      {
+        "bytes": 61494,
+        "name": "FluxNewMinusPNScaled_fixed_y_order.dat",
+        "sha256": "c551ace42fbc79febbda132a78868e20900a0a97a06fa4f4d4bf23b12cc1517c"
+      },
+      {
+        "bytes": 12885136,
+        "name": "SchwarzschildEccentricInput.hdf5",
+        "sha256": "edb90365f3a5ee39b92ea1ebeb96c916d059f0835234b768087d9b7e80d1bede"
+      },
+      {
+        "bytes": 102881792,
+        "name": "Teuk_amps_a0.0_lmax_10_nmax_30_new.h5",
+        "sha256": "b3e7d7b215dd2ac472b598e6fee762935dd9909a23a321b894c7b372bc0ca247"
+      }
+    ],
+    "few_version": "2.1.0",
+    "machine": "x86_64",
+    "numpy": "2.5.2",
+    "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
+    "python": "3.12.13",
+    "schema": 1,
+    "seed": 20260901,
+    "timings_seconds": {
+      "aak_waveform": 3.855332294013351,
+      "bicubic_amplitudes": 0.12683007202576846,
+      "roman_amplitudes": 0.2589321159757674,
+      "schwarzschild_waveform": 10.530385149992071
+    }
+  }
+}

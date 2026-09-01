@@ -52,6 +52,16 @@ It is a strict cross-backend regression metric, not a substitute for the
 source/SNR/PSD-dependent scientific mismatch described in
 `knowledge/APPLE_SILICON_RESEARCH.md`.
 
+<!-- 2026-09-01 19:57 CST (linux): Document the CUDA validation evidence behind the AAK-specific normalized tolerance. -->
+
+The AAK CPU kernel uses FEW's historical Numerical Recipes Bessel
+approximations, whereas its CUDA kernel uses the CUDA libdevice `jn` function.
+This produces a deterministic relative amplitude difference of approximately
+`1.1e-9` on the dual-host workload while retaining a flat-weight waveform
+mismatch near machine precision. Consequently, only the AAK normalized-array
+limit is `5e-9`; all other workload limits and the independent `1e-10`
+waveform-mismatch limit remain stricter.
+
 The default workload deliberately excludes `FastKerrEccentricEquatorialFlux`.
 Its registered amplitude table `ZNAmps_l10_m10_n55_DS2Outer.h5` is
 5,089,095,248 bytes and tagged `high_memory`. Add it only after an explicit

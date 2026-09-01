@@ -293,7 +293,16 @@ class RomanAmplitude(AmplitudeBase, SchwarzschildEccentric):
 
         # norm with respect to the flux interpolated by the bicubic spline
         if renormalize_amps:
-            amp_norm = self.amp_norm_spline.ev(y, e)
+            if self.backend.uses_cupy:
+                # 2026-09-01 19:45 CST (linux): SciPy splines are host-only;
+                # bridge CUDA coordinates explicitly and return norms to the
+                # active device instead of relying on a forbidden implicit
+                # CuPy-to-NumPy conversion.
+                amp_norm = self.xp.asarray(
+                    self.amp_norm_spline.ev(y.get(), e.get())
+                )
+            else:
+                amp_norm = self.amp_norm_spline.ev(y, e)
             amp_for_norm = self.xp.sum(
                 self.xp.abs(
                     self.xp.concatenate(
