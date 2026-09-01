@@ -224,3 +224,76 @@
 - The 5,089,095,248-byte H5 and its local symlink remain ignored and are not
   staged. A future collaborator may acquire the lock only after pulling this
   branch and confirming a clean worktree.
+
+<!-- 2026-09-01 23:15 CST (linux): Record creation of the shared mixed-precision research plan and knowledge-index update requested by the user. -->
+
+## 2026-09-01 23:15 CST — mixed-precision proposal documented
+
+- Acquired the shared edit lock to add `knowledge/MIXED_PRECISION_PLAN.md` and
+  link it from `knowledge/README.md`; no source, build, validation artifact, or
+  large data file was changed.
+- The proposal keeps the accepted FP64 path as the production default, assigns
+  FP64 to dynamics/phases/final accumulation, proposes FP32 for an opt-in Kerr
+  coefficient/interpolation experiment, and limits initial FP16 work to ROMAN
+  dense multiplication with FP32 accumulation.
+- It records the completed full-table timings as the baseline, cites primary
+  CUDA/FEW/waveform-accuracy evidence, defines cold/warm and waveform-level
+  acceptance gates, and recommends CUDA `mixed32` as the first milestone before
+  either FP16 Tensor Core or Apple Metal implementation work.
+
+<!-- 2026-09-01 23:36 CST (linux): Record the safe pull of Mac's strict-Metal research commit and reconciliation of independently unsynchronized lock histories without editing Mac-owned files. -->
+
+## 2026-09-01 23:36 CST — strict-Metal handoff pulled and reviewed
+
+- Preserved the pending Linux mixed-precision documentation in a named stash,
+  fast-forwarded from `f87258e8` to Mac commit `5c872d31`, then restored the
+  Linux files. The only textual conflict was `collaboration/LOCK.md`; its Mac
+  and Linux timestamp histories were both retained, and current ownership was
+  reconfirmed for Linux. No file under `collaboration/mac/` was modified.
+- Mac's isolated double-single Metal amplitude prototype reaches normalized
+  maximum error `2.40e-15` on the accepted four-point/6993-mode workload and
+  approximately `3.2x`--`4.2x` warm per-slice speedup.
+- Mac's first FP32 summation prototype reaches `11.42x` for a combined one-year
+  workload but fails the strict normalized waveform gate. The follow-up
+  double-single summation recovers a normalized maximum `5.81620e-11` and
+  relative L2 `1.67612e-11` at `8.62x`, passing the current `5e-10` engineering
+  limit while retaining bitwise repeatability and numerical-zero flat mismatch.
+- The Metal work remains an isolated feasibility prototype: it is absent from
+  CMake, backend registration, installed extensions, and production defaults.
+  Mac requests broader CPU/CUDA reference validation, persistent-buffer work,
+  and LISA PSD-weighted scientific validation before integration.
+
+<!-- 2026-09-01 23:45 CST (linux): Hand back the strict-Metal task because Mac's synchronized commit contains measured summaries but no raw Metal waveform artifact that Linux can compare. -->
+
+## 2026-09-01 23:45 CST — request missing strict-Metal comparison data
+
+- Linux cannot execute the Objective-C++/Metal kernels. Commit `5c872d31`
+  contains their source and reviewed scalar metrics, but no raw strict-Metal
+  waveform arrays or structured run report. Reconstructing those values on
+  CUDA would not validate the actual Metal arithmetic.
+- Mac should add a compressed artifact such as
+  `collaboration/mac/strict_metal_ds_reference.npz`. Store the unrounded
+  `complex128` output produced with both strict double-single amplitude
+  interpolation and strict double-single mode summation for this exact common
+  configuration: `M=1e6`, `mu=10`, `theta=pi/3`, `phi=pi/4`, `dist=1`,
+  `Phi_phi0=0.3`, `Phi_theta0=0`, `Phi_r0=0.7`, and `dt=15 s`.
+- Required cases are:
+  1. baseline short: `a=0.7, p0=11, e0=0.4, xI=1, T=0.001 yr`;
+  2. baseline one year: the same orbit with `T=1.0 yr`;
+  3. positive-spin retrograde: the baseline with `xI=-1, T=0.01 yr`;
+  4. inner orbit: `a=0.6, p0=8, e0=0.3, xI=1, T=0.01 yr`;
+  5. zero spin: `a=0, p0=11, e0=0.4, xI=1, T=0.01 yr`.
+- Mac should also add `collaboration/mac/strict_metal_ds_report.json` containing
+  schema/seed, exact inputs, dtype/shape, modes kept, H5 and `LPA.txt` hashes,
+  safe-math/compiler/device metadata, cold/warm timings, peak RSS, repeatability,
+  and local Metal-versus-CPU maximum/relative-L2/flat-mismatch metrics for every
+  case. Record both artifact sizes and SHA256 values in the Mac handoff.
+- CPU waveform arrays need not be included: Ubuntu will regenerate CPU and
+  CUDA 12.x arrays from the exact inputs. The requested Metal-only payload is
+  expected to remain below ordinary GitHub's 100 MiB per-file limit; the H5,
+  temporary dylibs, and caches must remain out of Git.
+- After Mac commits and pushes these missing data on the existing branch,
+  Ubuntu will compare every Metal array against both FP64 backends, compute
+  flat and `LPA.txt` LISA-weighted error metrics, record CPU/CUDA timings and
+  memory, and decide whether the strict DS prototype passes the broader
+  cross-host engineering gate.

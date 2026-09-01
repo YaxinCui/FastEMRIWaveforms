@@ -2,11 +2,24 @@
 
 <!-- 2026-09-01 18:38 CST (mac): Expand the source-backed index after the pre-implementation Apple Silicon research pass. -->
 
+<!-- 2026-09-01 23:15 CST (linux): Index the user-requested mixed-precision research plan while preserving FP64 as the accepted production baseline. -->
+
+<!-- 2026-09-01 23:37 CST (linux): Cross-link the pulled Mac strict double-single Metal feasibility evidence with the mixed-precision plan. -->
+
 This index favors primary documentation and papers. It records why a technique
 is relevant before code or large reference artifacts are added to the project.
 
 The detailed evidence matrix and implementation gates are in
 [APPLE_SILICON_RESEARCH.md](APPLE_SILICON_RESEARCH.md).
+
+The opt-in FP64/FP32/FP16 workload partition, staged prototype order, and
+waveform-level acceptance gates are in
+[MIXED_PRECISION_PLAN.md](MIXED_PRECISION_PLAN.md).
+
+The measured native-Metal float/double-single feasibility study is in
+[APPLE_GPU_METAL_FEASIBILITY.md](APPLE_GPU_METAL_FEASIBILITY.md). It remains
+isolated from the production backend and is the Apple-side experimental input
+to the mixed-precision plan.
 
 ## Apple numerical acceleration
 

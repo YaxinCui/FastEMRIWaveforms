@@ -44,11 +44,19 @@
 
 <!-- 2026-09-01 23:31 CST (mac): Release editing after the reviewed handoff set was finalized for the user-directed commit and push; the commit itself records this released state. -->
 
+<!-- 2026-09-01 23:14 CST (linux): Acquire the edit lock to record the user-requested FP64/FP32/FP16 mixed-precision research plan and validation gates. -->
+
+<!-- 2026-09-01 23:16 CST (linux): Mark the mixed-precision documentation complete while retaining the lock pending user-directed synchronization. -->
+
+<!-- 2026-09-01 23:36 CST (linux): Reconcile the independently recorded lock histories after pulling Mac commit 5c872d31, preserve both hosts' work, and confirm Linux ownership for its pending documentation sync. -->
+
+<!-- 2026-09-01 23:45 CST (linux): Release editing after documenting the mixed-precision plan and the exact missing strict-Metal artifact required from Mac. -->
+
 - Branch: `codex/apple-silicon-dual-host`
 - Active editor: `none`
-- Last editor: `mac` — Apple M3 Pro / 18-core GPU / Metal 4
-- Lock released: 2026-09-01 23:31 CST (Asia/Shanghai)
-- Previous lock: Mac acquired at 2026-09-01 23:30 CST
-- State: The reviewed strict-Metal research set is finalized for the
-  user-directed commit and push. No production backend changed; Ubuntu may
-  acquire only after pulling the pushed commit.
+- Last editor: `linux` — Ubuntu x86_64 / NVIDIA GeForce RTX 2080 Ti
+- Lock released: 2026-09-01 23:45 CST (Asia/Shanghai)
+- Previous lock: Linux confirmed at 2026-09-01 23:36 CST
+- State: Linux reviewed Mac commit `5c872d31` and documented the exact missing
+  strict-Metal waveform artifact/report. Mac may acquire after pulling this
+  handoff, generate the requested data, and synchronize the existing branch.
