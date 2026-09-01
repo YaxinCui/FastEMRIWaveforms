@@ -374,3 +374,21 @@ effects, identify every generated report, and document temporary-file cleanup. -
   summation inputs; before scientific deployment, broaden the parameter grid
   and use a full LISA/TDI response or parameter-bias study rather than treating
   this `LPA.txt` complex-strain diagnostic as final detector validation.
+
+<!-- 2026-09-02 00:36 CST (linux): Bind the completed validation to its exact
+commit, release Ubuntu editing, and provide the next Mac pull boundary. -->
+
+## 2026-09-02 00:36 CST — strict-Metal validation released for Mac
+
+- The complete validator, documentation, CPU/CUDA reports, completed handoff,
+  and in-progress lock record were committed as `1564eaee` (`test: validate
+  strict Metal across CPU and CUDA`). The branch and remote were both at Mac
+  commit `fcfac79d` with zero divergence immediately before that commit.
+- Ubuntu editing is now released. This final lock/handoff commit contains no
+  numerical-result or validation-code change; it records only the exact
+  synchronization boundary requested by the user.
+- After GitHub synchronization, Mac should pull only
+  `codex/apple-silicon-dual-host`, confirm both Linux report hashes above, and
+  acquire the shared lock before beginning any opt-in production Metal backend
+  work. The ignored 5.09 GB H5 remains outside Git and must stay available at
+  `src/few/data/` for any repeated full-table validation.

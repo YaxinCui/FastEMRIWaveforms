@@ -60,11 +60,13 @@
 
 <!-- 2026-09-02 00:19 CST (linux): Mark strict-Metal CPU/CUDA and LPA-weighted validation complete while retaining the lock for user-directed review or synchronization. -->
 
+<!-- 2026-09-02 00:36 CST (linux): Release editing after committing the passed strict-Metal validation as 1564eaee for the user-directed GitHub handoff. -->
+
 - Branch: `codex/apple-silicon-dual-host`
-- Active editor: `linux`
-- Host: Ubuntu x86_64 / NVIDIA GeForce RTX 2080 Ti
-- Lock acquired: 2026-09-02 00:04 CST (Asia/Shanghai)
-- Previous lock: Mac released at 2026-09-01 23:59 CST
-- State: five-case Metal-to-Linux CPU/CUDA and direct Linux CPU-to-CUDA
-  validation passed; reports and the completed Linux handoff are ready for
-  review. Ubuntu retains the lock pending user-directed commit/synchronization.
+- Active editor: `none`
+- Last editor: `linux` — Ubuntu x86_64 / NVIDIA GeForce RTX 2080 Ti
+- Lock released: 2026-09-02 00:36 CST (Asia/Shanghai)
+- Previous lock: Linux acquired at 2026-09-02 00:04 CST
+- State: passed validation payload commit `1564eaee` and this released-lock
+  handoff are finalized for the user-directed push. Mac may acquire only after
+  pulling the synchronized branch and confirming a clean worktree.
