@@ -249,3 +249,108 @@ small artifact handed to Ubuntu. -->
 4. Record report hashes, timings, process RSS/CuPy memory, numerical metrics,
    and any failure diagnosis in `collaboration/linux/HANDOFF.md`; do not edit
    files under `collaboration/mac/`.
+
+## 2026-09-01 22:57 CST — native Metal feasibility study
+
+<!-- 2026-09-01 22:57 CST (mac): Hand off the user-directed Apple GPU research,
+isolated prototype locations, precision/performance evidence, remaining
+scientific gate, validation status, and synchronization boundary. -->
+
+- No production FEW source, backend registry, CMake target, default behavior,
+  or validation tolerance changed. Native Objective-C++/Metal prototypes and
+  dependency-free drivers are isolated in `collaboration/mac/metal_poc/`;
+  compiled dylibs live only in `/tmp`.
+- The full analysis is `knowledge/APPLE_GPU_METAL_FEASIBILITY.md`. The Mac has
+  only Command Line Tools, but Metal runtime source compilation works without
+  PyTorch, MLX, or full Xcode.
+- Strict amplitude result: a safe-math double-single kernel splits FP64
+  coefficients and CPU-FP64 basis weights into high/low floats. Four accepted
+  Kerr points across Regions A/B and all 6993 modes returned normalized max
+  `2.40e-15` and relative L2 `2.94e-15`. A six-slice, 128-point boundary/knot
+  stress pass had worst normalized max `1.03e-14` and relative L2 `3.99e-15`.
+  Warm per-slice synchronized speedup was approximately 3.2x--4.2x.
+- Approximate summation result: CPU FP64 evaluates/range-reduces phase splines;
+  Metal uses precise FP32 `sincos` and compensated mode accumulation. The
+  one-year, 2,103,877-sample, 124-mode run reduced warm end-to-end time from
+  `2.103 s` to `0.1870 s` (11.25x), with relative L2 `1.09e-7` and FEW flat
+  mismatch `2.66e-15`. Four short parameter cases, including retrograde and
+  `a=0`, retained the same error scale.
+- Combined one-year result: `2.0964 s` CPU versus `0.18356 s` hybrid Metal
+  (11.42x), relative L2 `1.09094e-7`, normalized max `2.18326e-7`, flat
+  mismatch `3.66e-15`, peak RSS 6698 MiB, and bitwise repeatability. CPU output
+  before/after injection was bitwise identical.
+- Decision: proceed later with an opt-in strict Metal amplitude backend. The
+  Metal sum is promising research but fails the existing `5e-10` normalized
+  waveform gate and needs a LISA PSD/SNR/time-phase-optimized validation grid
+  before it can be called scientifically accepted or made default.
+- Verification: both `.mm` files compile with Apple clang `-Wall -Wextra`;
+  Ruff 0.9.2 check/format and Python compilation pass; the two Apple Accelerate
+  unit tests pass. The original accepted CPU/CUDA implementation is untouched.
+- No new large artifact exists. The ignored 5.09 GB H5 file is unchanged and
+  remains out of Git; the new tracked source/documentation payload is under
+  150 KiB.
+- These changes are not yet committed or pushed. Before an Ubuntu switch, the
+  user must first request/complete the normal Mac commit and GitHub sync; Linux
+  should treat this Metal-only directory as read-only research evidence.
+
+## 2026-09-01 23:23 CST — strict Metal mode-sum precision recovery
+
+<!-- 2026-09-01 23:23 CST (mac): Hand off the user-directed follow-up that
+isolated the FP32 error sources and demonstrated a full-chain double-single
+Metal sum below the existing waveform regression limit. -->
+
+- Added isolated `collaboration/mac/metal_poc/metal_sum_ds.mm`; it is not in
+  CMake, the backend registry, or an installed extension. The original FP32
+  experiment remains selected by `--precision f32`, while `--precision ds`
+  selects the strict kernel through the same temporary ABI and restoration
+  checks.
+- A short-waveform component diagnostic attributed approximate normalized
+  maximum errors of `4.54e-8` to FP32 amplitude-polynomial evaluation,
+  `2.36e-8` to FP32 sine/cosine outputs, and `1.01e-8` to FP32 complex Ylms.
+  Compensating only the final accumulator therefore could not meet the strict
+  gate.
+- The strict kernel carries coefficients, local time, phases, amplitudes,
+  custom range-reduced sine/cosine, complex products, Ylms, and modal sums as
+  high/low FP32 pairs. Metal safe math and explicit FMA residuals are required.
+- Summation-only baseline results:
+  - 0.001 yr / 2,104 samples: normalized max `4.617e-14`, relative L2
+    `2.719e-14`, warm speedup `1.03x`;
+  - 0.1 yr / 210,388 samples: normalized max `6.396e-12`, relative L2
+    `1.680e-12`, warm speedup `7.42x`;
+  - 1.0 yr / 2,103,877 samples: normalized max `5.817e-11`, relative L2
+    `1.676e-11`, warm speedup `8.77x`, GPU command approximately `83 ms`.
+- Three 0.01-year robustness cases passed: positive-spin retrograde / 148
+  modes had normalized max `6.371e-13`; inner `a=0.6, p=8, e=0.3` / 113 modes
+  had `7.442e-13`; `a=0` / 136 modes had `4.810e-13`.
+- Strict amplitude plus strict sum, one year: CPU `2.11885 s`, Metal
+  `0.245868 s`, speedup `8.62x`, normalized max `5.81620e-11`, relative L2
+  `1.67612e-11`, numerical-zero flat mismatch, bitwise Metal repeatability,
+  and peak RSS `6728 MiB`. This passes the current `5e-10` engineering gate by
+  about `8.6x`.
+- No production behavior or validation tolerance changed. This is strong Mac
+  feasibility evidence, not final acceptance: a broader parameter/mode grid,
+  Ubuntu reference comparison, persistent-buffer engineering, and LISA
+  PSD-weighted validation remain.
+- All additions remain local and uncommitted. Do not switch hosts until the
+  user directs a Mac commit/push and the Ubuntu host pulls that exact commit.
+
+## 2026-09-01 23:31 CST — user-directed GitHub handoff
+
+<!-- 2026-09-01 23:31 CST (mac): Record the final synchronization boundary for
+the user-directed commit and push of the reviewed native-Metal research set. -->
+
+- This handoff supersedes the earlier local-only synchronization warning: the
+  user directed Mac to commit and push the reviewed changes on
+  `codex/apple-silicon-dual-host` without creating another branch.
+- The synchronization set contains only the collaboration lock/handoff,
+  isolated Objective-C++/Metal PoCs and Python drivers, and the two Apple GPU
+  research documents. It contains no H5 data, dylib, cache, generated waveform,
+  production backend source, CMake change, or validation-tolerance change.
+- Before committing, Mac fetched the remote branch and confirmed `HEAD` and
+  `origin/codex/apple-silicon-dual-host` were both `f87258e8` with zero
+  ahead/behind divergence. The compiled/tested state is recorded in the two
+  preceding handoff sections.
+- After the push completes, Ubuntu may pull the exact branch, verify the commit
+  reported by Git, and treat `collaboration/mac/` as read-only. Production
+  integration has not begun; the next dual-host task is broader CPU/CUDA
+  reference validation of the strict DS sum before any backend registration.

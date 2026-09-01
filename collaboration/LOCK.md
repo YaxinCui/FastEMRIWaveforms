@@ -32,11 +32,23 @@
 
 <!-- 2026-09-01 21:38 CST (linux): Release editing after successful full-table CPU/CUDA acceptance and preparation of the user-directed report commit. -->
 
+<!-- 2026-09-01 22:21 CST (mac): Acquire the project edit lock for the user-directed deep Apple GPU feasibility study; only isolated Metal prototypes and documented measurements may change until release. -->
+
+<!-- 2026-09-01 22:57 CST (mac): Release the edit lock after isolating, measuring, documenting, and regression-checking the native-Metal feasibility study; changes remain local until a user-directed commit/push. -->
+
+<!-- 2026-09-01 23:14 CST (mac): Reacquire the project edit lock for the user-directed strict-precision Metal mode-summation exploration; changes remain confined to the Mac PoC, research notes, lock, and handoff. -->
+
+<!-- 2026-09-01 23:28 CST (mac): Release editing after the strict full-chain double-single Metal sum passed the one-year engineering gate, retained useful acceleration, and was documented and regression-checked; changes remain local until a user-directed commit/push. -->
+
+<!-- 2026-09-01 23:30 CST (mac): Acquire the project edit lock solely for the user-directed Metal research handoff, commit, and push on the existing collaboration branch. -->
+
+<!-- 2026-09-01 23:31 CST (mac): Release editing after the reviewed handoff set was finalized for the user-directed commit and push; the commit itself records this released state. -->
+
 - Branch: `codex/apple-silicon-dual-host`
 - Active editor: `none`
-- Last editor: `linux` — Ubuntu x86_64 / NVIDIA GeForce RTX 2080 Ti
-- Lock released: 2026-09-01 21:38 CST (Asia/Shanghai)
-- Previous lock: Ubuntu acquired at 2026-09-01 21:33 CST
-- State: Full-table Kerr acceptance is complete on Apple Accelerate CPU, Linux
-  CPU, and CUDA 12.x. The two Linux reports and handoff are ready for GitHub;
-  another collaborator may acquire only after pulling the release commit.
+- Last editor: `mac` — Apple M3 Pro / 18-core GPU / Metal 4
+- Lock released: 2026-09-01 23:31 CST (Asia/Shanghai)
+- Previous lock: Mac acquired at 2026-09-01 23:30 CST
+- State: The reviewed strict-Metal research set is finalized for the
+  user-directed commit and push. No production backend changed; Ubuntu may
+  acquire only after pulling the pushed commit.

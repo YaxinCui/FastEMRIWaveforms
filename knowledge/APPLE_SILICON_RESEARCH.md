@@ -148,3 +148,20 @@ Continue the existing Accelerate/GCD direction, then measure and validate it.
 Do not begin a production Metal backend in this adaptation. Revisit Metal only
 as a separately gated experiment after the FP64 Mac backend and Ubuntu CUDA
 consistency suite are complete.
+
+## 2026-09-01 22:52 CST Metal feasibility addendum
+
+<!-- 2026-09-01 22:52 CST (mac): Link the post-acceptance experiment that the
+original decision explicitly deferred; the accepted Accelerate reference path
+and CPU/CUDA defaults remain unchanged. -->
+
+The prerequisite FP64 Mac/Ubuntu CPU/CUDA acceptance is now complete, and the
+user directed a separate native-Metal feasibility study. Its implementation,
+measurements, precision tiers, and revised go/no-go decision are recorded in
+[`APPLE_GPU_METAL_FEASIBILITY.md`](APPLE_GPU_METAL_FEASIBILITY.md).
+
+The original production decision remains correct for the current default
+backend. New evidence supports a future opt-in double-single Metal amplitude
+accelerator that meets the strict tested amplitude gate. The tested Metal mode
+summation remains approximate and must not become a default until it passes a
+scientific PSD/SNR-dependent validation campaign.
