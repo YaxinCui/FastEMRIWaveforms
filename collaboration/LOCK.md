@@ -56,11 +56,15 @@
 
 <!-- 2026-09-01 23:59 CST (mac): Release editing after the five-case strict-Metal artifact/report passed integrity and regression checks and was finalized for the user-directed handoff commit/push. -->
 
+<!-- 2026-09-02 00:04 CST (linux): Acquire the edit lock after pulling Mac commit fcfac79d to validate all five strict-Metal arrays against Linux CPU/CUDA and LPA-weighted metrics. -->
+
+<!-- 2026-09-02 00:19 CST (linux): Mark strict-Metal CPU/CUDA and LPA-weighted validation complete while retaining the lock for user-directed review or synchronization. -->
+
 - Branch: `codex/apple-silicon-dual-host`
-- Active editor: `none`
-- Last editor: `mac` — Apple M3 Pro / 18-core GPU / Metal 4
-- Lock released: 2026-09-01 23:59 CST (Asia/Shanghai)
-- Previous lock: Mac acquired at 2026-09-01 23:51 CST
-- State: Ubuntu's requested strict-Metal NPZ/report is finalized for the
-  user-directed commit and push. Linux may acquire only after pulling the
-  synchronized commit and verifying both recorded artifact hashes.
+- Active editor: `linux`
+- Host: Ubuntu x86_64 / NVIDIA GeForce RTX 2080 Ti
+- Lock acquired: 2026-09-02 00:04 CST (Asia/Shanghai)
+- Previous lock: Mac released at 2026-09-01 23:59 CST
+- State: five-case Metal-to-Linux CPU/CUDA and direct Linux CPU-to-CUDA
+  validation passed; reports and the completed Linux handoff are ready for
+  review. Ubuntu retains the lock pending user-directed commit/synchronization.

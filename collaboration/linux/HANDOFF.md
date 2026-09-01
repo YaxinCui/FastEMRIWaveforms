@@ -297,3 +297,80 @@
   flat and `LPA.txt` LISA-weighted error metrics, record CPU/CUDA timings and
   memory, and decide whether the strict DS prototype passes the broader
   cross-host engineering gate.
+
+<!-- 2026-09-02 00:04 CST (linux): Record the synchronized Mac artifact identities, full-table preflight, lock acquisition, and expanded LPA-weighted comparison scope. -->
+
+## 2026-09-02 00:04 CST — strict-Metal cross-host validation started
+
+- Fast-forwarded to Mac commit `fcfac79d`, confirmed a clean worktree, and
+  acquired the shared edit lock. Mac's 33,254,256-byte NPZ and 24,317-byte JSON
+  hashes match the 23:58 CST Mac handoff exactly.
+- Reverified the ignored 5,089,095,248-byte Kerr table through the project path:
+  SHA256 `3236d8b5eff618242291e9eeb24638dbbbb82fac464ae575dc3f2ba158c54834`.
+- Linux will not modify `collaboration/mac/`. A shared validator will consume
+  Mac's exact report inputs, verify embedded/raw array hashes, regenerate all
+  five current-source CPU and CUDA 12.x arrays, and write Linux-owned reports.
+- In addition to the requested sample norms and flat mismatch, the comparison
+  will report an explicitly defined `LPA.txt`-weighted complex-strain overlap
+  at zero lag and with circular time/phase optimization. These are engineering
+  diagnostics using the tabulated LPA ASD; they are not a detector-response or
+  parameter-bias study and will be labelled accordingly.
+
+<!-- 2026-09-02 00:19 CST (linux): Record the completed strict-Metal
+CPU/CUDA/LPA acceptance, distinguish same-host kernel and cross-host trajectory
+effects, identify every generated report, and document temporary-file cleanup. -->
+
+## 2026-09-02 00:19 CST — strict-Metal cross-host validation passed
+
+- Added `validation/strict_metal_cross_host.py` and documented its commands in
+  `validation/README.md`. Before loading the model it enforces the exact Mac
+  NPZ/report identities, embedded metadata, five raw `complex128` array hashes,
+  seven PoC source hashes, and the two H5 plus `LPA.txt` manifests. Ruff,
+  Python compilation, and `git diff --check` pass.
+- Both persistent reports pass:
+  - CPU: `collaboration/linux/strict_metal_cpu.json`, 22,538 bytes, SHA256
+    `d13fe5ca4a459d2d084d4bce2fe3244ee90c493c5c67e55fd02476595dd3f025`;
+  - CUDA 12.x: `collaboration/linux/strict_metal_cuda12x.json`, 39,594 bytes,
+    SHA256
+    `77c94bb95140f3eb8d8abadf6be198e0ead1189d8fa23b7a348a8ba15a9ff3f8`.
+- Every CPU and CUDA case is finite `complex128`, has the exact expected shape
+  and mode count, is bitwise repeatable within its backend, and has best
+  LPA-weighted circular lag zero. The one-year Metal comparison is the worst
+  overlap case: flat mismatch `2.2333e-11`, phase-optimized vector mismatch
+  `2.2332e-11`, and zero-lag/time-phase LPA mismatch `2.5122e-11`, all below
+  the independent `1e-10` limits. The four shorter cases have numerical-zero
+  flat/phase/LPA mismatches.
+- The x86_64 end-to-end regeneration has trajectory-sensitive elementwise
+  differences from the Mac arrays: the one-year normalized maximum is
+  `1.7693e-5` and relative L2 is `6.7103e-6`; the three non-baseline short
+  cases range from `1.6675e-8` to `7.0093e-8` normalized maximum. These values
+  are recorded, not hidden. The existing `5e-10` elementwise limit isolates
+  Metal only when both paths consume the same Mac-prepared trajectory/spline
+  inputs, so it is deliberately non-binding for a cross-architecture
+  end-to-end regeneration. The 2104-sample baseline remains within that local
+  gate and reproduces the already accepted full-Kerr result at normalized
+  maximum `6.7350e-11` and relative L2 `2.7505e-11`.
+- To separate host trajectory accumulation from backend behavior, CPU wrote a
+  temporary integrity-bound 33,253,670-byte NPZ under `/tmp`; CUDA read it and
+  performed a direct same-host comparison. All five strict elementwise gates
+  pass: worst normalized maximum `1.1373e-15`, worst relative L2 `5.2900e-16`,
+  worst flat mismatch `2.2204e-16`, worst LPA mismatch `1.4433e-15`, and zero
+  best lag. The bridge SHA256
+  `d358cd7bafcee61492d91f29a655b2e98c51c8aa1171dd467ef86b10987a976f`
+  and all direct metrics are embedded in the CUDA report. The temporary NPZ
+  and redirected stdout files were deleted after the persistent report was
+  verified; they were never added to Git.
+- CPU model load was `10.725 s`, with peak RSS `6928.80 MiB`. CUDA model load
+  was `12.857 s`, peak RSS `6518.33 MiB`, final CuPy pool use `4854.07 MiB`,
+  and final reserved pool `5202.91 MiB`. Warm CUDA speedups over Linux CPU were
+  `5.26x` (baseline short), `48.06x` (one year), `9.40x` (retrograde), `7.91x`
+  (inner), and `8.45x` (zero spin). These are same-host engineering timings,
+  not Mac-versus-Ubuntu hardware rankings.
+- Acceptance conclusion: Mac strict double-single Metal, Linux CPU, and Linux
+  CUDA are consistent under the defined overlap gates, while direct Linux
+  CPU/CUDA elementwise agreement is near FP64 roundoff. This supports moving
+  toward an opt-in Metal integration, not making it default. Before claiming a
+  kernel-only cross-host elementwise result, transfer frozen prepared
+  summation inputs; before scientific deployment, broaden the parameter grid
+  and use a full LISA/TDI response or parameter-bias study rather than treating
+  this `LPA.txt` complex-strain diagnostic as final detector validation.

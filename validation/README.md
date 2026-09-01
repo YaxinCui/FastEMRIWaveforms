@@ -127,3 +127,65 @@ Comparison requires identical schema, seed, fixed inputs, and data-file
 manifests. Normalized maximum and relative-L2 limits are `5e-11` for Kerr
 amplitudes and `5e-10` for the waveform; the independent flat-weight waveform
 mismatch limit is `1e-10`.
+
+## Strict-Metal cross-host validation
+
+<!-- 2026-09-02 00:08 CST (linux): Document the integrity-bound five-case
+CPU/CUDA reproduction and the deliberately limited interpretation of LPA
+noise weighting requested by the Mac strict-Metal handoff. -->
+
+`strict_metal_cross_host.py` verifies the exact Mac NPZ/report identities,
+embedded metadata, unrounded `complex128` array hashes, PoC source hashes, and
+all three data files before allocating the full Kerr model. It then regenerates
+the five report-defined waveforms with one shared full-table model, checks
+bitwise repeatability and mode counts, and compares Linux against Metal using
+normalized maximum error, relative L2 error, FEW's flat mismatch, and a global
+phase-optimized vector mismatch.
+
+The additional `LPA.txt` result is an engineering diagnostic. It uses a
+two-sided DFT of FEW's complex strain, log-log interpolation of ASD squared,
+and reports both zero-lag phase optimization and circular discrete
+time-plus-phase optimization. It deliberately does not claim a complete LISA
+TDI response, sky response, parameter-bias calculation, or astrophysical error
+budget.
+
+<!-- 2026-09-02 00:15 CST (linux): Separate same-host kernel limits from
+cross-host end-to-end acceptance after the Linux CPU reproduction showed the
+expected trajectory-sensitive accumulation while all overlap gates passed. -->
+
+The report still evaluates the existing `5e-10` normalized-maximum and
+relative-L2 Metal gate, but marks it non-binding across hosts. That limit
+isolates Metal only when Metal and CPU consume the same Mac-prepared
+trajectory, spline, and mode inputs. Regenerating an end-to-end waveform on
+x86_64 also changes those upstream floating-point paths, especially over one
+year, so applying the local kernel gate to that result would conflate two
+experiments. Cross-host acceptance instead requires exact provenance,
+shape/dtype/mode count, finiteness, repeatability, and `1e-10` limits on flat,
+phase-optimized, and both LPA-weighted mismatches. The elementwise results
+remain recorded so their accumulation is never hidden. A future kernel-only
+cross-host gate should transfer the prepared summation inputs as a separate
+artifact.
+
+Run each backend in a separate process while Ubuntu owns the edit lock:
+
+```sh
+.venv/bin/python validation/strict_metal_cross_host.py \
+  --backend cpu \
+  --runtime-artifact /tmp/strict_metal_linux_cpu.npz \
+  --report collaboration/linux/strict_metal_cpu.json
+
+.venv/bin/python validation/strict_metal_cross_host.py \
+  --backend cuda12x \
+  --cpu-peer /tmp/strict_metal_linux_cpu.npz \
+  --report collaboration/linux/strict_metal_cuda12x.json
+```
+
+<!-- 2026-09-02 00:16 CST (linux): Document the ephemeral array bridge used to
+make same-host CPU-to-CUDA elementwise validation independent of the Mac
+trajectory accumulation. -->
+
+The first command's temporary NPZ is integrity-bound but deliberately
+untracked. The second command enforces the elementwise gates for its direct
+Linux CPU-to-CUDA comparison and embeds all resulting metrics and the temporary
+artifact identity in the persistent CUDA JSON report. The temporary NPZ may be
+deleted after the CUDA report is complete.
