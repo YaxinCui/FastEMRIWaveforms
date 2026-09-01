@@ -190,3 +190,6 @@
   12.x backend are consistent for all six transferred workloads. The explicit
   remaining scope boundary is the absent 5,089,095,248-byte high-memory Kerr
   amplitude table.
+- 2026-09-01 20:38 CST (mac): Final Mac acceptance and regression evidence were
+  committed as `b1dce6b2`; the following lock-state commit closes the
+  dual-host edit session for remote synchronization.
