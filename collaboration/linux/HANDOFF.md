@@ -128,3 +128,33 @@
      host switch.
 - `tests/test_roman_cuda_normalization.py` is expected to skip cleanly on Mac
   because it specifically guards the CUDA 12.x path.
+
+<!-- 2026-09-01 21:06 CST (linux): Record discovery and integrity verification of the full high-memory Kerr table, plus its user-confirmed out-of-band transfer for Mac validation. -->
+
+## 2026-09-01 21:06 CST — full Kerr table handed to Mac
+
+- A read-only search found the complete high-memory Kerr amplitude table in
+  Ubuntu's FEW user-data cache, not in the Git worktree:
+  `/home/ubuntu/.local/share/few/v2.1.0.post1.dev93+g92af2f42c.d20260901/download/ZNAmps_l10_m10_n55_DS2Outer.h5`.
+- Its size is 5,089,095,248 bytes and its SHA256 is
+  `3236d8b5eff618242291e9eeb24638dbbbb82fac464ae575dc3f2ba158c54834`,
+  exactly matching `src/few/files/registry.yml`.
+- The user copied this file out of band with `scp` to the Mac account at
+  `cui@macbook:~/ZNAmps_l10_m10_n55_DS2Outer.h5` and confirmed that the
+  transfer completed. Ubuntu cannot directly attest to the destination bytes,
+  so Mac must run `shasum -a 256` before using the file.
+- The originally supplied Mac project destination
+  `/Users/cui/Desktop/FastEMRIWaveforms` returned `No such file or directory`
+  over SSH. Mac must first locate its actual checkout, then place the verified
+  table under that checkout's `src/few/data/`. That directory ignores data by
+  default, so the 5.09 GB table must remain untracked and must not be pushed to
+  GitHub.
+- Mac should pull this handoff, acquire `collaboration/LOCK.md`, verify the
+  table, and run the high-memory `AmpInterpKerrEccEq` and
+  `FastKerrEccentricEquatorialFlux` acceptance work. It should record peak
+  memory/load behavior, deterministic amplitude and short-waveform reference
+  results, and release the lock in `collaboration/mac/HANDOFF.md`.
+- After Mac publishes its reference artifact and handoff, Ubuntu should pull
+  them and run matching current-source CPU/CUDA consistency checks against the
+  same full table. No source code or binary data was changed by this Ubuntu
+  documentation-only handoff.
