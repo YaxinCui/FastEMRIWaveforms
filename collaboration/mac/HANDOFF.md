@@ -193,3 +193,59 @@
 - 2026-09-01 20:38 CST (mac): Final Mac acceptance and regression evidence were
   committed as `b1dce6b2`; the following lock-state commit closes the
   dual-host edit session for remote synchronization.
+
+## 2026-09-01 21:29 CST — full-table Kerr Mac acceptance
+
+<!-- 2026-09-01 21:29 CST (mac): Record the out-of-band Kerr table identity,
+full-mode/short-waveform Apple results, upstream fixture caveat, and the exact
+small artifact handed to Ubuntu. -->
+
+- Verified the out-of-band file at
+  `src/few/data/ZNAmps_l10_m10_n55_DS2Outer.h5` before every run:
+  - size: 5,089,095,248 bytes;
+  - SHA256: `3236d8b5eff618242291e9eeb24638dbbbb82fac464ae575dc3f2ba158c54834`;
+  - Git status: ignored by `src/few/data/.gitignore`; it remains untracked and
+    must not be pushed.
+- Added `validation/high_memory_kerr_consistency.py`. One shared full-table
+  model checks all 6993 modes at four parameter points spanning interpolation
+  regions A/B, five targeted mode outputs, and a deterministic 2104-sample
+  `FastKerrEccentricEquatorialFlux` waveform.
+- Final one-thread Apple Accelerate generation:
+  - model load: 7.237 s;
+  - first/warm full-mode amplitudes: 0.8591 s / 0.02361 s;
+  - first/warm short Kerr waveforms: 6.622 s / 0.03271 s;
+  - maximum resident set: 6,630,047,744 bytes (6322.91 MiB);
+  - full amplitudes and waveform were bitwise repeatable; repeat waveform
+    mismatch was `1.11e-16`.
+- The final binary reference is
+  `collaboration/mac/high_memory_kerr_reference.npz`:
+  - size: 449,418 bytes;
+  - SHA256: `b7728a81e2f566d7db503320804234296b1fb1f8d230908b39482171fbc834b3`;
+  - Mac self-comparison passed schema/seed/input/data identity and returned
+    zero array differences for shapes `(4,6993)`, `(5,)`, and `(2104,)`.
+- Direct upstream regression results, each isolated in its own process:
+  - `AmplitudesTest.test_kerrecceq`: passed in 5.259 s, peak RSS
+    5,604,360,192 bytes;
+  - `KerrWaveformTest.test_Kerr_vs_Schwarzchild`: passed in 15.767 s, peak RSS
+    6,557,843,456 bytes;
+  - `KerrWaveformTest.test_retrograde_orbits`: passed in 15.851 s, peak RSS
+    6,544,736,256 bytes.
+- The high-memory run exposed a pre-existing upstream fixture defect. Fixture
+  index 2 declares `(2,2,0,0)` but its expected value resembles
+  `(2,-2,0,5)`; its absolute discrepancy is about `0.408`. The upstream
+  assertion is outside the loop and therefore checks only index 4. The new
+  validator records but does not enforce index 2, enforces the other four at
+  `atol=1e-9`, and still compares all five actual outputs across Mac CPU,
+  Ubuntu CPU, and CUDA.
+
+### Ubuntu continuation
+
+1. Pull the synchronized `codex/apple-silicon-dual-host` branch and confirm
+   `HEAD` contains this handoff; do not create another branch.
+2. Keep the 5.09 GB table out of Git, but make the already verified Ubuntu
+   copy available at the exact `src/few/data/` path and confirm its SHA256.
+3. Acquire `collaboration/LOCK.md`, then run the two `compare` commands in
+   `validation/README.md` for `cpu` and `cuda12x`.
+4. Record report hashes, timings, process RSS/CuPy memory, numerical metrics,
+   and any failure diagnosis in `collaboration/linux/HANDOFF.md`; do not edit
+   files under `collaboration/mac/`.

@@ -22,13 +22,15 @@
 
 <!-- 2026-09-01 21:06 CST (linux): Release the documentation-only lock so Mac can pull, verify the transferred table, and begin high-memory Kerr acceptance. -->
 
+<!-- 2026-09-01 21:13 CST (mac): Acquire the edit lock after verifying the transferred 5.09 GB Kerr table for high-memory Apple acceptance. -->
+
+<!-- 2026-09-01 21:29 CST (mac): Release editing after full-table Kerr amplitude/waveform acceptance and preparation of the small Ubuntu comparison artifact. -->
+
 - Branch: `codex/apple-silicon-dual-host`
-- Active editor: none; high-memory Kerr validation handed to Mac
-- Host: Ubuntu x86_64 / NVIDIA GeForce RTX 2080 Ti
-- Lock acquired: 2026-09-01 21:06 CST (Asia/Shanghai)
-- Lock released: 2026-09-01 21:06 CST (Asia/Shanghai)
-- Previous lock: Apple M3 Pro released at 2026-09-01 20:38 CST
-- State: Ubuntu verified the complete 5,089,095,248-byte Kerr amplitude table
-  and the user confirmed its out-of-band transfer to the Mac account. Mac may
-  acquire the lock after pulling this handoff and verifying the destination
-  checksum. No host currently holds the edit lock.
+- Active editor: `none`
+- Last editor: `mac` — Apple M3 Pro, macOS 26.5.2, arm64, 36 GiB unified memory
+- Lock released: 2026-09-01 21:29 CST (Asia/Shanghai)
+- Previous lock: Mac acquired at 2026-09-01 21:13 CST
+- State: Mac high-memory Kerr reference is ready. Ubuntu may acquire only
+  after the user synchronizes and pulls this branch; until then both hosts are
+  read-only.
