@@ -530,6 +530,22 @@ void get_waveform(cmplx *waveform, double* interp_array,
 
     #endif
 
+    #ifdef FEW_USE_APPLE_ACCELERATE
+    // 2026-09-01 18:31 CST (mac): Each AAK spline interval writes a disjoint
+    // sample range, allowing deterministic GCD parallel execution.
+    few_apple_parallel_for(
+        static_cast<size_t>(number_of_old_spline_points - 1),
+        [&](size_t interval_index)
+        {
+          const int i = static_cast<int>(interval_index);
+          make_waveform(waveform,
+                        interp_array,
+                        M_phys, S_phys, mu, qS, phiS, qK, phiK, dist,
+                        nmodes, mich,
+                        delta_t, h_t[i], i, start_inds[i], start_inds[i + 1], init_len,
+                        h_t[i + 1] - h_t[i]);
+        });
+    #else
     for (int i = 0; i < number_of_old_spline_points-1; i++) {
           #ifdef __CUDACC__
 
@@ -561,6 +577,7 @@ void get_waveform(cmplx *waveform, double* interp_array,
          #endif
 
       }
+    #endif
 
       //synchronize after all streams finish
       #ifdef __CUDACC__

@@ -12,6 +12,11 @@ using namespace std::chrono;
 // adjust imports for CUDA
 #ifdef __CUDACC__
 #include "cublas_v2.h"
+#elif defined(FEW_USE_APPLE_ACCELERATE)
+// 2026-09-01 18:24 CST (mac): Use Apple's optimized FP64 BLAS on Apple Silicon.
+// 2026-09-01 19:18 CST (mac): Use the current typed LP64 CBLAS declarations;
+// the complex call below validates and bridges FEW's type-distinct layout.
+#include <Accelerate/Accelerate.h>
 #endif
 
 #define NUM_THREADS 256
@@ -187,9 +192,21 @@ void neural_layer(double *mat_out, double *mat_in, double *weight, double *bias,
 
 #else
 
-    // perform calculations in cblas
+    // 2026-09-01 18:24 CST (mac): Accelerate replaces the scalar O(m*n*k)
+    // loop on macOS; other CPU platforms retain the reference implementation.
+#ifdef FEW_USE_APPLE_ACCELERATE
+    cblas_dgemm(CblasColMajor,
+                CblasNoTrans, CblasNoTrans,
+                m, n, k,
+                1.0,
+                mat_in, m,
+                weight, k,
+                0.0,
+                mat_out, m);
+#else
     our_cblas_gemm<double>(m, n, k,
                            mat_in, weight, mat_out);
+#endif
 
     if (run_relu)
     {
@@ -304,8 +321,25 @@ void transform_output(cmplx *teuk_modes, cmplx *transform_matrix, cmplx *nn_outp
     // form the complex array of neural net outputs
     form_complex_output(nn_output_mat, C, input_len, break_index, transform_factor_inv);
 
-    // transform to amplitude basis
+    // 2026-09-01 19:10 CST (mac): Accelerate performs the complex FP64 ROM
+    // projection. Bridge FEW's CUDA-compatible complex type to Apple's typed
+    // LP64 CBLAS ABI after checking its size and alignment.
+#ifdef FEW_USE_APPLE_ACCELERATE
+    static_assert(sizeof(cmplx) == 2 * sizeof(double),
+                  "FEW complex values must contain two doubles for zgemm");
+    static_assert(alignof(cmplx) == alignof(__LAPACK_double_complex),
+                  "FEW and Accelerate complex values must share alignment");
+    cblas_zgemm(CblasColMajor,
+                CblasNoTrans, CblasNoTrans,
+                m, n, k,
+                reinterpret_cast<const __LAPACK_double_complex *>(&alpha),
+                reinterpret_cast<const __LAPACK_double_complex *>(nn_output_mat), m,
+                reinterpret_cast<const __LAPACK_double_complex *>(transform_matrix), k,
+                reinterpret_cast<const __LAPACK_double_complex *>(&beta),
+                reinterpret_cast<__LAPACK_double_complex *>(teuk_modes), m);
+#else
     our_cblas_gemm<cmplx>(m, n, k, nn_output_mat, transform_matrix, teuk_modes);
+#endif
     // cblas_zgemm(CblasColMajor,
     //             CblasNoTrans, CblasNoTrans, m, n, k,
     //             (void *)&alpha, (void *)nn_output_mat, m, (void *)transform_matrix, k, (void *)&beta, (void *)teuk_modes, m);

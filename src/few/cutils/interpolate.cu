@@ -8,12 +8,18 @@
 #ifdef __CUDACC__
 #include "cusparse.h"
 #else
+#if defined(FEW_USE_APPLE_ACCELERATE)
+// 2026-09-01 19:08 CST (mac): CMake selects Apple's current LP64 headers; use
+// system FP64 LAPACK without Homebrew LAPACKE or a gfortran runtime.
+#include <Accelerate/Accelerate.h>
+#else
 #if defined(_MSC_VER)
 #include <complex>
 #define lapack_complex_float std::complex<float>
 #define lapack_complex_double std::complex<double>
 #endif
 #include "lapacke.h"
+#endif
 #endif
 
 #ifdef __CUDACC__
@@ -232,7 +238,18 @@ void fit_wrap(int m, int n, double *a, double *b, double *c, double *d_in)
        j < n;
        j += 1)
   {
+#ifdef FEW_USE_APPLE_ACCELERATE
+    // 2026-09-01 18:24 CST (mac): Call Accelerate's native dgtsv ABI with the
+    // same in-place vectors and column-major layout used by LAPACKE.
+    const __LAPACK_int dimension = static_cast<__LAPACK_int>(m);
+    const __LAPACK_int rhs_count = 1;
+    const __LAPACK_int leading_dimension = dimension;
+    __LAPACK_int info = 0;
+    dgtsv_(&dimension, &rhs_count, &a[j * m + 1], &b[j * m], &c[j * m],
+           &d_in[j * m], &leading_dimension, &info);
+#else
     int info = LAPACKE_dgtsv(LAPACK_COL_MAJOR, m, 1, &a[j * m + 1], &b[j * m], &c[j * m], &d_in[j * m], m);
+#endif
   }
 
 #endif // __CUDACC__
@@ -468,6 +485,27 @@ void make_waveform(cmplx *waveform,
 
   // declare all the shared memory
   // MAX_MODES_BLOCK is fixed based on shared memory
+#if defined(FEW_USE_APPLE_ACCELERATE) && !defined(__CUDACC__)
+  // 2026-09-01 18:50 CST (mac): A dispatch worker has a smaller stack than the
+  // main thread. Keep the 5000-mode CPU block (and its summation order), but
+  // move its approximately 540 KiB workspace to three task-owned heap buffers.
+  std::unique_ptr<cmplx[]> Ylms_owner(new cmplx[2 * MAX_MODES_BLOCK]);
+  std::unique_ptr<double[]> mode_values_owner(new double[8 * MAX_MODES_BLOCK]);
+  std::unique_ptr<int[]> mode_indices_owner(new int[3 * MAX_MODES_BLOCK]);
+
+  cmplx *Ylms = Ylms_owner.get();
+  double *mode_re_y = mode_values_owner.get();
+  double *mode_re_c1 = mode_re_y + MAX_MODES_BLOCK;
+  double *mode_re_c2 = mode_re_c1 + MAX_MODES_BLOCK;
+  double *mode_re_c3 = mode_re_c2 + MAX_MODES_BLOCK;
+  double *mode_im_y = mode_re_c3 + MAX_MODES_BLOCK;
+  double *mode_im_c1 = mode_im_y + MAX_MODES_BLOCK;
+  double *mode_im_c2 = mode_im_c1 + MAX_MODES_BLOCK;
+  double *mode_im_c3 = mode_im_c2 + MAX_MODES_BLOCK;
+  int *m_arr = mode_indices_owner.get();
+  int *k_arr = m_arr + MAX_MODES_BLOCK;
+  int *n_arr = k_arr + MAX_MODES_BLOCK;
+#else
   CUDA_SHARED cmplx Ylms[2 * MAX_MODES_BLOCK];
   CUDA_SHARED double mode_re_y[MAX_MODES_BLOCK];
   CUDA_SHARED double mode_re_c1[MAX_MODES_BLOCK];
@@ -482,6 +520,7 @@ void make_waveform(cmplx *waveform,
   CUDA_SHARED int m_arr[MAX_MODES_BLOCK];
   CUDA_SHARED int k_arr[MAX_MODES_BLOCK];
   CUDA_SHARED int n_arr[MAX_MODES_BLOCK];
+#endif
 
   // number of splines
   // int num_base = init_length * (2 * num_teuk_modes + num_pars);
@@ -747,6 +786,21 @@ void get_waveform(cmplx *d_waveform, double *interp_array, double *phase_interp_
 #endif
 
 
+#ifdef FEW_USE_APPLE_ACCELERATE
+  // 2026-09-01 18:31 CST (mac): Spline intervals own disjoint output ranges,
+  // so GCD can process them concurrently without changing mode-sum order.
+  few_apple_parallel_for(
+      static_cast<size_t>(number_of_old_spline_points - 1),
+      [&](size_t interval_index)
+      {
+        const int i = static_cast<int>(interval_index);
+        make_waveform(d_waveform,
+                      interp_array, phase_interp_coeffs,
+                      d_m, d_k, d_n, num_teuk_modes, d_Ylms,
+                      delta_t, h_t[i], i, start_inds[i], start_inds[i + 1], init_len,
+                      phase_interp_t[i], phase_interp_t[i + 1] - phase_interp_t[i]);
+      });
+#else
   for (int i = 0; i < number_of_old_spline_points - 1; i++)
   {
 #ifdef __CUDACC__
@@ -779,6 +833,7 @@ void get_waveform(cmplx *d_waveform, double *interp_array, double *phase_interp_
                   phase_interp_t[i], phase_interp_t[i+1] - phase_interp_t[i]);
 #endif
   }
+#endif
 
 // synchronize after all streams finish
 #ifdef __CUDACC__

@@ -30,7 +30,10 @@ FEW_INLINE CUDA_CALLABLE_MEMBER void fpbspl(const double* t, int k, double x, in
 CUDA_CALLABLE_MEMBER
 void fpbisp(
              double* z,
-             const double* tx, int nx, const double* ty, int ny, double *c,
+             const double* tx, int nx, const double* ty, int ny,
+             // 2026-09-01 18:50 CST (mac): Coefficients are read-only, which
+             // makes the independent-mode GCD path const-correct.
+             const double *c,
              int kx, int ky, const double x, int mx,
              const double y, int my)
 {
@@ -99,6 +102,25 @@ void interp2D(double* z, const double* tx, int nx, const double* ty, int ny,
     // len_indiv_c is number of coefficients per xy grid
 
 {
+    #if defined(FEW_USE_APPLE_ACCELERATE) && !defined(__CUDACC__)
+    // 2026-09-01 18:31 CST (mac): Modes and output coordinates are independent;
+    // use the system GCD pool and read source knots/coefficients in place.
+    few_apple_parallel_for(
+        static_cast<size_t>(num_indiv_c),
+        [&](size_t mode_index)
+        {
+            const int c_i = static_cast<int>(mode_index);
+            const double *c_indiv = &c[c_i * len_indiv_c];
+            for (int i = 0; i < mx; i += 1)
+            {
+                fpbisp(&z[c_i * mx + i],
+                        tx, nx, ty, ny, c_indiv,
+                        kx, ky, x[i], 1, y[i], 1);
+            }
+        });
+    return;
+    #endif
+
     #ifdef __CUDACC__
     extern __shared__  unsigned char shared_mem[];
     double *shared_mem_in = (double*) shared_mem;

@@ -43,6 +43,14 @@ set(FEW_CUDA_ARCH "native"
           CMAKE_CUDA_ARCHITECTURES).")
 set_property(GLOBAL APPEND PROPERTY FEW_OPTION_NAMES FEW_CUDA_ARCH)
 
+# 2026-09-01 18:24 CST (mac): Select Apple's double-precision Accelerate path
+# automatically on macOS while keeping an explicit switch for baseline and
+# cross-host validation builds.
+set(FEW_USE_APPLE_ACCELERATE "AUTO"
+    CACHE STRING "Whether CPU kernels use the Apple Accelerate framework")
+set_property(CACHE FEW_USE_APPLE_ACCELERATE PROPERTY STRINGS "AUTO" "ON" "OFF")
+set_property(GLOBAL APPEND PROPERTY FEW_OPTION_NAMES FEW_USE_APPLE_ACCELERATE)
+
 set(FEW_MARCH "native"
     CACHE STRING "Value of the -march compiler option if supported by compiler")
 set_property(GLOBAL APPEND PROPERTY FEW_OPTION_NAMES FEW_MARCH)
@@ -96,6 +104,29 @@ unset(DEFAULT_EXTRA_LIBS)
 
 # ---- Phony target for project specific properties ----
 add_library(fastemriwaveforms INTERFACE)
+
+# 2026-09-01 19:18 CST (mac): Reject mistyped cache values before resolving the
+# platform-specific default, so validation builds cannot silently change mode.
+if(NOT "${FEW_USE_APPLE_ACCELERATE}" MATCHES "^(AUTO|ON|OFF)$")
+  message(
+    FATAL_ERROR "FEW_USE_APPLE_ACCELERATE must be one of AUTO, ON, or OFF; got "
+                "'${FEW_USE_APPLE_ACCELERATE}'.")
+endif()
+
+if(FEW_USE_APPLE_ACCELERATE STREQUAL "AUTO")
+  if(APPLE)
+    set(FEW_USE_APPLE_ACCELERATE "ON")
+  else()
+    set(FEW_USE_APPLE_ACCELERATE "OFF")
+  endif()
+elseif(FEW_USE_APPLE_ACCELERATE STREQUAL "ON" AND NOT APPLE)
+  message(
+    FATAL_ERROR
+      "FEW_USE_APPLE_ACCELERATE=ON is only supported by Apple platforms.")
+endif()
+# 2026-09-01 19:06 CST (mac): expose the resolved Apple option to subtargets.
+set_property(TARGET fastemriwaveforms PROPERTY USE_APPLE_ACCELERATE
+                                               ${FEW_USE_APPLE_ACCELERATE})
 
 # ---- Enable building the CPU version of backends by default ----
 set_target_properties(fastemriwaveforms PROPERTIES WITH_CPU ON)

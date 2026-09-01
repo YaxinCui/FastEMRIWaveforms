@@ -284,6 +284,33 @@ endfunction()
 # GPU backend need to be compiled. Let's retrieve these information here:
 get_target_property(FEW_WITH_CPU fastemriwaveforms WITH_CPU)
 get_target_property(FEW_WITH_GPU fastemriwaveforms WITH_GPU)
+get_target_property(FEW_USE_APPLE_ACCELERATE fastemriwaveforms
+                    USE_APPLE_ACCELERATE)
+
+# 2026-09-01 18:24 CST (mac): Reuse one imported Accelerate framework for the
+# FP64 BLAS kernels and tridiagonal LAPACK solve in Apple CPU modules.
+if(FEW_WITH_CPU AND FEW_USE_APPLE_ACCELERATE)
+  find_library(FEW_APPLE_ACCELERATE_FRAMEWORK Accelerate REQUIRED)
+
+  # 2026-09-01 19:02 CST (mac): Apply the Apple compile definition, C++ level,
+  # and system framework link to a CPU extension target.
+  #
+  # Usage example: apply_apple_accelerate_options(few_cpu_pymatmul)
+  function(apply_apple_accelerate_options target_name)
+    # 2026-09-01 18:33 CST (mac): GCD callbacks use standard C++ lambdas; scope
+    # the language requirement to Apple CPU targets so CUDA compilation stays
+    # unchanged.
+    target_compile_features(${target_name} PRIVATE cxx_std_14)
+    # 2026-09-01 19:08 CST (mac): Select Apple's non-deprecated LP64 BLAS and
+    # LAPACK declarations. FEW dimensions fit LP64, so do not request ILP64.
+    target_compile_definitions(${target_name} PRIVATE FEW_USE_APPLE_ACCELERATE=1
+                                                      ACCELERATE_NEW_LAPACK=1)
+    # 2026-09-01 18:32 CST (mac): libdispatch is part of macOS libSystem and is
+    # resolved by the default system link; only Accelerate is a framework link.
+    target_link_libraries(${target_name}
+                          PRIVATE ${FEW_APPLE_ACCELERATE_FRAMEWORK})
+  endfunction()
+endif()
 
 # Adapter to let inplace editable install work: the compiled backend will be
 # placed into the source-tree in the 'src' directory:
@@ -396,6 +423,10 @@ if(FEW_WITH_CPU)
   python_add_library(few_cpu_pymatmul MODULE WITH_SOABI pymatmul.cxx matmul.cxx)
   apply_cpu_backend_common_options(pymatmul)
 
+  if(FEW_USE_APPLE_ACCELERATE)
+    apply_apple_accelerate_options(few_cpu_pymatmul)
+  endif()
+
   target_sources(few_cpu_pymatmul PUBLIC FILE_SET HEADERS FILES
                                          cuda_complex.hpp global.h matmul.hh)
 endif()
@@ -441,14 +472,20 @@ if(FEW_WITH_CPU)
     few_cpu_pyinterp PUBLIC FILE_SET HEADERS FILES cuda_complex.hpp global.h
                             interpolate.hh)
 
-  # pyinterp needs to link against LAPACKE. USe the following method to detect
-  # it and obtain ${FEW_LAPACKE_LIBS}. In case of failure, it will stop the
-  # processing execution.
-  few_get_lapacke()
-  # Now, link against ${FEW_LAPACKE_LIBS} to link against liblapacke.so and
-  # include lapacke.h
-  target_link_libraries(few_cpu_pyinterp LINK_PUBLIC ${FEW_LAPACKE_LIBS}
-                        ${FEW_LAPACKE_EXTRA_LIBS})
+  if(FEW_USE_APPLE_ACCELERATE)
+    # 2026-09-01 18:24 CST (mac): Accelerate supplies dgtsv directly and avoids
+    # embedding a fetched LAPACK archive with unresolved gfortran symbols.
+    apply_apple_accelerate_options(few_cpu_pyinterp)
+  else()
+    # pyinterp needs to link against LAPACKE. Use the following method to detect
+    # it and obtain ${FEW_LAPACKE_LIBS}. In case of failure, it will stop the
+    # processing execution.
+    few_get_lapacke()
+    # Now, link against ${FEW_LAPACKE_LIBS} to link against liblapacke.so and
+    # include lapacke.h
+    target_link_libraries(few_cpu_pyinterp LINK_PUBLIC ${FEW_LAPACKE_LIBS}
+                          ${FEW_LAPACKE_EXTRA_LIBS})
+  endif()
 
 endif()
 
@@ -489,6 +526,13 @@ if(FEW_WITH_CPU)
 
   python_add_library(few_cpu_pyAAK MODULE WITH_SOABI gpuAAKWrap.cxx gpuAAK.cxx)
   apply_cpu_backend_common_options(pyAAK)
+
+  if(FEW_USE_APPLE_ACCELERATE)
+    # 2026-09-01 18:31 CST (mac): Enable system GCD parallelism in the AAK CPU
+    # waveform generator without adding an OpenMP runtime dependency.
+    apply_apple_accelerate_options(few_cpu_pyAAK)
+  endif()
+
   target_sources(few_cpu_pyAAK PUBLIC FILE_SET HEADERS FILES cuda_complex.hpp
                                       global.h gpuAAK.hh)
 
@@ -533,6 +577,12 @@ if(FEW_WITH_CPU)
   python_add_library(few_cpu_pyAmpInterp2D MODULE WITH_SOABI pyampinterp2D.cxx
                      AmpInterp2D.cxx)
   apply_cpu_backend_common_options(pyAmpInterp2D)
+
+  if(FEW_USE_APPLE_ACCELERATE)
+    # 2026-09-01 18:31 CST (mac): Enable system GCD parallelism for independent
+    # amplitude modes on Apple Silicon.
+    apply_apple_accelerate_options(few_cpu_pyAmpInterp2D)
+  endif()
 
   target_sources(
     few_cpu_pyAmpInterp2D PUBLIC FILE_SET HEADERS FILES cuda_complex.hpp

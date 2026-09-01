@@ -169,6 +169,17 @@ few.get_backend("cuda12x")
 
 ### Running the installation
 
+<!-- 2026-09-01 18:29 CST (mac): Document the Apple Silicon Accelerate build introduced on the dual-host adaptation branch. -->
+
+On macOS, source builds automatically use the system Apple Accelerate framework
+for double-precision BLAS/LAPACK kernels. This path requires no CUDA, Homebrew
+LAPACK, or Fortran runtime. It can be disabled for a reference build with:
+
+```sh
+pip install . \
+  --config-settings=cmake.define.FEW_USE_APPLE_ACCELERATE=OFF
+```
+
 To start the from-source installation, ensure the pre-requisite are met, clone
 the repository, and then simply run a `pip install` command:
 

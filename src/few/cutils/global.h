@@ -14,6 +14,30 @@
 #include "cuda_complex.hpp"
 #include <cmath>
 
+#if defined(FEW_USE_APPLE_ACCELERATE) && !defined(__CUDACC__)
+// 2026-09-01 18:31 CST (mac): Dispatch independent CPU work through the native
+// macOS thread pool; dispatch_apply_f avoids Blocks/OpenMP build dependencies.
+#include <dispatch/dispatch.h>
+#include <memory>
+#include <type_traits>
+#include <utility>
+
+template <typename Function>
+static void few_apple_dispatch_worker(void *context, size_t index)
+{
+    (*static_cast<Function *>(context))(index);
+}
+
+template <typename Function>
+FEW_INLINE void few_apple_parallel_for(size_t count, Function &&function)
+{
+    using FunctionType = typename std::decay<Function>::type;
+    FunctionType work(std::forward<Function>(function));
+    dispatch_apply_f(count, DISPATCH_APPLY_AUTO, &work,
+                     &few_apple_dispatch_worker<FunctionType>);
+}
+#endif
+
 // Definitions needed for Mathematicas CForm output
 #define Power(x, y)     (pow((double)(x), (double)(y)))
 #define Sqrt(x)         (sqrt((double)(x)))
