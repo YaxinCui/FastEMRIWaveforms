@@ -26,11 +26,17 @@
 
 <!-- 2026-09-01 21:29 CST (mac): Release editing after full-table Kerr amplitude/waveform acceptance and preparation of the small Ubuntu comparison artifact. -->
 
+<!-- 2026-09-01 21:33 CST (linux): Acquire the edit lock after pulling Mac commit f7028a39 to run full-table Kerr CPU/CUDA consistency acceptance. -->
+
+<!-- 2026-09-01 21:36 CST (linux): Mark both full-table comparisons successful while retaining the lock until the generated reports and handoff are synchronized. -->
+
+<!-- 2026-09-01 21:38 CST (linux): Release editing after successful full-table CPU/CUDA acceptance and preparation of the user-directed report commit. -->
+
 - Branch: `codex/apple-silicon-dual-host`
 - Active editor: `none`
-- Last editor: `mac` — Apple M3 Pro, macOS 26.5.2, arm64, 36 GiB unified memory
-- Lock released: 2026-09-01 21:29 CST (Asia/Shanghai)
-- Previous lock: Mac acquired at 2026-09-01 21:13 CST
-- State: Mac high-memory Kerr reference is ready. Ubuntu may acquire only
-  after the user synchronizes and pulls this branch; until then both hosts are
-  read-only.
+- Last editor: `linux` — Ubuntu x86_64 / NVIDIA GeForce RTX 2080 Ti
+- Lock released: 2026-09-01 21:38 CST (Asia/Shanghai)
+- Previous lock: Ubuntu acquired at 2026-09-01 21:33 CST
+- State: Full-table Kerr acceptance is complete on Apple Accelerate CPU, Linux
+  CPU, and CUDA 12.x. The two Linux reports and handoff are ready for GitHub;
+  another collaborator may acquire only after pulling the release commit.

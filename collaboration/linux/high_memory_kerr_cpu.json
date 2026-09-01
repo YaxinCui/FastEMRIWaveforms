@@ -1,0 +1,671 @@
+{
+  "metadata_checks": {
+    "data_files": true,
+    "inputs": true,
+    "schema": true,
+    "seed": true
+  },
+  "passed": true,
+  "reference": "collaboration/mac/high_memory_kerr_reference.npz",
+  "reference_metadata": {
+    "backend": "cpu",
+    "checks": {
+      "full_amplitudes_finite": true,
+      "full_amplitudes_repeat_bitwise": true,
+      "known_amplitude_excluded_fixture_indices": [
+        2
+      ],
+      "known_amplitude_reference_points": [
+        {
+          "abs_error": 3.361156050798001e-10,
+          "actual": [
+            0.0027533363495207313,
+            0.0041432608787941175
+          ],
+          "ape": [
+            0.94071396,
+            3.03167504,
+            0.23666111
+          ],
+          "enforced": true,
+          "expected": [
+            0.002753336140076555,
+            0.004143260615912325
+          ],
+          "index": 0,
+          "mode": [
+            3,
+            2,
+            0,
+            4
+          ],
+          "within_atol": true
+        },
+        {
+          "abs_error": 1.0320072868834592e-12,
+          "actual": [
+            -0.0001975310641821237,
+            4.80658810441802e-05
+          ],
+          "ape": [
+            0.77593827,
+            5.44830674,
+            0.39950367
+          ],
+          "enforced": true,
+          "expected": [
+            -0.0001975310651632842,
+            4.806588136412258e-05
+          ],
+          "index": 1,
+          "mode": [
+            2,
+            -2,
+            0,
+            5
+          ],
+          "within_atol": true
+        },
+        {
+          "abs_error": 0.40793645505593945,
+          "actual": [
+            -0.05104330844531107,
+            -0.40484839592479177
+          ],
+          "ape": [
+            0.99090693,
+            1.81708312,
+            0.25313127
+          ],
+          "enforced": false,
+          "expected": [
+            -0.09712303568244392,
+            0.0004771647068539275
+          ],
+          "index": 2,
+          "mode": [
+            2,
+            2,
+            0,
+            0
+          ],
+          "within_atol": false
+        },
+        {
+          "abs_error": 6.329832913537483e-11,
+          "actual": [
+            -9.892768070411627e-07,
+            1.750474689550898e-05
+          ],
+          "ape": [
+            0.87600927,
+            43.70360964,
+            0.478125
+          ],
+          "enforced": true,
+          "expected": [
+            -9.89242565478408e-07,
+            1.750469365836169e-05
+          ],
+          "index": 3,
+          "mode": [
+            4,
+            -3,
+            0,
+            1
+          ],
+          "within_atol": true
+        },
+        {
+          "abs_error": 1.4601915524599488e-13,
+          "actual": [
+            5.869887392604356e-05,
+            0.0013601062037293039
+          ],
+          "ape": [
+            0.36158837,
+            72.94420732,
+            0.39375
+          ],
+          "enforced": true,
+          "expected": [
+            5.869887391976143e-05,
+            0.00136010620358342
+          ],
+          "index": 4,
+          "mode": [
+            3,
+            3,
+            0,
+            0
+          ],
+          "within_atol": true
+        }
+      ],
+      "known_amplitudes_finite": true,
+      "known_amplitudes_max_abs_error": 0.40793645505593945,
+      "known_amplitudes_within_atol": true,
+      "short_waveform_finite": true,
+      "short_waveform_repeat_bitwise": true,
+      "short_waveform_repeat_mismatch": 1.1102230246251565e-16
+    },
+    "data_files": [
+      {
+        "bytes": 9857632,
+        "name": "KerrEccEqFluxData.h5",
+        "sha256": "db332e617223a650eb9f890c610e928afd095edea1454b544ad06651c03a5014"
+      },
+      {
+        "bytes": 5089095248,
+        "name": "ZNAmps_l10_m10_n55_DS2Outer.h5",
+        "sha256": "3236d8b5eff618242291e9eeb24638dbbbb82fac464ae575dc3f2ba158c54834"
+      }
+    ],
+    "few_version": "2.1.0.post1.dev95+g5526b3360.d20260901",
+    "inputs": {
+      "broad_amplitudes": {
+        "a": 0.7,
+        "e": [
+          0.1,
+          0.3,
+          0.5,
+          0.7
+        ],
+        "p": [
+          8.0,
+          10.0,
+          12.0,
+          14.0
+        ],
+        "xI": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "known_amplitude_ape": [
+        [
+          0.94071396,
+          3.03167504,
+          0.23666111
+        ],
+        [
+          0.77593827,
+          5.44830674,
+          0.39950367
+        ],
+        [
+          0.99090693,
+          1.81708312,
+          0.25313127
+        ],
+        [
+          0.87600927,
+          43.70360964,
+          0.478125
+        ],
+        [
+          0.36158837,
+          72.94420732,
+          0.39375
+        ]
+      ],
+      "known_amplitude_modes": [
+        [
+          3,
+          2,
+          0,
+          4
+        ],
+        [
+          2,
+          -2,
+          0,
+          5
+        ],
+        [
+          2,
+          2,
+          0,
+          0
+        ],
+        [
+          4,
+          -3,
+          0,
+          1
+        ],
+        [
+          3,
+          3,
+          0,
+          0
+        ]
+      ],
+      "known_expected_amplitudes": [
+        [
+          0.002753336140076555,
+          0.004143260615912325
+        ],
+        [
+          -0.0001975310651632842,
+          4.806588136412258e-05
+        ],
+        [
+          -0.09712303568244392,
+          0.0004771647068539275
+        ],
+        [
+          -9.89242565478408e-07,
+          1.750469365836169e-05
+        ],
+        [
+          5.869887391976143e-05,
+          0.00136010620358342
+        ]
+      ],
+      "known_reference_enforced": [
+        true,
+        true,
+        false,
+        true,
+        true
+      ],
+      "waveform_args": [
+        1000000.0,
+        10.0,
+        0.7,
+        11.0,
+        0.4,
+        1.0,
+        1.0471975511965976,
+        0.7853981633974483
+      ],
+      "waveform_kwargs": {
+        "Phi_phi0": 0.3,
+        "Phi_r0": 0.7,
+        "Phi_theta0": 0.0,
+        "T": 0.001,
+        "dist": 1.0,
+        "dt": 15.0
+      }
+    },
+    "machine": "arm64",
+    "memory": {
+      "after_amplitudes": {
+        "peak_process_rss_mib": 6188.25
+      },
+      "after_kerr_model_load": {
+        "peak_process_rss_mib": 5871.984375
+      },
+      "after_waveforms": {
+        "peak_process_rss_mib": 6322.90625
+      },
+      "before_models": {
+        "peak_process_rss_mib": 219.171875
+      }
+    },
+    "numpy": "2.5.2",
+    "platform": "macOS-26.5.2-arm64-arm-64bit",
+    "python": "3.12.12",
+    "schema": 1,
+    "seed": 20260901,
+    "timings_seconds": {
+      "full_kerr_amplitudes": 0.859106249990873,
+      "full_kerr_amplitudes_repeat": 0.023607457987964153,
+      "kerr_model_load": 7.236518957884982,
+      "known_kerr_amplitudes": 0.0007680830312892795,
+      "short_kerr_waveform": 6.621826749993488,
+      "short_kerr_waveform_repeat": 0.03270500001963228
+    }
+  },
+  "reference_sha256": "b7728a81e2f566d7db503320804234296b1fb1f8d230908b39482171fbc834b3",
+  "results": {
+    "full_kerr_amplitudes": {
+      "max_abs": 2.7755575615628914e-17,
+      "normalized_limit": 5e-11,
+      "normalized_max_abs": 4.363408629758642e-17,
+      "passed": true,
+      "relative_l2": 4.871980533165835e-17,
+      "shape": [
+        4,
+        6993
+      ]
+    },
+    "known_kerr_amplitudes": {
+      "max_abs": 6.776263578034403e-21,
+      "normalized_limit": 5e-11,
+      "normalized_max_abs": 1.6606312408538057e-20,
+      "passed": true,
+      "relative_l2": 1.660498400214368e-20,
+      "shape": [
+        5
+      ]
+    },
+    "short_kerr_waveform": {
+      "flat_weight_mismatch": 0.0,
+      "max_abs": 1.2861363692848099e-32,
+      "normalized_limit": 5e-10,
+      "normalized_max_abs": 6.731665588982686e-11,
+      "passed": true,
+      "relative_l2": 2.7496343688964688e-11,
+      "shape": [
+        2104
+      ]
+    }
+  },
+  "runtime": {
+    "backend": "cpu",
+    "checks": {
+      "full_amplitudes_finite": true,
+      "full_amplitudes_repeat_bitwise": true,
+      "known_amplitude_excluded_fixture_indices": [
+        2
+      ],
+      "known_amplitude_reference_points": [
+        {
+          "abs_error": 3.361156050798001e-10,
+          "actual": [
+            0.0027533363495207313,
+            0.0041432608787941175
+          ],
+          "ape": [
+            0.94071396,
+            3.03167504,
+            0.23666111
+          ],
+          "enforced": true,
+          "expected": [
+            0.002753336140076555,
+            0.004143260615912325
+          ],
+          "index": 0,
+          "mode": [
+            3,
+            2,
+            0,
+            4
+          ],
+          "within_atol": true
+        },
+        {
+          "abs_error": 1.0320072868834592e-12,
+          "actual": [
+            -0.0001975310641821237,
+            4.80658810441802e-05
+          ],
+          "ape": [
+            0.77593827,
+            5.44830674,
+            0.39950367
+          ],
+          "enforced": true,
+          "expected": [
+            -0.0001975310651632842,
+            4.806588136412258e-05
+          ],
+          "index": 1,
+          "mode": [
+            2,
+            -2,
+            0,
+            5
+          ],
+          "within_atol": true
+        },
+        {
+          "abs_error": 0.40793645505593945,
+          "actual": [
+            -0.05104330844531107,
+            -0.40484839592479177
+          ],
+          "ape": [
+            0.99090693,
+            1.81708312,
+            0.25313127
+          ],
+          "enforced": false,
+          "expected": [
+            -0.09712303568244392,
+            0.0004771647068539275
+          ],
+          "index": 2,
+          "mode": [
+            2,
+            2,
+            0,
+            0
+          ],
+          "within_atol": false
+        },
+        {
+          "abs_error": 6.329832913537483e-11,
+          "actual": [
+            -9.892768070411627e-07,
+            1.750474689550898e-05
+          ],
+          "ape": [
+            0.87600927,
+            43.70360964,
+            0.478125
+          ],
+          "enforced": true,
+          "expected": [
+            -9.89242565478408e-07,
+            1.750469365836169e-05
+          ],
+          "index": 3,
+          "mode": [
+            4,
+            -3,
+            0,
+            1
+          ],
+          "within_atol": true
+        },
+        {
+          "abs_error": 1.4601915553752757e-13,
+          "actual": [
+            5.8698873926043565e-05,
+            0.0013601062037293039
+          ],
+          "ape": [
+            0.36158837,
+            72.94420732,
+            0.39375
+          ],
+          "enforced": true,
+          "expected": [
+            5.869887391976143e-05,
+            0.00136010620358342
+          ],
+          "index": 4,
+          "mode": [
+            3,
+            3,
+            0,
+            0
+          ],
+          "within_atol": true
+        }
+      ],
+      "known_amplitudes_finite": true,
+      "known_amplitudes_max_abs_error": 0.40793645505593945,
+      "known_amplitudes_within_atol": true,
+      "short_waveform_finite": true,
+      "short_waveform_repeat_bitwise": true,
+      "short_waveform_repeat_mismatch": 0.0
+    },
+    "data_files": [
+      {
+        "bytes": 9857632,
+        "name": "KerrEccEqFluxData.h5",
+        "sha256": "db332e617223a650eb9f890c610e928afd095edea1454b544ad06651c03a5014"
+      },
+      {
+        "bytes": 5089095248,
+        "name": "ZNAmps_l10_m10_n55_DS2Outer.h5",
+        "sha256": "3236d8b5eff618242291e9eeb24638dbbbb82fac464ae575dc3f2ba158c54834"
+      }
+    ],
+    "few_version": "2.1.0.post1.dev93+g92af2f42c.d20260901",
+    "inputs": {
+      "broad_amplitudes": {
+        "a": 0.7,
+        "e": [
+          0.1,
+          0.3,
+          0.5,
+          0.7
+        ],
+        "p": [
+          8.0,
+          10.0,
+          12.0,
+          14.0
+        ],
+        "xI": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "known_amplitude_ape": [
+        [
+          0.94071396,
+          3.03167504,
+          0.23666111
+        ],
+        [
+          0.77593827,
+          5.44830674,
+          0.39950367
+        ],
+        [
+          0.99090693,
+          1.81708312,
+          0.25313127
+        ],
+        [
+          0.87600927,
+          43.70360964,
+          0.478125
+        ],
+        [
+          0.36158837,
+          72.94420732,
+          0.39375
+        ]
+      ],
+      "known_amplitude_modes": [
+        [
+          3,
+          2,
+          0,
+          4
+        ],
+        [
+          2,
+          -2,
+          0,
+          5
+        ],
+        [
+          2,
+          2,
+          0,
+          0
+        ],
+        [
+          4,
+          -3,
+          0,
+          1
+        ],
+        [
+          3,
+          3,
+          0,
+          0
+        ]
+      ],
+      "known_expected_amplitudes": [
+        [
+          0.002753336140076555,
+          0.004143260615912325
+        ],
+        [
+          -0.0001975310651632842,
+          4.806588136412258e-05
+        ],
+        [
+          -0.09712303568244392,
+          0.0004771647068539275
+        ],
+        [
+          -9.89242565478408e-07,
+          1.750469365836169e-05
+        ],
+        [
+          5.869887391976143e-05,
+          0.00136010620358342
+        ]
+      ],
+      "known_reference_enforced": [
+        true,
+        true,
+        false,
+        true,
+        true
+      ],
+      "waveform_args": [
+        1000000.0,
+        10.0,
+        0.7,
+        11.0,
+        0.4,
+        1.0,
+        1.0471975511965976,
+        0.7853981633974483
+      ],
+      "waveform_kwargs": {
+        "Phi_phi0": 0.3,
+        "Phi_r0": 0.7,
+        "Phi_theta0": 0.0,
+        "T": 0.001,
+        "dist": 1.0,
+        "dt": 15.0
+      }
+    },
+    "machine": "x86_64",
+    "memory": {
+      "after_amplitudes": {
+        "peak_process_rss_mib": 6347.109375
+      },
+      "after_kerr_model_load": {
+        "peak_process_rss_mib": 6111.46875
+      },
+      "after_waveforms": {
+        "peak_process_rss_mib": 6473.9296875
+      },
+      "before_models": {
+        "peak_process_rss_mib": 489.91796875
+      }
+    },
+    "numpy": "2.5.2",
+    "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
+    "python": "3.12.13",
+    "schema": 1,
+    "seed": 20260901,
+    "timings_seconds": {
+      "full_kerr_amplitudes": 1.7044523839722387,
+      "full_kerr_amplitudes_repeat": 0.11486794002121314,
+      "kerr_model_load": 10.668735334998928,
+      "known_kerr_amplitudes": 0.0010011949925683439,
+      "short_kerr_waveform": 10.195812564983498,
+      "short_kerr_waveform_repeat": 0.2310104279895313
+    }
+  }
+}

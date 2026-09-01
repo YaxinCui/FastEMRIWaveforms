@@ -158,3 +158,69 @@
   them and run matching current-source CPU/CUDA consistency checks against the
   same full table. No source code or binary data was changed by this Ubuntu
   documentation-only handoff.
+
+<!-- 2026-09-01 21:34 CST (linux): Record lock acquisition and the ignored symlink used to expose the already verified full Kerr table without duplicating 5.09 GB. -->
+
+## 2026-09-01 21:34 CST — full-table Ubuntu acceptance started
+
+- Fast-forwarded the required branch from `fb61073e` to Mac handoff commit
+  `f7028a39`, confirmed a clean worktree, and acquired the shared edit lock.
+- Created ignored local symlink
+  `src/few/data/ZNAmps_l10_m10_n55_DS2Outer.h5` pointing to Ubuntu's existing
+  FEW user-cache copy. This avoids a second 5.09 GB allocation on disk; the
+  symlink and target remain outside Git.
+- Reverified the file through the project path: SHA256
+  `3236d8b5eff618242291e9eeb24638dbbbb82fac464ae575dc3f2ba158c54834`.
+  `git check-ignore` confirms `src/few/data/.gitignore` excludes it.
+- Next actions under this lock are the Mac-prescribed current-source CPU and
+  CUDA 12.x comparisons; their reports and resource metrics will be appended
+  below before the lock is released.
+
+<!-- 2026-09-01 21:36 CST (linux): Record successful full-table CPU/CUDA comparison metrics, generated-report identities, and the retained pre-synchronization lock. -->
+
+## 2026-09-01 21:36 CST — full-table Ubuntu acceptance complete
+
+- Both isolated comparisons passed all schema, seed, fixed-input, and data-file
+  identity checks against Mac reference SHA256
+  `b7728a81e2f566d7db503320804234296b1fb1f8d230908b39482171fbc834b3`.
+- Linux CPU comparison passed:
+  - all 6993-mode amplitudes: relative L2 `4.872e-17`, normalized maximum
+    `4.363e-17`;
+  - five targeted modes: relative L2 `1.660e-20`;
+  - 2104-sample short waveform: relative L2 `2.750e-11`, normalized maximum
+    `6.732e-11`, flat-weight mismatch `0`;
+  - model load `10.669 s`, first/warm amplitudes `1.704 s` / `0.1149 s`, and
+    first/warm waveform `10.196 s` / `0.2310 s`;
+  - peak process RSS `6473.93 MiB`.
+- CUDA 12.x comparison on the RTX 2080 Ti passed:
+  - all 6993-mode amplitudes and all five targeted modes are exactly equal to
+    the Mac reference (`0` maximum and relative-L2 differences);
+  - short waveform: relative L2 `2.750e-11`, normalized maximum `6.732e-11`,
+    flat-weight mismatch `0`;
+  - model load `13.421 s`, first/warm amplitudes `2.075 s` / `0.01188 s`, and
+    first/warm waveform `9.039 s` / `0.01839 s`;
+  - peak process RSS `6483.68 MiB`; CuPy pool maximum total `5202.91 MiB` and
+    final used `4853.78 MiB`.
+- Both backends produced finite values and bitwise-repeatable full amplitudes
+  and waveforms. The known upstream fixture-index-2 defect recorded by Mac is
+  reproduced and remains intentionally excluded only from the upstream-value
+  assertion; all five actual values were included in the cross-host comparison.
+- Generated reports:
+  - `high_memory_kerr_cpu.json`: 14,624 bytes, SHA256
+    `e72bc2b5a1f6906242b2b37857dfd3596df1726aea4c5dc0d73370c62116c0d8`;
+  - `high_memory_kerr_cuda12x.json`: 14,885 bytes, SHA256
+    `1e78a279389c60bea7159e172b6b2ec7f0875f8a6f0be17524bd579b63d77d3a`.
+- `jq` acceptance predicates and `git diff --check` pass. The ignored H5
+  symlink remains local. Ubuntu retains the edit lock until the user directs a
+  commit/push or another host switch.
+
+<!-- 2026-09-01 21:38 CST (linux): Release the Ubuntu edit lock and bind the complete full-table CPU/CUDA reports to the user-directed Git handoff. -->
+
+## 2026-09-01 21:38 CST — released after full Kerr synchronization handoff
+
+- The user directed handoff, commit, and push after both high-memory
+  comparisons passed. This handoff commit includes the two small JSON reports,
+  this Linux log, and the shared lock transition.
+- The 5,089,095,248-byte H5 and its local symlink remain ignored and are not
+  staged. A future collaborator may acquire the lock only after pulling this
+  branch and confirming a clean worktree.
