@@ -158,3 +158,35 @@
   the Linux collaborator should first record its hardware/CUDA/Python state and
   acquire `collaboration/LOCK.md`, then follow `validation/README.md` without
   modifying files under `collaboration/mac/`.
+
+## 2026-09-01 20:38 CST — accepted Ubuntu fixes on final Mac build
+
+<!-- 2026-09-01 20:38 CST (mac): Record the post-CUDA Mac rebuild, regression evidence, and final cross-host acceptance. -->
+
+- Fast-forwarded to Ubuntu handoff `5526b336` and reviewed implementation
+  commit `3b030762`. Its two source changes explicitly bridge CuPy arrays to
+  host-only SciPy/NumPy spline operations and return results to the active
+  backend; the CPU branches preserve NumPy behavior.
+- Rebuilt the pulled source in the existing uv CPython 3.12.12 `.venv` with
+  default automatic Apple Accelerate selection. All four CPU native modules
+  link only Accelerate, libc++, and libSystem.
+- Direct Apple regression tests passed; the CUDA-only boundary test skipped as
+  designed on macOS. The six-workload Mac self-comparison passed exactly,
+  including schema/seed/data SHA checks and zero mismatch for both waveforms.
+- Final Mac fast suite: 44 tests in 63.881 s, all passed, 19 skipped by the
+  `slow`, `high_memory`, or CUDA-only gates.
+- Final Mac suite with only `high_memory` disabled: 44 tests in 119.454 s, all
+  passed, 12 skipped. This includes two-year AAK, detector-frame, one-year
+  frequency-domain, and slow-versus-fast coverage.
+- Reverified the Ubuntu report identities:
+  - CPU report SHA256
+    `bbe313c07f327f4d6b1835b3d7f57217649acb1a3572820433ae61cfd8b50e6f`;
+  - CUDA report SHA256
+    `2d0a2dd07906d02e0376292f1ba37e5568675801d14b3c69a8b98a1f436ce1a4`.
+- Applied only pinned Ruff formatting to Ubuntu's new CUDA regression test and
+  recorded that mechanical edit in its module docstring. Ruff checks, format
+  checks, Python compilation, and `git diff --check` pass.
+- Acceptance: the Apple Accelerate CPU backend, Linux CPU backend, and CUDA
+  12.x backend are consistent for all six transferred workloads. The explicit
+  remaining scope boundary is the absent 5,089,095,248-byte high-memory Kerr
+  amplitude table.

@@ -12,12 +12,16 @@
 
 <!-- 2026-09-01 20:10 CST (linux): Release Ubuntu editing after committing successful CPU/CUDA validation; Mac may acquire only after the user completes push and pull synchronization. -->
 
+<!-- 2026-09-01 20:28 CST (mac): Acquire the edit lock after fast-forwarding to the completed Ubuntu handoff for Apple regression verification. -->
+
+<!-- 2026-09-01 20:39 CST (mac): Release editing after the final Apple rebuild accepted Ubuntu's CPU/CUDA validation fixes. -->
+
 - Branch: `codex/apple-silicon-dual-host`
-- Active editor: none; Mac verification handoff pending
-- Host: Ubuntu x86_64, Intel Core i5-13400F, NVIDIA GeForce RTX 2080 Ti
-- Lock acquired: 2026-09-01 19:31 CST (Asia/Shanghai)
-- Lock released: 2026-09-01 20:10 CST (Asia/Shanghai)
-- Previous lock: Apple M3 Pro/macOS released at 2026-09-01 19:27 CST
-- State: Ubuntu validation commit `3b030762` is ready and the handoff is
-  released. Mac may acquire the lock only after this branch is pushed from
-  Ubuntu and pulled on Mac.
+- Active editor: none; dual-host adaptation accepted
+- Host: Apple M3 Pro, macOS 26.5.2, arm64
+- Lock acquired: 2026-09-01 20:28 CST (Asia/Shanghai)
+- Lock released: 2026-09-01 20:39 CST (Asia/Shanghai)
+- Previous lock: Ubuntu/RTX 2080 Ti released at 2026-09-01 20:10 CST
+- State: Mac post-CUDA verification passed at pulled handoff `5526b336`.
+  Final acceptance records are ready for commit and push; no host holds the
+  edit lock.

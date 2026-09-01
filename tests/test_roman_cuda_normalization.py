@@ -2,6 +2,8 @@
 
 2026-09-01 19:48 CST (linux): Exercise explicit SciPy and trajectory-spline host
 bridges found necessary during Apple-Silicon/CUDA consistency validation.
+2026-09-01 20:37 CST (mac): Apply the repository's pinned Ruff formatting after
+the Ubuntu-to-Mac handoff; test behavior is unchanged.
 """
 
 import unittest
@@ -29,7 +31,9 @@ class RomanCudaNormalizationTest(unittest.TestCase):
         output = amplitude(0.0, p, e, np.ones_like(p))
 
         self.assertIsInstance(output, self.backend.xp.ndarray)
-        self.assertTrue(bool(self.backend.xp.all(self.backend.xp.isfinite(output)).get()))
+        self.assertTrue(
+            bool(self.backend.xp.all(self.backend.xp.isfinite(output)).get())
+        )
 
     def test_waveform_frequency_spline_accepts_cuda_batches(self):
         waveform = FastSchwarzschildEccentricFlux(force_backend="cuda12x")
@@ -47,7 +51,9 @@ class RomanCudaNormalizationTest(unittest.TestCase):
         )
 
         self.assertIsInstance(output, self.backend.xp.ndarray)
-        self.assertTrue(bool(self.backend.xp.all(self.backend.xp.isfinite(output)).get()))
+        self.assertTrue(
+            bool(self.backend.xp.all(self.backend.xp.isfinite(output)).get())
+        )
 
 
 if __name__ == "__main__":
