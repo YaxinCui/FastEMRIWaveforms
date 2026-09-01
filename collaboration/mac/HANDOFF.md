@@ -354,3 +354,49 @@ the user-directed commit and push of the reviewed native-Metal research set. -->
   reported by Git, and treat `collaboration/mac/` as read-only. Production
   integration has not begun; the next dual-host task is broader CPU/CUDA
   reference validation of the strict DS sum before any backend registration.
+
+## 2026-09-01 23:58 CST — strict Metal arrays prepared for Ubuntu
+
+<!-- 2026-09-01 23:58 CST (mac): Hand off the exact five-case unrounded Metal
+arrays, structured provenance report, integrity evidence, and Ubuntu comparison
+contract requested by Linux commit 0120e06c. -->
+
+- Added the deterministic Mac-only generator
+  `collaboration/mac/metal_poc/generate_strict_metal_reference.py`. It records
+  the synchronized base commit `0120e06c4050195b06b0791de9fdf09814d16ad2`,
+  hashes every participating PoC source, and never modifies a registered
+  backend or data file.
+- Final Metal-only artifact:
+  - path: `collaboration/mac/strict_metal_ds_reference.npz`;
+  - size: 33,254,256 bytes;
+  - SHA256: `42bda4811e25f94797048b7168ca55e69a26d74ca8c388374052dc42922a1851`;
+  - keys: metadata plus baseline short, baseline one year, positive-spin
+    retrograde, inner orbit, and zero spin;
+  - every waveform is finite, unrounded `complex128`, and its raw array SHA256
+    matches both the JSON report and embedded NPZ metadata.
+- Structured report:
+  - path: `collaboration/mac/strict_metal_ds_report.json`;
+  - size: 24,317 bytes;
+  - SHA256: `efe9779425c4a64470b3239f92ee950c12efbd309020a7dfd5c0acd0c5da0086`;
+  - includes exact inputs, dtype/shape, modes kept, the full amplitude H5,
+    trajectory H5, and `LPA.txt` hashes, safe/precise Metal options, Apple
+    clang/device metadata, timings, peak RSS, and local CPU error metrics.
+- Two complete independent generator processes produced identical raw hashes
+  for all five Metal arrays. Within the final process every Metal repeat and
+  every CPU before/after comparison was bitwise identical.
+- Final local normalized maxima were `4.617e-14` (baseline short),
+  `5.81620e-11` (baseline one year), `6.371e-13` (retrograde), `7.340e-13`
+  (inner), and `4.827e-13` (zero spin). The one-year warm end-to-end speedup in
+  the final artifact run was `8.65x`; all flat mismatches were at or below
+  `4.45e-16`.
+- `unzip -t`, embedded/report metadata equality, all per-array hash checks,
+  finite/dtype/shape checks, Ruff, Python compilation, warning-enabled Apple
+  clang compilation, and `git diff --check` pass. The registered 5.09 GB H5,
+  temporary dylibs, caches, and CPU arrays remain outside Git.
+- Ubuntu should pull the synchronized commit, verify both top-level hashes,
+  regenerate all five CPU and CUDA 12.x arrays from the exact report inputs,
+  and compute the requested flat and `LPA.txt`-weighted metrics. It must not
+  edit `collaboration/mac/`.
+- The user explicitly directed handoff, commit, and push. This released-lock
+  handoff and both verified artifacts are included in that single Mac commit;
+  the pushed Git commit identity is the synchronization boundary for Linux.

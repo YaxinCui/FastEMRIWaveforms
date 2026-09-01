@@ -151,3 +151,27 @@ relative L2 `1.676e-11`, flat mismatch at numerical zero, and `8.62x` warm
 end-to-end speedup. This passes the current `5e-10` engineering regression
 gate, but it is still an isolated Mac result rather than production or
 cross-host acceptance.
+
+<!-- 2026-09-01 23:58 CST (mac): Document the deterministic five-case artifact
+generator added in response to Ubuntu handoff 0120e06c, including its tracked
+outputs and explicit large-data exclusion. -->
+
+Generate the exact cross-host comparison payload with:
+
+```sh
+VECLIB_MAXIMUM_THREADS=1 .venv/bin/python \
+  collaboration/mac/metal_poc/generate_strict_metal_reference.py \
+  --repetitions 2
+```
+
+The generator runs the baseline short and one-year waveforms plus positive-spin
+retrograde, inner-orbit, and zero-spin cases. It stores only the unrounded
+strict-Metal `complex128` arrays in
+`collaboration/mac/strict_metal_ds_reference.npz`; CPU arrays are regenerated
+by Ubuntu. `collaboration/mac/strict_metal_ds_report.json` records exact inputs,
+array/source/data hashes, safe-math/device/compiler metadata, cold/warm timing,
+memory, repeatability, and local Metal-versus-CPU metrics.
+
+The registered 5.09 GB amplitude H5 remains ignored and is never copied into
+the artifact. The final NPZ is approximately 33 MB and is intended only as a
+bounded cross-host validation payload, not as installed package data.

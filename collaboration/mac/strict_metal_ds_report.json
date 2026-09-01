@@ -1,0 +1,778 @@
+{
+  "artifact": {
+    "bytes": 33254256,
+    "path": "collaboration/mac/strict_metal_ds_reference.npz",
+    "sha256": "42bda4811e25f94797048b7168ca55e69a26d74ca8c388374052dc42922a1851"
+  },
+  "cases": [
+    {
+      "array_sha256": "7e5fd83f3c4b6f4c4da14e95beaed8d837db16e359fd43347decff20085a450d",
+      "cpu": {
+        "after_seconds": 0.02846066700294614,
+        "before_after_bitwise": true,
+        "first_seconds": 7.096762374974787,
+        "repeatable": true,
+        "warm_median_seconds": 0.02659729204606265,
+        "warm_seconds": [
+          0.03319129208102822,
+          0.020003292011097074
+        ]
+      },
+      "dtype": "complex128",
+      "finite": true,
+      "inputs": {
+        "M": 1000000.0,
+        "Phi_phi0": 0.3,
+        "Phi_r0": 0.7,
+        "Phi_theta0": 0.0,
+        "T": 0.001,
+        "a": 0.7,
+        "dist": 1.0,
+        "dt": 15.0,
+        "e0": 0.4,
+        "mu": 10.0,
+        "p0": 11.0,
+        "phi": 0.7853981633974483,
+        "theta": 1.0471975511965976,
+        "xI0": 1.0
+      },
+      "key": "baseline_short",
+      "metal": {
+        "amplitude_holders": [
+          {
+            "calls": [
+              {
+                "gpu_seconds": 0.00010395830031484365,
+                "points": 4,
+                "synchronized_wall_seconds": 0.004131958005018532
+              },
+              {
+                "gpu_seconds": 0.00010195828508585691,
+                "points": 4,
+                "synchronized_wall_seconds": 0.00031054194550961256
+              },
+              {
+                "gpu_seconds": 9.379175025969744e-05,
+                "points": 4,
+                "synchronized_wall_seconds": 0.0003495829878374934
+              }
+            ],
+            "fallback_calls": 0,
+            "plan_upload_seconds": 0.015282333013601601,
+            "z_index": 15
+          },
+          {
+            "calls": [
+              {
+                "gpu_seconds": 0.0012926249764859676,
+                "points": 4,
+                "synchronized_wall_seconds": 0.019509209087118506
+              },
+              {
+                "gpu_seconds": 0.00010716670658439398,
+                "points": 4,
+                "synchronized_wall_seconds": 0.0004338750150054693
+              },
+              {
+                "gpu_seconds": 9.600003249943256e-05,
+                "points": 4,
+                "synchronized_wall_seconds": 0.0004396670265123248
+              }
+            ],
+            "fallback_calls": 0,
+            "plan_upload_seconds": 0.019145125057548285,
+            "z_index": 16
+          },
+          {
+            "calls": [],
+            "fallback_calls": 0,
+            "plan_upload_seconds": 0.008761583012528718,
+            "z_index": 15
+          },
+          {
+            "calls": [],
+            "fallback_calls": 0,
+            "plan_upload_seconds": 0.0085397909861058,
+            "z_index": 16
+          }
+        ],
+        "amplitude_plan_creation_seconds": 0.05188687494955957,
+        "first_seconds": 0.028368333005346358,
+        "repeatable": true,
+        "sum_calls": [
+          {
+            "gpu_seconds": 0.0007886249804869294,
+            "init_length": 4,
+            "mode_count": 124,
+            "output_length": 2104,
+            "synchronized_wall_seconds": 0.0013687910977751017
+          },
+          {
+            "gpu_seconds": 0.0008267499506473541,
+            "init_length": 4,
+            "mode_count": 124,
+            "output_length": 2104,
+            "synchronized_wall_seconds": 0.0016385000199079514
+          },
+          {
+            "gpu_seconds": 0.0009357916424050927,
+            "init_length": 4,
+            "mode_count": 124,
+            "output_length": 2104,
+            "synchronized_wall_seconds": 0.0031681250547990203
+          }
+        ],
+        "warm_median_seconds": 0.006116541975643486,
+        "warm_seconds": [
+          0.005271416972391307,
+          0.006961666978895664
+        ]
+      },
+      "metal_vs_cpu": {
+        "flat_mismatch": 0.0,
+        "max_absolute": 8.8211981513717e-36,
+        "normalized_max": 4.61703420160703e-14,
+        "phase_optimized_vector_mismatch": 0.0,
+        "relative_l2": 2.755430051821769e-14
+      },
+      "modes_kept": 124,
+      "peak_process_rss_mib_after_case": 6411.703125,
+      "shape": [
+        2104
+      ],
+      "warm_end_to_end_speedup": 4.348419769205377
+    },
+    {
+      "array_sha256": "1cb0e410fbb58e567e3ac6a40e2f7435d00e589160f5efe0078952059a2c834c",
+      "cpu": {
+        "after_seconds": 2.137346375035122,
+        "before_after_bitwise": true,
+        "first_seconds": 2.135024292045273,
+        "repeatable": true,
+        "warm_median_seconds": 2.1368305624928325,
+        "warm_seconds": [
+          2.14103066700045,
+          2.132630457985215
+        ]
+      },
+      "dtype": "complex128",
+      "finite": true,
+      "inputs": {
+        "M": 1000000.0,
+        "Phi_phi0": 0.3,
+        "Phi_r0": 0.7,
+        "Phi_theta0": 0.0,
+        "T": 1.0,
+        "a": 0.7,
+        "dist": 1.0,
+        "dt": 15.0,
+        "e0": 0.4,
+        "mu": 10.0,
+        "p0": 11.0,
+        "phi": 0.7853981633974483,
+        "theta": 1.0471975511965976,
+        "xI0": 1.0
+      },
+      "key": "baseline_one_year",
+      "metal": {
+        "amplitude_holders": [
+          {
+            "calls": [
+              {
+                "gpu_seconds": 0.00012070825323462486,
+                "points": 8,
+                "synchronized_wall_seconds": 0.002236790955066681
+              },
+              {
+                "gpu_seconds": 9.612506255507469e-05,
+                "points": 8,
+                "synchronized_wall_seconds": 0.0004686670145019889
+              },
+              {
+                "gpu_seconds": 0.0001149582676589489,
+                "points": 8,
+                "synchronized_wall_seconds": 0.0003285839920863509
+              }
+            ],
+            "fallback_calls": 0,
+            "plan_upload_seconds": 0.01563629205338657,
+            "z_index": 15
+          },
+          {
+            "calls": [
+              {
+                "gpu_seconds": 0.00012212502770125866,
+                "points": 8,
+                "synchronized_wall_seconds": 0.0050635000225156546
+              },
+              {
+                "gpu_seconds": 0.00011158338747918606,
+                "points": 8,
+                "synchronized_wall_seconds": 0.0007318750722333789
+              },
+              {
+                "gpu_seconds": 0.00011324998922646046,
+                "points": 8,
+                "synchronized_wall_seconds": 0.0004692920483648777
+              }
+            ],
+            "fallback_calls": 0,
+            "plan_upload_seconds": 0.01668087497819215,
+            "z_index": 16
+          },
+          {
+            "calls": [],
+            "fallback_calls": 0,
+            "plan_upload_seconds": 0.00487879104912281,
+            "z_index": 15
+          },
+          {
+            "calls": [],
+            "fallback_calls": 0,
+            "plan_upload_seconds": 0.005096209002658725,
+            "z_index": 16
+          }
+        ],
+        "amplitude_plan_creation_seconds": 0.042497958056628704,
+        "first_seconds": 0.26156991708558053,
+        "repeatable": true,
+        "sum_calls": [
+          {
+            "gpu_seconds": 0.10756912501528859,
+            "init_length": 8,
+            "mode_count": 124,
+            "output_length": 2103877,
+            "synchronized_wall_seconds": 0.24285041692201048
+          },
+          {
+            "gpu_seconds": 0.09801462502218783,
+            "init_length": 8,
+            "mode_count": 124,
+            "output_length": 2103877,
+            "synchronized_wall_seconds": 0.2321796250762418
+          },
+          {
+            "gpu_seconds": 0.10935370833612978,
+            "init_length": 8,
+            "mode_count": 124,
+            "output_length": 2103877,
+            "synchronized_wall_seconds": 0.24294479098170996
+          }
+        ],
+        "warm_median_seconds": 0.24691193748731166,
+        "warm_seconds": [
+          0.2417089999653399,
+          0.2521148750092834
+        ]
+      },
+      "metal_vs_cpu": {
+        "flat_mismatch": 0.0,
+        "max_absolute": 1.1485132484782343e-32,
+        "normalized_max": 5.816196229270031e-11,
+        "phase_optimized_vector_mismatch": 0.0,
+        "relative_l2": 1.6761172298379686e-11
+      },
+      "modes_kept": 124,
+      "peak_process_rss_mib_after_case": 6759.65625,
+      "shape": [
+        2103877
+      ],
+      "warm_end_to_end_speedup": 8.654221356157153
+    },
+    {
+      "array_sha256": "ba7fe2bf02eb93dc1db42891d633fdd4a3397bc1edb72be97e91e3a13d8f759f",
+      "cpu": {
+        "after_seconds": 0.04753716697450727,
+        "before_after_bitwise": true,
+        "first_seconds": 0.06726754107512534,
+        "repeatable": true,
+        "warm_median_seconds": 0.04889814549824223,
+        "warm_seconds": [
+          0.049257708014920354,
+          0.048538582981564105
+        ]
+      },
+      "dtype": "complex128",
+      "finite": true,
+      "inputs": {
+        "M": 1000000.0,
+        "Phi_phi0": 0.3,
+        "Phi_r0": 0.7,
+        "Phi_theta0": 0.0,
+        "T": 0.01,
+        "a": 0.7,
+        "dist": 1.0,
+        "dt": 15.0,
+        "e0": 0.4,
+        "mu": 10.0,
+        "p0": 11.0,
+        "phi": 0.7853981633974483,
+        "theta": 1.0471975511965976,
+        "xI0": -1.0
+      },
+      "key": "positive_spin_retrograde",
+      "metal": {
+        "amplitude_holders": [
+          {
+            "calls": [
+              {
+                "gpu_seconds": 9.916664566844702e-05,
+                "points": 4,
+                "synchronized_wall_seconds": 0.0026938329683616757
+              },
+              {
+                "gpu_seconds": 0.002192750107496977,
+                "points": 4,
+                "synchronized_wall_seconds": 0.0023862080415710807
+              },
+              {
+                "gpu_seconds": 9.866664186120033e-05,
+                "points": 4,
+                "synchronized_wall_seconds": 0.0003190420102328062
+              }
+            ],
+            "fallback_calls": 0,
+            "plan_upload_seconds": 0.014697707956656814,
+            "z_index": 30
+          },
+          {
+            "calls": [
+              {
+                "gpu_seconds": 0.0009689999278634787,
+                "points": 4,
+                "synchronized_wall_seconds": 0.004570124903693795
+              },
+              {
+                "gpu_seconds": 0.000821624998934567,
+                "points": 4,
+                "synchronized_wall_seconds": 0.0031197499483823776
+              },
+              {
+                "gpu_seconds": 0.00022183323744684458,
+                "points": 4,
+                "synchronized_wall_seconds": 0.0017140409909188747
+              }
+            ],
+            "fallback_calls": 0,
+            "plan_upload_seconds": 0.018079667002893984,
+            "z_index": 31
+          },
+          {
+            "calls": [],
+            "fallback_calls": 0,
+            "plan_upload_seconds": 0.006839459063485265,
+            "z_index": 30
+          },
+          {
+            "calls": [],
+            "fallback_calls": 0,
+            "plan_upload_seconds": 0.008012917009182274,
+            "z_index": 31
+          }
+        ],
+        "amplitude_plan_creation_seconds": 0.0478363330475986,
+        "first_seconds": 0.016566333011724055,
+        "repeatable": true,
+        "sum_calls": [
+          {
+            "gpu_seconds": 0.004344374989159405,
+            "init_length": 4,
+            "mode_count": 148,
+            "output_length": 21039,
+            "synchronized_wall_seconds": 0.0060040830867365
+          },
+          {
+            "gpu_seconds": 0.0034405416809022427,
+            "init_length": 4,
+            "mode_count": 148,
+            "output_length": 21039,
+            "synchronized_wall_seconds": 0.006350750103592873
+          },
+          {
+            "gpu_seconds": 0.0009702083189040422,
+            "init_length": 4,
+            "mode_count": 148,
+            "output_length": 21039,
+            "synchronized_wall_seconds": 0.0028049590764567256
+          }
+        ],
+        "warm_median_seconds": 0.011482104018796235,
+        "warm_seconds": [
+          0.015021792030893266,
+          0.007942416006699204
+        ]
+      },
+      "metal_vs_cpu": {
+        "flat_mismatch": 0.0,
+        "max_absolute": 1.2883274150502153e-34,
+        "normalized_max": 6.371101683906252e-13,
+        "phase_optimized_vector_mismatch": 6.661338147750939e-16,
+        "relative_l2": 1.861868225720172e-13
+      },
+      "modes_kept": 148,
+      "peak_process_rss_mib_after_case": 6913.65625,
+      "shape": [
+        21039
+      ],
+      "warm_end_to_end_speedup": 4.258639829267862
+    },
+    {
+      "array_sha256": "f828b9c59585e52f5a2a1c687988693f2fb4e5884eee2c8581a32674a1fc0c29",
+      "cpu": {
+        "after_seconds": 0.045948500046506524,
+        "before_after_bitwise": true,
+        "first_seconds": 0.04999629210215062,
+        "repeatable": true,
+        "warm_median_seconds": 0.04426543798763305,
+        "warm_seconds": [
+          0.042755041969940066,
+          0.04577583400532603
+        ]
+      },
+      "dtype": "complex128",
+      "finite": true,
+      "inputs": {
+        "M": 1000000.0,
+        "Phi_phi0": 0.3,
+        "Phi_r0": 0.7,
+        "Phi_theta0": 0.0,
+        "T": 0.01,
+        "a": 0.6,
+        "dist": 1.0,
+        "dt": 15.0,
+        "e0": 0.3,
+        "mu": 10.0,
+        "p0": 8.0,
+        "phi": 0.7853981633974483,
+        "theta": 1.0471975511965976,
+        "xI0": 1.0
+      },
+      "key": "inner_orbit",
+      "metal": {
+        "amplitude_holders": [
+          {
+            "calls": [
+              {
+                "gpu_seconds": 9.833322837948799e-05,
+                "points": 4,
+                "synchronized_wall_seconds": 0.002441665972582996
+              },
+              {
+                "gpu_seconds": 0.0007648332975804806,
+                "points": 4,
+                "synchronized_wall_seconds": 0.002660291036590934
+              },
+              {
+                "gpu_seconds": 9.712495375424623e-05,
+                "points": 4,
+                "synchronized_wall_seconds": 0.00036191707476973534
+              }
+            ],
+            "fallback_calls": 0,
+            "plan_upload_seconds": 0.015264458023011684,
+            "z_index": 17
+          },
+          {
+            "calls": [
+              {
+                "gpu_seconds": 0.0001038750633597374,
+                "points": 4,
+                "synchronized_wall_seconds": 0.002395458985120058
+              },
+              {
+                "gpu_seconds": 9.920832235366106e-05,
+                "points": 4,
+                "synchronized_wall_seconds": 0.0007191250333562493
+              },
+              {
+                "gpu_seconds": 0.0005860415985807776,
+                "points": 4,
+                "synchronized_wall_seconds": 0.0017585420282557607
+              }
+            ],
+            "fallback_calls": 0,
+            "plan_upload_seconds": 0.017440416966564953,
+            "z_index": 18
+          },
+          {
+            "calls": [],
+            "fallback_calls": 0,
+            "plan_upload_seconds": 0.007574832998216152,
+            "z_index": 17
+          },
+          {
+            "calls": [],
+            "fallback_calls": 0,
+            "plan_upload_seconds": 0.007509083021432161,
+            "z_index": 18
+          }
+        ],
+        "amplitude_plan_creation_seconds": 0.04793633404187858,
+        "first_seconds": 0.017887916998006403,
+        "repeatable": true,
+        "sum_calls": [
+          {
+            "gpu_seconds": 0.007177041727118194,
+            "init_length": 4,
+            "mode_count": 113,
+            "output_length": 21039,
+            "synchronized_wall_seconds": 0.009894500020891428
+          },
+          {
+            "gpu_seconds": 0.0032160833943635225,
+            "init_length": 4,
+            "mode_count": 113,
+            "output_length": 21039,
+            "synchronized_wall_seconds": 0.004921582993119955
+          },
+          {
+            "gpu_seconds": 0.0011334166629239917,
+            "init_length": 4,
+            "mode_count": 113,
+            "output_length": 21039,
+            "synchronized_wall_seconds": 0.003013749956153333
+          }
+        ],
+        "warm_median_seconds": 0.01008112501585856,
+        "warm_seconds": [
+          0.011780707980506122,
+          0.008381542051211
+        ]
+      },
+      "metal_vs_cpu": {
+        "flat_mismatch": 4.440892098500626e-16,
+        "max_absolute": 1.7900541949360114e-34,
+        "normalized_max": 7.340166829715541e-13,
+        "phase_optimized_vector_mismatch": 0.0,
+        "relative_l2": 2.4773720862662623e-13
+      },
+      "modes_kept": 113,
+      "peak_process_rss_mib_after_case": 7096.546875,
+      "shape": [
+        21039
+      ],
+      "warm_end_to_end_speedup": 4.390922433557697
+    },
+    {
+      "array_sha256": "d4b07fdd2c731f22a00e3e2749834ea69cefbccc8722604dc392d1612e5f9344",
+      "cpu": {
+        "after_seconds": 0.04545750003308058,
+        "before_after_bitwise": true,
+        "first_seconds": 0.064223250024952,
+        "repeatable": true,
+        "warm_median_seconds": 0.04584697895916179,
+        "warm_seconds": [
+          0.0449324999935925,
+          0.046761457924731076
+        ]
+      },
+      "dtype": "complex128",
+      "finite": true,
+      "inputs": {
+        "M": 1000000.0,
+        "Phi_phi0": 0.3,
+        "Phi_r0": 0.7,
+        "Phi_theta0": 0.0,
+        "T": 0.01,
+        "a": 0.0,
+        "dist": 1.0,
+        "dt": 15.0,
+        "e0": 0.4,
+        "mu": 10.0,
+        "p0": 11.0,
+        "phi": 0.7853981633974483,
+        "theta": 1.0471975511965976,
+        "xI0": 1.0
+      },
+      "key": "zero_spin",
+      "metal": {
+        "amplitude_holders": [
+          {
+            "calls": [
+              {
+                "gpu_seconds": 0.00022641674149781466,
+                "points": 4,
+                "synchronized_wall_seconds": 0.003000708995386958
+              },
+              {
+                "gpu_seconds": 9.14999982342124e-05,
+                "points": 4,
+                "synchronized_wall_seconds": 0.00035120907705277205
+              },
+              {
+                "gpu_seconds": 8.445826824754477e-05,
+                "points": 4,
+                "synchronized_wall_seconds": 0.00028416700661182404
+              }
+            ],
+            "fallback_calls": 0,
+            "plan_upload_seconds": 0.01533045805990696,
+            "z_index": 24
+          },
+          {
+            "calls": [
+              {
+                "gpu_seconds": 0.0024943333119153976,
+                "points": 4,
+                "synchronized_wall_seconds": 0.005153166013769805
+              },
+              {
+                "gpu_seconds": 9.475008118897676e-05,
+                "points": 4,
+                "synchronized_wall_seconds": 0.0006079999729990959
+              },
+              {
+                "gpu_seconds": 8.262507617473602e-05,
+                "points": 4,
+                "synchronized_wall_seconds": 0.0009958749869838357
+              }
+            ],
+            "fallback_calls": 0,
+            "plan_upload_seconds": 0.014989749994128942,
+            "z_index": 25
+          },
+          {
+            "calls": [],
+            "fallback_calls": 0,
+            "plan_upload_seconds": 0.006635540979914367,
+            "z_index": 24
+          },
+          {
+            "calls": [],
+            "fallback_calls": 0,
+            "plan_upload_seconds": 0.006651333067566156,
+            "z_index": 25
+          }
+        ],
+        "amplitude_plan_creation_seconds": 0.0437822500243783,
+        "first_seconds": 0.017061584047041833,
+        "repeatable": true,
+        "sum_calls": [
+          {
+            "gpu_seconds": 0.003998375032097101,
+            "init_length": 4,
+            "mode_count": 136,
+            "output_length": 21039,
+            "synchronized_wall_seconds": 0.005709834047593176
+          },
+          {
+            "gpu_seconds": 0.0013726666802540421,
+            "init_length": 4,
+            "mode_count": 136,
+            "output_length": 21039,
+            "synchronized_wall_seconds": 0.0031700419494882226
+          },
+          {
+            "gpu_seconds": 0.0009206249378621578,
+            "init_length": 4,
+            "mode_count": 136,
+            "output_length": 21039,
+            "synchronized_wall_seconds": 0.0029863329837098718
+          }
+        ],
+        "warm_median_seconds": 0.007141229521948844,
+        "warm_seconds": [
+          0.007071459083817899,
+          0.007210999960079789
+        ]
+      },
+      "metal_vs_cpu": {
+        "flat_mismatch": 0.0,
+        "max_absolute": 9.482604223011865e-35,
+        "normalized_max": 4.826602975566778e-13,
+        "phase_optimized_vector_mismatch": 0.0,
+        "relative_l2": 1.760159296349127e-13
+      },
+      "modes_kept": 136,
+      "peak_process_rss_mib_after_case": 7096.546875,
+      "shape": [
+        21039
+      ],
+      "warm_end_to_end_speedup": 6.420039969062657
+    }
+  ],
+  "collaboration_note": "2026-09-01 23:54 CST (mac): structured strict-Metal report for Ubuntu CPU/CUDA and LISA-weighted comparison",
+  "data_files": {
+    "KerrEccEqFluxData.h5": {
+      "bytes": 9857632,
+      "path": "src/few/data/KerrEccEqFluxData.h5",
+      "sha256": "db332e617223a650eb9f890c610e928afd095edea1454b544ad06651c03a5014"
+    },
+    "LPA.txt": {
+      "bytes": 30009,
+      "path": "src/few/data/LPA.txt",
+      "sha256": "a0aa28e9accfd05b8b2aceb6799b471bcb8d1756fb7b0bff61957a985a40c6c1"
+    },
+    "ZNAmps_l10_m10_n55_DS2Outer.h5": {
+      "bytes": 5089095248,
+      "path": "src/few/data/ZNAmps_l10_m10_n55_DS2Outer.h5",
+      "sha256": "3236d8b5eff618242291e9eeb24638dbbbb82fac464ae575dc3f2ba158c54834"
+    }
+  },
+  "host": {
+    "clang": "Apple clang version 16.0.0 (clang-1600.0.26.6)",
+    "few": "2.1.0.post1.dev95+g5526b3360.d20260901",
+    "machine": "arm64",
+    "numpy": "2.5.2",
+    "platform": "macOS-26.5.2-arm64-arm-64bit",
+    "python": "3.12.12"
+  },
+  "metal": {
+    "device": {
+      "max_threads_per_threadgroup": 1024,
+      "name": "Apple M3 Pro",
+      "pipeline_compile_seconds": 0.025664665969088674,
+      "thread_execution_width": 32
+    },
+    "floating_point_functions": "MTLMathFloatingPointFunctionsPrecise",
+    "math_mode": "MTLMathModeSafe",
+    "precision": "full-chain-double-single-high-low-fp32",
+    "storage_mode": "MTLResourceStorageModeShared",
+    "sum_pipeline_compile_seconds": 0.0008382920641452074
+  },
+  "model_load_seconds": 7.352101791999303,
+  "peak_process_rss_mib": 7096.546875,
+  "repository": {
+    "base_commit": "0120e06c4050195b06b0791de9fdf09814d16ad2",
+    "branch": "codex/apple-silicon-dual-host"
+  },
+  "schema": 1,
+  "seed": 20260901,
+  "source_files": {
+    "benchmark_metal_hybrid.py": {
+      "bytes": 7672,
+      "path": "collaboration/mac/metal_poc/benchmark_metal_hybrid.py",
+      "sha256": "d02ea2c87a2e3a5d655dccf7814690382d1c79274a39f0a7340defb307c14a66"
+    },
+    "benchmark_metal_interp.py": {
+      "bytes": 17799,
+      "path": "collaboration/mac/metal_poc/benchmark_metal_interp.py",
+      "sha256": "cd7251aa05c37e091e75ff33b338000969af85a93a16f987d1272a20c4f21a12"
+    },
+    "benchmark_metal_sum.py": {
+      "bytes": 11091,
+      "path": "collaboration/mac/metal_poc/benchmark_metal_sum.py",
+      "sha256": "2656aa7f122fad3b788ecf84dd8a4e7fc6573482984796e449c66d9a2e362148"
+    },
+    "benchmark_metal_waveform.py": {
+      "bytes": 8654,
+      "path": "collaboration/mac/metal_poc/benchmark_metal_waveform.py",
+      "sha256": "d3565fc1ef13ca3d1ded12bd4d515c54254591cba013af7f4432a08f3230650f"
+    },
+    "generate_strict_metal_reference.py": {
+      "bytes": 14168,
+      "path": "collaboration/mac/metal_poc/generate_strict_metal_reference.py",
+      "sha256": "689e0877a6b644712b7112504250e806a9eb24e50d67c3a907c3f1d1fade17b5"
+    },
+    "metal_interp.mm": {
+      "bytes": 27285,
+      "path": "collaboration/mac/metal_poc/metal_interp.mm",
+      "sha256": "d1d830389b70700fefbc1e4b0e1b03d52e5402cbbb07b5b89b82202fbad7186a"
+    },
+    "metal_sum_ds.mm": {
+      "bytes": 22348,
+      "path": "collaboration/mac/metal_poc/metal_sum_ds.mm",
+      "sha256": "3ea6c83ed43ee095cf8ea73d81d00a8545b13ca1f7caad6534f453959c47b4af"
+    }
+  }
+}

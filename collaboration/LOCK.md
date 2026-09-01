@@ -52,11 +52,15 @@
 
 <!-- 2026-09-01 23:45 CST (linux): Release editing after documenting the mixed-precision plan and the exact missing strict-Metal artifact required from Mac. -->
 
+<!-- 2026-09-01 23:51 CST (mac): Acquire the project edit lock after pulling Ubuntu commit 0120e06c to generate the requested strict-Metal waveform artifact/report and synchronize the existing branch. -->
+
+<!-- 2026-09-01 23:59 CST (mac): Release editing after the five-case strict-Metal artifact/report passed integrity and regression checks and was finalized for the user-directed handoff commit/push. -->
+
 - Branch: `codex/apple-silicon-dual-host`
 - Active editor: `none`
-- Last editor: `linux` — Ubuntu x86_64 / NVIDIA GeForce RTX 2080 Ti
-- Lock released: 2026-09-01 23:45 CST (Asia/Shanghai)
-- Previous lock: Linux confirmed at 2026-09-01 23:36 CST
-- State: Linux reviewed Mac commit `5c872d31` and documented the exact missing
-  strict-Metal waveform artifact/report. Mac may acquire after pulling this
-  handoff, generate the requested data, and synchronize the existing branch.
+- Last editor: `mac` — Apple M3 Pro / 18-core GPU / Metal 4
+- Lock released: 2026-09-01 23:59 CST (Asia/Shanghai)
+- Previous lock: Mac acquired at 2026-09-01 23:51 CST
+- State: Ubuntu's requested strict-Metal NPZ/report is finalized for the
+  user-directed commit and push. Linux may acquire only after pulling the
+  synchronized commit and verifying both recorded artifact hashes.

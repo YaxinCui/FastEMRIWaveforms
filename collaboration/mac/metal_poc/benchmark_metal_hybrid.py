@@ -50,13 +50,19 @@ from few.waveform import FastKerrEccentricEquatorialFlux
 
 
 def install_amplitude_holders(
-    generator: Any, context: MetalContext
+    generator: Any,
+    context: MetalContext,
+    waveform_args: tuple[float, ...] = WAVEFORM_ARGS,
 ) -> list[tuple[list[Any], int, Any, MetalAmplitudeHolder]]:
+    # 2026-09-01 23:54 CST (mac): Accept explicit orbital arguments so the
+    # Ubuntu-requested reference generator can install only the spin slices
+    # needed by each case while preserving this benchmark's original default.
     amplitude = generator.amplitude_generator
+    signed_spin = waveform_args[2] * waveform_args[5]
     _u, _w, _y, z, _mask = kerrecceq_forward_map(
-        np.full(1, WAVEFORM_ARGS[2]),
-        np.asarray([WAVEFORM_ARGS[3]]),
-        np.asarray([WAVEFORM_ARGS[4]]),
+        np.full(1, signed_spin),
+        np.asarray([waveform_args[3]]),
+        np.asarray([waveform_args[4]]),
         np.ones(1),
         return_mask=True,
         kind="amplitude",
