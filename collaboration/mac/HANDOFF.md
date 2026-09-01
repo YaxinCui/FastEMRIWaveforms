@@ -144,3 +144,17 @@
 - The absent 5,089,095,248-byte high-memory Kerr amplitude table remains
   excluded. It exceeds ordinary Git and GitHub Free/Pro's 2 GB LFS per-file
   limit, and is not used by the six-workload handoff validator.
+
+## 2026-09-01 19:27 CST — Mac lock released for user-mediated switch
+
+<!-- 2026-09-01 19:27 CST (mac): Record the accepted remote implementation commit and stop Mac-side editing before Ubuntu acquires the lock. -->
+
+- GitHub accepted implementation/data commit `131c612f` on
+  `codex/apple-silicon-dual-host`; the only server notice was the non-blocking
+  warning that the 98.12 MiB data file exceeds GitHub's recommended 50 MiB.
+- The Mac virtual environment remains a uv-managed CPython 3.12.12 environment
+  with the default automatic Accelerate build installed.
+- Mac editing is now released. After the user pulls the same branch on Ubuntu,
+  the Linux collaborator should first record its hardware/CUDA/Python state and
+  acquire `collaboration/LOCK.md`, then follow `validation/README.md` without
+  modifying files under `collaboration/mac/`.
