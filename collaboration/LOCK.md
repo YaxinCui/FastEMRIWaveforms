@@ -10,12 +10,14 @@
 
 <!-- 2026-09-01 20:04 CST (linux): Mark CPU/CUDA dual-host validation complete while retaining the lock until the user directs synchronization or a host switch. -->
 
+<!-- 2026-09-01 20:10 CST (linux): Release Ubuntu editing after committing successful CPU/CUDA validation; Mac may acquire only after the user completes push and pull synchronization. -->
+
 - Branch: `codex/apple-silicon-dual-host`
-- Active editor: Ubuntu CUDA collaborator
+- Active editor: none; Mac verification handoff pending
 - Host: Ubuntu x86_64, Intel Core i5-13400F, NVIDIA GeForce RTX 2080 Ti
 - Lock acquired: 2026-09-01 19:31 CST (Asia/Shanghai)
+- Lock released: 2026-09-01 20:10 CST (Asia/Shanghai)
 - Previous lock: Apple M3 Pro/macOS released at 2026-09-01 19:27 CST
-- State: Ubuntu CPU and CUDA comparisons plus both fast suites pass. Two
-  explicit CUDA host/device boundary fixes and their regression tests are
-  recorded in `collaboration/linux/HANDOFF.md`; lock retained pending user
-  direction.
+- State: Ubuntu validation commit `3b030762` is ready and the handoff is
+  released. Mac may acquire the lock only after this branch is pushed from
+  Ubuntu and pulled on Mac.

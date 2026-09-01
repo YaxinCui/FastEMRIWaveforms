@@ -104,3 +104,27 @@
   commit and synchronize these changes, then have Mac rebuild from source and
   rerun its fast suite; the two Linux-only fixes do not change the Mac CPU
   numerical path or invalidate the existing Mac reference artifact.
+
+<!-- 2026-09-01 20:10 CST (linux): Release Ubuntu editing at the user's request and provide the exact Mac reacquisition checklist. -->
+
+## 2026-09-01 20:10 CST — released for Mac verification
+
+- Committed the complete Ubuntu implementation and validation result as
+  `3b030762` (`fix: complete dual-host CUDA validation`).
+- Ubuntu editing is released. The user must push the existing branch and pull
+  it on Mac before the Mac collaborator acquires `collaboration/LOCK.md`.
+- Mac should then:
+  1. confirm the branch is `codex/apple-silicon-dual-host` and the worktree is
+     clean;
+  2. record lock acquisition with an Asia/Shanghai timestamp;
+  3. rebuild the current source in its existing Python 3.12 `.venv` with the
+     default automatic Apple Accelerate selection;
+  4. run `tests/test_apple_accelerate.py` and the fast suite with `slow` and
+     `high_memory` disabled;
+  5. self-compare `collaboration/mac/apple_silicon_reference.npz` with the CPU
+     backend and confirm that the Linux-only CUDA bridges did not alter Mac
+     output; and
+  6. record all results in `collaboration/mac/HANDOFF.md` before any further
+     host switch.
+- `tests/test_roman_cuda_normalization.py` is expected to skip cleanly on Mac
+  because it specifically guards the CUDA 12.x path.
