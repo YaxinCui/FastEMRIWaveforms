@@ -74,12 +74,13 @@
 
 <!-- 2026-09-02 13:32 CST (linux): Mark frozen CPU/CUDA kernel replay complete after correcting the portable validator's mixed CUDA pointer placement; retain the lock pending user-directed synchronization. -->
 
+<!-- 2026-09-02 13:35 CST (linux): Release editing after committing the passed frozen-summation CPU/CUDA validation and CUDA ABI fix as 4d7936be for the user-directed handoff. -->
+
 - Branch: `codex/apple-silicon-dual-host`
-- Active editor: `linux`
-- Host: Ubuntu x86_64 / NVIDIA GeForce RTX 2080 Ti
-- Lock acquired: 2026-09-02 11:41 CST (Asia/Shanghai)
-- Previous lock: Mac released at 2026-09-02 11:28 CST
-- State: Mac strict Metal, Ubuntu CPU, and Ubuntu CUDA frozen-input kernel
-  replays all pass the binding gates. Ubuntu retains the lock while the
-  validator fix, two Linux reports, and completed handoff await review or a
-  user-directed commit/push.
+- Active editor: `none`
+- Last editor: `linux` — Ubuntu x86_64 / NVIDIA GeForce RTX 2080 Ti
+- Lock released: 2026-09-02 13:35 CST (Asia/Shanghai)
+- Previous lock: Linux acquired at 2026-09-02 11:41 CST
+- State: passed frozen-summation validation and CUDA ABI fix commit `4d7936be`
+  plus this released-lock handoff are finalized for the user-directed push.
+  Mac may acquire only after pulling the synchronized collaboration branch.

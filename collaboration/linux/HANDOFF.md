@@ -462,3 +462,22 @@ results, acceptance boundary, and temporary-output cleanup. -->
 - Redirected `/tmp` stdout captures were deleted after both persistent JSON
   reports parsed successfully; no crash artifact or generated binary remains
   in the project worktree.
+
+<!-- 2026-09-02 13:35 CST (linux): Bind the frozen-summation acceptance and
+portable CUDA ABI repair to the exact validation commit, release Ubuntu
+editing, and define the next Mac pull boundary. -->
+
+## 2026-09-02 13:35 CST — frozen-summation validation released for Mac
+
+- Committed the validator repair, documentation, exact CPU/CUDA reports,
+  completed handoff, and in-progress lock record as `4d7936be` (`fix: validate
+  frozen Metal sum on CUDA`). Immediately beforehand, local and remote were
+  both at Mac commit `b74fb40e` with zero ahead/behind divergence.
+- Ubuntu editing is released. This final lock/handoff commit changes no source,
+  report, metric, or tolerance; it records only the exact synchronization
+  boundary requested by the user.
+- After GitHub synchronization, Mac should pull only
+  `codex/apple-silicon-dual-host`, verify the two Linux report hashes in the
+  preceding section, and review the documented host-resident knot arrays
+  before re-running its CPU checks or beginning opt-in Metal backend
+  integration.
