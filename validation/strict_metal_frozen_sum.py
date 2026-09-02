@@ -64,6 +64,7 @@ ARRAY_NAMES = (
     "ylms",
     "trajectory_times",
 )
+HOST_DEREFERENCED_ARRAY_NAMES = ("phase_times", "trajectory_times")
 
 
 def file_identity(path: Path) -> dict[str, Any]:
@@ -190,7 +191,18 @@ def replay(
 ) -> tuple[np.ndarray, dict[str, Any]]:
     xp = backend.xp
     transfer_start = time.perf_counter()
-    prepared = {name: xp.asarray(arrays[name]) for name in ARRAY_NAMES}
+    # 2026-09-02 13:30 CST (linux): Match InterpolatedModeSum's mixed CUDA
+    # pointer ABI. get_waveform dereferences both knot-time arrays in host C++
+    # before launching device kernels; copying them to CuPy caused the first
+    # frozen CUDA replay to segfault. The remaining arrays are kernel inputs.
+    prepared = {
+        name: (
+            np.ascontiguousarray(arrays[name])
+            if backend.uses_cuda and name in HOST_DEREFERENCED_ARRAY_NAMES
+            else xp.asarray(arrays[name])
+        )
+        for name in ARRAY_NAMES
+    }
     synchronize(backend)
     transfer_seconds = time.perf_counter() - transfer_start
     outputs = []

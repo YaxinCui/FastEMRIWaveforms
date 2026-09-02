@@ -392,3 +392,73 @@ commit, release Ubuntu editing, and provide the next Mac pull boundary. -->
   acquire the shared lock before beginning any opt-in production Metal backend
   work. The ignored 5.09 GB H5 remains outside Git and must stay available at
   `src/few/data/` for any repeated full-table validation.
+
+<!-- 2026-09-02 11:41 CST (linux): Record takeover of Mac's frozen-summation
+handoff and the kernel-only CPU/CUDA replay scope before generating reports. -->
+
+## 2026-09-02 11:41 CST — frozen strict-Metal replay started
+
+- Fast-forwarded the only allowed branch from released Linux commit `3774fd1f`
+  to Mac commit `b74fb40e`, confirmed a clean worktree, and acquired the shared
+  edit lock. Files under `collaboration/mac/` remain read-only to Ubuntu.
+- Verified the frozen NPZ, capture report, and Mac CPU report sizes/SHA256
+  exactly match Mac's 11:01 CST handoff. The replay uses Mac's exact eight ABI
+  arrays and five scalars, so the existing `5e-10` normalized-maximum and
+  relative-L2 gates are binding rather than diagnostic.
+- Ubuntu will run CPU and CUDA 12.x in separate processes, write only the two
+  requested Linux JSON reports, verify determinism and resource metrics, and
+  distinguish kernel-only acceptance from the still-separate production
+  backend and full LISA/TDI validation questions.
+
+<!-- 2026-09-02 13:32 CST (linux): Record the CUDA ABI diagnosis and minimal
+portable-validator fix, exact frozen replay reports, numerical/resource
+results, acceptance boundary, and temporary-output cleanup. -->
+
+## 2026-09-02 13:32 CST — frozen strict-Metal CPU/CUDA replay passed
+
+- The first CUDA replay exited with native signal 11 before writing a report.
+  The frozen driver had copied all eight arrays to CuPy, but FEW's CUDA
+  `get_waveform` ABI dereferences `phase_times` and `trajectory_times` in host
+  C++ before launching device kernels. Passing device pointers there caused
+  the segmentation fault; no core file or partial Linux JSON was produced.
+- Corrected only the portable shared validator: those two knot-time arrays now
+  remain contiguous NumPy arrays for CUDA, while output, interpolation/phase
+  coefficients, mode arrays, and Ylms stay on the device. Also restored the
+  executable bit required by the script's shebang and Ubuntu Ruff `EXE001`.
+  Production FEW sources, registered backends, numerical tolerances, and all
+  Mac-owned files remain unchanged.
+- Both current-source Linux reports pass all five binding kernel-only gates,
+  exact frozen-input/reference integrity checks, and two-call bitwise
+  repeatability:
+  - CPU: `collaboration/linux/strict_metal_frozen_sum_cpu.json`, 16,165 bytes,
+    SHA256
+    `2b41a132bf347ef8c27c07b85981dff7641f8e6e4c360b5f1d8bc34a3f6f8298`;
+  - CUDA 12.x: `collaboration/linux/strict_metal_frozen_sum_cuda12x.json`,
+    16,246 bytes, SHA256
+    `ff42e90f7a5f202e69879e66bfec1a3e5423fb2dc980ce63b15d32eff417d8ac`.
+- The one-year baseline is the worst elementwise case on both backends. CPU
+  has normalized maximum `5.8163138e-11` and relative L2 `1.6761561e-11`;
+  CUDA has `5.8163246e-11` and `1.6761561e-11`. Both are about `8.6x` inside
+  the binding `5e-10` limits and agree with Mac CPU's error scale. Their flat
+  mismatch is `5.55e-16`, vector-phase mismatch `2.22e-16`, LPA zero-lag
+  mismatch `2.66e-15`, time/phase mismatch `3.33e-16`, and best lag zero.
+- Across the four shorter cases, worst CPU/CUDA normalized maximum is
+  `7.4223e-13`; all flat, vector-phase, and LPA mismatches are at numerical
+  zero. Every replay output is finite complex128 and bitwise repeatable within
+  its backend.
+- Median frozen-kernel CUDA speedups over Ubuntu CPU are `1.45x` (2104-sample
+  short baseline), `47.19x` (2,103,877-sample one-year baseline), `17.10x`
+  (retrograde), `19.31x` (inner orbit), and `18.20x` (zero spin). CPU peak RSS
+  was `1058.54 MiB`; CUDA peak RSS was `1228.93 MiB` and the final CuPy pool
+  reserved `64.37 MiB`. These are kernel-replay timings, not full waveform
+  generation timings.
+- Conclusion: frozen identical inputs close the remaining kernel-only question.
+  Strict double-single Metal, Linux CPU, and CUDA all meet the elementwise and
+  overlap contracts; the earlier one-year `1.7693e-5` end-to-end pointwise
+  difference is upstream trajectory/spline accumulation rather than a Metal
+  sum failure. This supports an opt-in production integration, but does not by
+  itself validate persistent-buffer engineering, the full parameter domain,
+  detector/TDI response, or parameter-estimation bias.
+- Redirected `/tmp` stdout captures were deleted after both persistent JSON
+  reports parsed successfully; no crash artifact or generated binary remains
+  in the project worktree.

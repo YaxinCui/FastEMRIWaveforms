@@ -70,11 +70,16 @@
 
 <!-- 2026-09-02 11:28 CST (mac): Release editing after the user-directed synchronization record and final pre-commit audit passed; this released state is included in the handoff commit. -->
 
+<!-- 2026-09-02 11:41 CST (linux): Acquire the edit lock after fast-forwarding to Mac commit b74fb40e and verifying the frozen-input handoff identities. -->
+
+<!-- 2026-09-02 13:32 CST (linux): Mark frozen CPU/CUDA kernel replay complete after correcting the portable validator's mixed CUDA pointer placement; retain the lock pending user-directed synchronization. -->
+
 - Branch: `codex/apple-silicon-dual-host`
-- Active editor: `none`
-- Last editor: `mac` — Apple M3 Pro / arm64
-- Lock released: 2026-09-02 11:28 CST (Asia/Shanghai)
-- Previous lock: Mac acquired at 2026-09-02 11:27 CST
-- State: the reviewed frozen-summation handoff set is finalized for the
-  user-directed commit/push. Ubuntu may acquire only after pulling this commit
-  from the existing collaboration branch.
+- Active editor: `linux`
+- Host: Ubuntu x86_64 / NVIDIA GeForce RTX 2080 Ti
+- Lock acquired: 2026-09-02 11:41 CST (Asia/Shanghai)
+- Previous lock: Mac released at 2026-09-02 11:28 CST
+- State: Mac strict Metal, Ubuntu CPU, and Ubuntu CUDA frozen-input kernel
+  replays all pass the binding gates. Ubuntu retains the lock while the
+  validator fix, two Linux reports, and completed handoff await review or a
+  user-directed commit/push.

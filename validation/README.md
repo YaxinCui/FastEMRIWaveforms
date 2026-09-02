@@ -237,3 +237,15 @@ and write only to its Linux-owned directory:
 The tracked frozen-input NPZ is approximately 195 KB. Ubuntu still needs the
 existing 33 MB strict-Metal waveform reference, but it does not need another
 H5 transfer for this kernel-only replay.
+
+<!-- 2026-09-02 13:32 CST (linux): Document the mixed host/device pointer
+placement required by the CUDA summation ABI after the first frozen replay
+exposed an all-device transfer segfault. -->
+
+For CUDA, `phase_times` and `trajectory_times` intentionally remain contiguous
+NumPy host arrays: `get_waveform` dereferences those knot arrays in host C++
+while determining spline windows and launch scalars. The waveform,
+interpolation/phase coefficients, mode indices, and Ylms remain CuPy device
+arrays. Treating every frozen array as a device pointer is invalid for this
+mixed ABI and causes a native segmentation fault before a numerical report can
+be produced.
