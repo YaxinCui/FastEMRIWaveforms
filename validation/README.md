@@ -189,3 +189,51 @@ untracked. The second command enforces the elementwise gates for its direct
 Linux CPU-to-CUDA comparison and embeds all resulting metrics and the temporary
 artifact identity in the persistent CUDA JSON report. The temporary NPZ may be
 deleted after the CUDA report is complete.
+
+## Frozen strict-Metal summation validation
+
+<!-- 2026-09-02 11:01 CST (mac): Document the kernel-only experiment added to
+separate independent trajectory/spline generation from backend summation. -->
+
+`strict_metal_frozen_sum.py` consumes the exact eight arrays and five ABI
+scalars captured immediately before Mac strict Metal mode summation. It does
+not load the 5.09 GB amplitude table or regenerate the trajectory, amplitude
+spline, phase spline, mode indices, or Ylms. Therefore its `5e-10`
+normalized-maximum and relative-L2 gates are binding: any remaining difference
+belongs to CPU/CUDA versus strict Metal summation, not to independently
+accumulated upstream state.
+
+FEW's summation ABI writes an internal dimensionless waveform. The capture
+report records the exact source-frame distance divisor used by FEW, verifies
+that dividing the captured raw Metal result reproduces the existing physical
+waveform bitwise, and applies that same operation to every CPU/CUDA replay
+before comparison.
+
+Mac regeneration and CPU acceptance use:
+
+```sh
+VECLIB_MAXIMUM_THREADS=1 .venv/bin/python \
+  collaboration/mac/metal_poc/generate_strict_metal_frozen_sum.py \
+  --repetitions 2
+
+VECLIB_MAXIMUM_THREADS=1 .venv/bin/python \
+  validation/strict_metal_frozen_sum.py \
+  --backend cpu --repetitions 2
+```
+
+After synchronization, Ubuntu should run each backend in a separate process
+and write only to its Linux-owned directory:
+
+```sh
+.venv/bin/python validation/strict_metal_frozen_sum.py \
+  --backend cpu --repetitions 2 \
+  --output collaboration/linux/strict_metal_frozen_sum_cpu.json
+
+.venv/bin/python validation/strict_metal_frozen_sum.py \
+  --backend cuda12x --repetitions 2 \
+  --output collaboration/linux/strict_metal_frozen_sum_cuda12x.json
+```
+
+The tracked frozen-input NPZ is approximately 195 KB. Ubuntu still needs the
+existing 33 MB strict-Metal waveform reference, but it does not need another
+H5 transfer for this kernel-only replay.

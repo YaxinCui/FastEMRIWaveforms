@@ -62,11 +62,19 @@
 
 <!-- 2026-09-02 00:36 CST (linux): Release editing after committing the passed strict-Metal validation as 1564eaee for the user-directed GitHub handoff. -->
 
+<!-- 2026-09-02 10:53 CST (mac): Acquire the project edit lock after confirming a clean, synchronized codex/apple-silicon-dual-host worktree; isolate the remaining cross-host discrepancy by freezing the exact strict-Metal summation ABI inputs and adding a portable CPU/CUDA kernel validator. -->
+
+<!-- 2026-09-02 11:04 CST (mac): Release editing after the frozen five-case summation inputs, Mac CPU kernel replay, integrity checks, documentation, and Ubuntu replay contract all passed; changes remain local pending a user-directed commit/push. -->
+
+<!-- 2026-09-02 11:27 CST (mac): Reacquire the project edit lock solely for the user-directed frozen-summation handoff, commit, and push after fetching the existing branch and confirming zero local/remote divergence. -->
+
+<!-- 2026-09-02 11:28 CST (mac): Release editing after the user-directed synchronization record and final pre-commit audit passed; this released state is included in the handoff commit. -->
+
 - Branch: `codex/apple-silicon-dual-host`
 - Active editor: `none`
-- Last editor: `linux` — Ubuntu x86_64 / NVIDIA GeForce RTX 2080 Ti
-- Lock released: 2026-09-02 00:36 CST (Asia/Shanghai)
-- Previous lock: Linux acquired at 2026-09-02 00:04 CST
-- State: passed validation payload commit `1564eaee` and this released-lock
-  handoff are finalized for the user-directed push. Mac may acquire only after
-  pulling the synchronized branch and confirming a clean worktree.
+- Last editor: `mac` — Apple M3 Pro / arm64
+- Lock released: 2026-09-02 11:28 CST (Asia/Shanghai)
+- Previous lock: Mac acquired at 2026-09-02 11:27 CST
+- State: the reviewed frozen-summation handoff set is finalized for the
+  user-directed commit/push. Ubuntu may acquire only after pulling this commit
+  from the existing collaboration branch.

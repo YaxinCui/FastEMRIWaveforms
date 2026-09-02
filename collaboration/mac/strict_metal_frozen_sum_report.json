@@ -1,0 +1,916 @@
+{
+  "artifact": {
+    "bytes": 195212,
+    "path": "collaboration/mac/strict_metal_frozen_sum_inputs.npz",
+    "sha256": "abbe058932078bda38fc4404aab1c49e6b54434f02640145b4ed9465d4cac1db"
+  },
+  "cases": [
+    {
+      "amplitude_holders": [
+        {
+          "calls": [
+            {
+              "gpu_seconds": 0.00010174999988521449,
+              "points": 4,
+              "synchronized_wall_seconds": 0.0016581250001763692
+            },
+            {
+              "gpu_seconds": 0.00012262499967619078,
+              "points": 4,
+              "synchronized_wall_seconds": 0.0020027919999847654
+            }
+          ],
+          "fallback_calls": 0,
+          "plan_upload_seconds": 0.014691874999698484,
+          "z_index": 15
+        },
+        {
+          "calls": [
+            {
+              "gpu_seconds": 0.00014495833329419838,
+              "points": 4,
+              "synchronized_wall_seconds": 0.0037466249996214174
+            },
+            {
+              "gpu_seconds": 0.00010999999994965037,
+              "points": 4,
+              "synchronized_wall_seconds": 0.0020952919994670083
+            }
+          ],
+          "fallback_calls": 0,
+          "plan_upload_seconds": 0.015077624999321415,
+          "z_index": 16
+        },
+        {
+          "calls": [],
+          "fallback_calls": 0,
+          "plan_upload_seconds": 0.006309792000138259,
+          "z_index": 15
+        },
+        {
+          "calls": [],
+          "fallback_calls": 0,
+          "plan_upload_seconds": 0.005471665999721154,
+          "z_index": 16
+        }
+      ],
+      "arrays": {
+        "interpolation": {
+          "array_sha256": "d7508affe71d19abb7c3093fac05c1454bcc73c3953ec618f86bbd9f8a187e94",
+          "artifact_key": "baseline_short__interpolation",
+          "dtype": "float64",
+          "shape": [
+            3968
+          ]
+        },
+        "k_values": {
+          "array_sha256": "882993b55cc0c527f0a6059b69b3faf4ef3ccb9cecd3d8847ca0e49a1444debe",
+          "artifact_key": "baseline_short__k_values",
+          "dtype": "int32",
+          "shape": [
+            124
+          ]
+        },
+        "m_values": {
+          "array_sha256": "ca669dcc7e4054e27a9a823ccda4ac807bc4c89356d2d773b38b4151184153e9",
+          "artifact_key": "baseline_short__m_values",
+          "dtype": "int32",
+          "shape": [
+            124
+          ]
+        },
+        "n_values": {
+          "array_sha256": "4da975f02239270df0193f9e0e6e03b56fcbc23e2a7723e73a94e5dea9c076f4",
+          "artifact_key": "baseline_short__n_values",
+          "dtype": "int32",
+          "shape": [
+            124
+          ]
+        },
+        "phase_coefficients": {
+          "array_sha256": "2c28cfccaabcb9edd7fbdad8e36eb6e6b106061c0b05707e5c7be21130388611",
+          "artifact_key": "baseline_short__phase_coefficients",
+          "dtype": "float64",
+          "shape": [
+            72
+          ]
+        },
+        "phase_times": {
+          "array_sha256": "76f8a1f17ef997f293df8b042ff2d7db751ab223f6cc1bf4ceba677315a5f1cb",
+          "artifact_key": "baseline_short__phase_times",
+          "dtype": "float64",
+          "shape": [
+            4
+          ]
+        },
+        "trajectory_times": {
+          "array_sha256": "a7ccd7db86e7a7d6f0721343e5d7dec9ca496ccc39616469bcb2a42674dd0be1",
+          "artifact_key": "baseline_short__trajectory_times",
+          "dtype": "float64",
+          "shape": [
+            4
+          ]
+        },
+        "ylms": {
+          "array_sha256": "3fa7ebaa074e0875091fb723736aab07ddf4d83feea9c71ed35b57e5268a8282",
+          "artifact_key": "baseline_short__ylms",
+          "dtype": "complex128",
+          "shape": [
+            248
+          ]
+        }
+      },
+      "capture_repetitions": 2,
+      "inputs": {
+        "M": 1000000.0,
+        "Phi_phi0": 0.3,
+        "Phi_r0": 0.7,
+        "Phi_theta0": 0.0,
+        "T": 0.001,
+        "a": 0.7,
+        "dist": 1.0,
+        "dt": 15.0,
+        "e0": 0.4,
+        "mu": 10.0,
+        "p0": 11.0,
+        "phi": 0.7853981633974483,
+        "theta": 1.0471975511965976,
+        "xI0": 1.0
+      },
+      "inputs_bitwise_repeatable": true,
+      "key": "baseline_short",
+      "metal_outputs_bitwise_repeatable": true,
+      "postprocessing": {
+        "operation": "kernel_output / waveform_output_divisor",
+        "raw_kernel_array_sha256": "39bd7cdca8b7eefec8962b631c750440800bff50ad3dda21c605de72e79e3779",
+        "scaled_kernel_matches_generator_bitwise": true,
+        "waveform_output_divisor": 2.0897034512849945e+21
+      },
+      "raw_kernel_outputs_bitwise_repeatable": true,
+      "scalars": {
+        "captured_device": 0,
+        "delta_t": 15.0,
+        "init_length": 4,
+        "mode_count": 124,
+        "output_length": 2104
+      },
+      "strict_metal_output": {
+        "array_sha256": "7e5fd83f3c4b6f4c4da14e95beaed8d837db16e359fd43347decff20085a450d",
+        "dtype": "complex128",
+        "matches_existing_reference": true,
+        "shape": [
+          2104
+        ]
+      },
+      "waveform_median_seconds": 3.333845270999973,
+      "waveform_seconds": [
+        6.6580725419999,
+        0.009618000000045868
+      ]
+    },
+    {
+      "amplitude_holders": [
+        {
+          "calls": [
+            {
+              "gpu_seconds": 0.00013224999929661863,
+              "points": 8,
+              "synchronized_wall_seconds": 0.0025035409998963587
+            },
+            {
+              "gpu_seconds": 0.00011020833335351199,
+              "points": 8,
+              "synchronized_wall_seconds": 0.0003607909993661451
+            }
+          ],
+          "fallback_calls": 0,
+          "plan_upload_seconds": 0.012626957999600563,
+          "z_index": 15
+        },
+        {
+          "calls": [
+            {
+              "gpu_seconds": 0.0001367083332297625,
+              "points": 8,
+              "synchronized_wall_seconds": 0.003292041999884532
+            },
+            {
+              "gpu_seconds": 0.0001156250000349246,
+              "points": 8,
+              "synchronized_wall_seconds": 0.000715374999344931
+            }
+          ],
+          "fallback_calls": 0,
+          "plan_upload_seconds": 0.013021249999837892,
+          "z_index": 16
+        },
+        {
+          "calls": [],
+          "fallback_calls": 0,
+          "plan_upload_seconds": 0.004203000000416068,
+          "z_index": 15
+        },
+        {
+          "calls": [],
+          "fallback_calls": 0,
+          "plan_upload_seconds": 0.004888749999736319,
+          "z_index": 16
+        }
+      ],
+      "arrays": {
+        "interpolation": {
+          "array_sha256": "e02a7ab4e2c81b12dd80fba169373f0352e74dd0377536fdea4b03f3c5bcb3b5",
+          "artifact_key": "baseline_one_year__interpolation",
+          "dtype": "float64",
+          "shape": [
+            7936
+          ]
+        },
+        "k_values": {
+          "array_sha256": "882993b55cc0c527f0a6059b69b3faf4ef3ccb9cecd3d8847ca0e49a1444debe",
+          "artifact_key": "baseline_one_year__k_values",
+          "dtype": "int32",
+          "shape": [
+            124
+          ]
+        },
+        "m_values": {
+          "array_sha256": "a4b1b8b1a34b28256aa110e4e1a5c11b98a78ec31a9d4555f2ab9690a092d33b",
+          "artifact_key": "baseline_one_year__m_values",
+          "dtype": "int32",
+          "shape": [
+            124
+          ]
+        },
+        "n_values": {
+          "array_sha256": "b428dcd38e6f815895a218cbd97c2cf41b521a10e7d45ca2303a2afc3020d293",
+          "artifact_key": "baseline_one_year__n_values",
+          "dtype": "int32",
+          "shape": [
+            124
+          ]
+        },
+        "phase_coefficients": {
+          "array_sha256": "15322e565736351f7dea80e8fa0965028019744d31c1507115544d4bac49dfd0",
+          "artifact_key": "baseline_one_year__phase_coefficients",
+          "dtype": "float64",
+          "shape": [
+            168
+          ]
+        },
+        "phase_times": {
+          "array_sha256": "aa0fb38322f0de8c322fdd8a410fbe494313861499990e22dacbf81bed0a6d53",
+          "artifact_key": "baseline_one_year__phase_times",
+          "dtype": "float64",
+          "shape": [
+            8
+          ]
+        },
+        "trajectory_times": {
+          "array_sha256": "35ca9ec92534c967a0a289b1639a64bdc74f5289c8daa16be8ab7c4d7e72abaf",
+          "artifact_key": "baseline_one_year__trajectory_times",
+          "dtype": "float64",
+          "shape": [
+            8
+          ]
+        },
+        "ylms": {
+          "array_sha256": "7c6b2a42194508d6047e4a737473b199889e5e8aa9966354f3fc46a78119e2a1",
+          "artifact_key": "baseline_one_year__ylms",
+          "dtype": "complex128",
+          "shape": [
+            248
+          ]
+        }
+      },
+      "capture_repetitions": 2,
+      "inputs": {
+        "M": 1000000.0,
+        "Phi_phi0": 0.3,
+        "Phi_r0": 0.7,
+        "Phi_theta0": 0.0,
+        "T": 1.0,
+        "a": 0.7,
+        "dist": 1.0,
+        "dt": 15.0,
+        "e0": 0.4,
+        "mu": 10.0,
+        "p0": 11.0,
+        "phi": 0.7853981633974483,
+        "theta": 1.0471975511965976,
+        "xI0": 1.0
+      },
+      "inputs_bitwise_repeatable": true,
+      "key": "baseline_one_year",
+      "metal_outputs_bitwise_repeatable": true,
+      "postprocessing": {
+        "operation": "kernel_output / waveform_output_divisor",
+        "raw_kernel_array_sha256": "06c6ca56e089c4dcfdd21079e251a94d2dca22688f3c10159515bf3034cb9c29",
+        "scaled_kernel_matches_generator_bitwise": true,
+        "waveform_output_divisor": 2.0897034512849945e+21
+      },
+      "raw_kernel_outputs_bitwise_repeatable": true,
+      "scalars": {
+        "captured_device": 0,
+        "delta_t": 15.0,
+        "init_length": 8,
+        "mode_count": 124,
+        "output_length": 2103877
+      },
+      "strict_metal_output": {
+        "array_sha256": "1cb0e410fbb58e567e3ac6a40e2f7435d00e589160f5efe0078952059a2c834c",
+        "dtype": "complex128",
+        "matches_existing_reference": true,
+        "shape": [
+          2103877
+        ]
+      },
+      "waveform_median_seconds": 0.22999379149996457,
+      "waveform_seconds": [
+        0.23645345800014184,
+        0.2235341249997873
+      ]
+    },
+    {
+      "amplitude_holders": [
+        {
+          "calls": [
+            {
+              "gpu_seconds": 8.924999929149635e-05,
+              "points": 4,
+              "synchronized_wall_seconds": 0.002012957999795617
+            },
+            {
+              "gpu_seconds": 7.604166694363812e-05,
+              "points": 4,
+              "synchronized_wall_seconds": 0.0006046250000508735
+            }
+          ],
+          "fallback_calls": 0,
+          "plan_upload_seconds": 0.021947541999907116,
+          "z_index": 30
+        },
+        {
+          "calls": [
+            {
+              "gpu_seconds": 8.237500060204184e-05,
+              "points": 4,
+              "synchronized_wall_seconds": 0.0022795419999965816
+            },
+            {
+              "gpu_seconds": 9.466666688240366e-05,
+              "points": 4,
+              "synchronized_wall_seconds": 0.0006304159996943781
+            }
+          ],
+          "fallback_calls": 0,
+          "plan_upload_seconds": 0.02081991700015351,
+          "z_index": 31
+        },
+        {
+          "calls": [],
+          "fallback_calls": 0,
+          "plan_upload_seconds": 0.005889041000045836,
+          "z_index": 30
+        },
+        {
+          "calls": [],
+          "fallback_calls": 0,
+          "plan_upload_seconds": 0.005376957999942533,
+          "z_index": 31
+        }
+      ],
+      "arrays": {
+        "interpolation": {
+          "array_sha256": "d94c645edd0844a4f1578753fbe70837d523597cb2d7183b9365d58488fb44da",
+          "artifact_key": "positive_spin_retrograde__interpolation",
+          "dtype": "float64",
+          "shape": [
+            4736
+          ]
+        },
+        "k_values": {
+          "array_sha256": "2b73f6b3cd6cd9f97ccbbedc2fa1904331b916b2ace865882f72ddd083c79b04",
+          "artifact_key": "positive_spin_retrograde__k_values",
+          "dtype": "int32",
+          "shape": [
+            148
+          ]
+        },
+        "m_values": {
+          "array_sha256": "6e42a7df43d23d31ab302093392111d62d0899a2b55a4a8e9e52b615b3ff43be",
+          "artifact_key": "positive_spin_retrograde__m_values",
+          "dtype": "int32",
+          "shape": [
+            148
+          ]
+        },
+        "n_values": {
+          "array_sha256": "823cc875a4f4863db21e4448bf8d82138edd054e398747e4133b2e77c31f8e27",
+          "artifact_key": "positive_spin_retrograde__n_values",
+          "dtype": "int32",
+          "shape": [
+            148
+          ]
+        },
+        "phase_coefficients": {
+          "array_sha256": "e0be54855d28807aa070bd0819927e674f5acf4f6fbeb9c6511b838d34669c0e",
+          "artifact_key": "positive_spin_retrograde__phase_coefficients",
+          "dtype": "float64",
+          "shape": [
+            72
+          ]
+        },
+        "phase_times": {
+          "array_sha256": "94fbf1bf078be0957683bc653d158c6b5e4ddcbb2a273f25d20677cba2c0eb21",
+          "artifact_key": "positive_spin_retrograde__phase_times",
+          "dtype": "float64",
+          "shape": [
+            4
+          ]
+        },
+        "trajectory_times": {
+          "array_sha256": "14e5bb393fa02873c66024c6622dda987c163b87d959d84a65c1a36487e8fcd5",
+          "artifact_key": "positive_spin_retrograde__trajectory_times",
+          "dtype": "float64",
+          "shape": [
+            4
+          ]
+        },
+        "ylms": {
+          "array_sha256": "7dad5b05d3f2c216b40853ca7795541a7177268e64dc900b9fb15ad1f761423c",
+          "artifact_key": "positive_spin_retrograde__ylms",
+          "dtype": "complex128",
+          "shape": [
+            296
+          ]
+        }
+      },
+      "capture_repetitions": 2,
+      "inputs": {
+        "M": 1000000.0,
+        "Phi_phi0": 0.3,
+        "Phi_r0": 0.7,
+        "Phi_theta0": 0.0,
+        "T": 0.01,
+        "a": 0.7,
+        "dist": 1.0,
+        "dt": 15.0,
+        "e0": 0.4,
+        "mu": 10.0,
+        "p0": 11.0,
+        "phi": 0.7853981633974483,
+        "theta": 1.0471975511965976,
+        "xI0": -1.0
+      },
+      "inputs_bitwise_repeatable": true,
+      "key": "positive_spin_retrograde",
+      "metal_outputs_bitwise_repeatable": true,
+      "postprocessing": {
+        "operation": "kernel_output / waveform_output_divisor",
+        "raw_kernel_array_sha256": "a4d0d60cfb41497cfd835e81bd61aaf8d9fb9e3a34c95ec695fe8461d865865d",
+        "scaled_kernel_matches_generator_bitwise": true,
+        "waveform_output_divisor": 2.0897034512849945e+21
+      },
+      "raw_kernel_outputs_bitwise_repeatable": true,
+      "scalars": {
+        "captured_device": 0,
+        "delta_t": 15.0,
+        "init_length": 4,
+        "mode_count": 148,
+        "output_length": 21039
+      },
+      "strict_metal_output": {
+        "array_sha256": "ba7fe2bf02eb93dc1db42891d633fdd4a3397bc1edb72be97e91e3a13d8f759f",
+        "dtype": "complex128",
+        "matches_existing_reference": true,
+        "shape": [
+          21039
+        ]
+      },
+      "waveform_median_seconds": 0.008519895499830454,
+      "waveform_seconds": [
+        0.010042040999906021,
+        0.0069977499997548875
+      ]
+    },
+    {
+      "amplitude_holders": [
+        {
+          "calls": [
+            {
+              "gpu_seconds": 0.00010349999956815736,
+              "points": 4,
+              "synchronized_wall_seconds": 0.004317541999625973
+            },
+            {
+              "gpu_seconds": 8.541666647943202e-05,
+              "points": 4,
+              "synchronized_wall_seconds": 0.0003482079991954379
+            }
+          ],
+          "fallback_calls": 0,
+          "plan_upload_seconds": 0.015458416999535984,
+          "z_index": 17
+        },
+        {
+          "calls": [
+            {
+              "gpu_seconds": 0.00010095833295054035,
+              "points": 4,
+              "synchronized_wall_seconds": 0.003861540999423596
+            },
+            {
+              "gpu_seconds": 0.00011537499995029066,
+              "points": 4,
+              "synchronized_wall_seconds": 0.0007408329993268126
+            }
+          ],
+          "fallback_calls": 0,
+          "plan_upload_seconds": 0.018355041000177152,
+          "z_index": 18
+        },
+        {
+          "calls": [],
+          "fallback_calls": 0,
+          "plan_upload_seconds": 0.007113375000699307,
+          "z_index": 17
+        },
+        {
+          "calls": [],
+          "fallback_calls": 0,
+          "plan_upload_seconds": 0.00681216700013465,
+          "z_index": 18
+        }
+      ],
+      "arrays": {
+        "interpolation": {
+          "array_sha256": "bf017efaeeffa7fed732811728343ac9fc56b146cad13325babb6c4d5b21c4e7",
+          "artifact_key": "inner_orbit__interpolation",
+          "dtype": "float64",
+          "shape": [
+            3616
+          ]
+        },
+        "k_values": {
+          "array_sha256": "89f3bda768dd22407bc38aa71eb80b084fa6ea9376c75c67cca0099ccdb3f792",
+          "artifact_key": "inner_orbit__k_values",
+          "dtype": "int32",
+          "shape": [
+            113
+          ]
+        },
+        "m_values": {
+          "array_sha256": "c1680023c7ba4d6f65afd4b28cb3c8388f3b9eb4bddce99c9c806261d5f4a1a4",
+          "artifact_key": "inner_orbit__m_values",
+          "dtype": "int32",
+          "shape": [
+            113
+          ]
+        },
+        "n_values": {
+          "array_sha256": "8aabd8794612e23fe2eb02fbc9bdc068ea941f2afe35ff1a6527f9edc8f4142e",
+          "artifact_key": "inner_orbit__n_values",
+          "dtype": "int32",
+          "shape": [
+            113
+          ]
+        },
+        "phase_coefficients": {
+          "array_sha256": "cbf83a2e7246ccb7ca3bc8549a75ff5083ef41ede23807427a62261f63cc297e",
+          "artifact_key": "inner_orbit__phase_coefficients",
+          "dtype": "float64",
+          "shape": [
+            72
+          ]
+        },
+        "phase_times": {
+          "array_sha256": "7ee618030348a6c05c1d6d713e306dc8c9bfee18c122f5b1ab0997bf85d66e75",
+          "artifact_key": "inner_orbit__phase_times",
+          "dtype": "float64",
+          "shape": [
+            4
+          ]
+        },
+        "trajectory_times": {
+          "array_sha256": "e2f7c49cd0e97181e785d774e6724a6ecaaf0c44e2328f323039226d85472151",
+          "artifact_key": "inner_orbit__trajectory_times",
+          "dtype": "float64",
+          "shape": [
+            4
+          ]
+        },
+        "ylms": {
+          "array_sha256": "8aacea25d4dc26d3d7d1eaef5f8334d061a3986de3b43adca50d155c60734aa4",
+          "artifact_key": "inner_orbit__ylms",
+          "dtype": "complex128",
+          "shape": [
+            226
+          ]
+        }
+      },
+      "capture_repetitions": 2,
+      "inputs": {
+        "M": 1000000.0,
+        "Phi_phi0": 0.3,
+        "Phi_r0": 0.7,
+        "Phi_theta0": 0.0,
+        "T": 0.01,
+        "a": 0.6,
+        "dist": 1.0,
+        "dt": 15.0,
+        "e0": 0.3,
+        "mu": 10.0,
+        "p0": 8.0,
+        "phi": 0.7853981633974483,
+        "theta": 1.0471975511965976,
+        "xI0": 1.0
+      },
+      "inputs_bitwise_repeatable": true,
+      "key": "inner_orbit",
+      "metal_outputs_bitwise_repeatable": true,
+      "postprocessing": {
+        "operation": "kernel_output / waveform_output_divisor",
+        "raw_kernel_array_sha256": "3042108d713790615acb0b1fa614d4e90e42ff0f8791592fd0cb32789e6289ac",
+        "scaled_kernel_matches_generator_bitwise": true,
+        "waveform_output_divisor": 2.0897034512849945e+21
+      },
+      "raw_kernel_outputs_bitwise_repeatable": true,
+      "scalars": {
+        "captured_device": 0,
+        "delta_t": 15.0,
+        "init_length": 4,
+        "mode_count": 113,
+        "output_length": 21039
+      },
+      "strict_metal_output": {
+        "array_sha256": "f828b9c59585e52f5a2a1c687988693f2fb4e5884eee2c8581a32674a1fc0c29",
+        "dtype": "complex128",
+        "matches_existing_reference": true,
+        "shape": [
+          21039
+        ]
+      },
+      "waveform_median_seconds": 0.01016893749965675,
+      "waveform_seconds": [
+        0.01378687499982334,
+        0.006550999999490159
+      ]
+    },
+    {
+      "amplitude_holders": [
+        {
+          "calls": [
+            {
+              "gpu_seconds": 0.00010904166629188694,
+              "points": 4,
+              "synchronized_wall_seconds": 0.002022040999690944
+            },
+            {
+              "gpu_seconds": 7.458333311660681e-05,
+              "points": 4,
+              "synchronized_wall_seconds": 0.0002284579995830427
+            }
+          ],
+          "fallback_calls": 0,
+          "plan_upload_seconds": 0.014624583000113489,
+          "z_index": 24
+        },
+        {
+          "calls": [
+            {
+              "gpu_seconds": 0.00019845833321596729,
+              "points": 4,
+              "synchronized_wall_seconds": 0.00473725000028935
+            },
+            {
+              "gpu_seconds": 9.791666707315017e-05,
+              "points": 4,
+              "synchronized_wall_seconds": 0.0006020829996487009
+            }
+          ],
+          "fallback_calls": 0,
+          "plan_upload_seconds": 0.015543499999694177,
+          "z_index": 25
+        },
+        {
+          "calls": [],
+          "fallback_calls": 0,
+          "plan_upload_seconds": 0.005727332999413193,
+          "z_index": 24
+        },
+        {
+          "calls": [],
+          "fallback_calls": 0,
+          "plan_upload_seconds": 0.0059896660004596924,
+          "z_index": 25
+        }
+      ],
+      "arrays": {
+        "interpolation": {
+          "array_sha256": "66f68c230828e9af6c81ed25917cb6689eb844dec845c9d3a63b1f215455b053",
+          "artifact_key": "zero_spin__interpolation",
+          "dtype": "float64",
+          "shape": [
+            4352
+          ]
+        },
+        "k_values": {
+          "array_sha256": "44ddd2f478477ebd1c1cd5b99400af48cd46033c59173195f48870e608cec810",
+          "artifact_key": "zero_spin__k_values",
+          "dtype": "int32",
+          "shape": [
+            136
+          ]
+        },
+        "m_values": {
+          "array_sha256": "f734c5b80057cc95d80afa0b08af3ccfefc3207557e10220dc4c281da37a57d1",
+          "artifact_key": "zero_spin__m_values",
+          "dtype": "int32",
+          "shape": [
+            136
+          ]
+        },
+        "n_values": {
+          "array_sha256": "e5d24614b50bf53befed0813dbcc816937357adb86a335503348d1475322445f",
+          "artifact_key": "zero_spin__n_values",
+          "dtype": "int32",
+          "shape": [
+            136
+          ]
+        },
+        "phase_coefficients": {
+          "array_sha256": "5a5db9ada019c49f93aee2a677787c4eab95ac07559520f0b8b24d6a54ed8f2f",
+          "artifact_key": "zero_spin__phase_coefficients",
+          "dtype": "float64",
+          "shape": [
+            72
+          ]
+        },
+        "phase_times": {
+          "array_sha256": "ef412365951e5d915ccbf35275242629c9d54fbcd8896c26dd405444c7a0a734",
+          "artifact_key": "zero_spin__phase_times",
+          "dtype": "float64",
+          "shape": [
+            4
+          ]
+        },
+        "trajectory_times": {
+          "array_sha256": "c661e96daac55b788a188d312610114a6d198fd5c07f4fed817a4967df8e3b05",
+          "artifact_key": "zero_spin__trajectory_times",
+          "dtype": "float64",
+          "shape": [
+            4
+          ]
+        },
+        "ylms": {
+          "array_sha256": "e51874c7b1925e6e6449ab1c54607735663002bfeb41eda5fa04978eed7a2fd3",
+          "artifact_key": "zero_spin__ylms",
+          "dtype": "complex128",
+          "shape": [
+            272
+          ]
+        }
+      },
+      "capture_repetitions": 2,
+      "inputs": {
+        "M": 1000000.0,
+        "Phi_phi0": 0.3,
+        "Phi_r0": 0.7,
+        "Phi_theta0": 0.0,
+        "T": 0.01,
+        "a": 0.0,
+        "dist": 1.0,
+        "dt": 15.0,
+        "e0": 0.4,
+        "mu": 10.0,
+        "p0": 11.0,
+        "phi": 0.7853981633974483,
+        "theta": 1.0471975511965976,
+        "xI0": 1.0
+      },
+      "inputs_bitwise_repeatable": true,
+      "key": "zero_spin",
+      "metal_outputs_bitwise_repeatable": true,
+      "postprocessing": {
+        "operation": "kernel_output / waveform_output_divisor",
+        "raw_kernel_array_sha256": "e9ad93d353a9f7657aabf2bba912b90ed919b2f20c728f8c2ef2bf42c8c51a49",
+        "scaled_kernel_matches_generator_bitwise": true,
+        "waveform_output_divisor": 2.0897034512849945e+21
+      },
+      "raw_kernel_outputs_bitwise_repeatable": true,
+      "scalars": {
+        "captured_device": 0,
+        "delta_t": 15.0,
+        "init_length": 4,
+        "mode_count": 136,
+        "output_length": 21039
+      },
+      "strict_metal_output": {
+        "array_sha256": "d4b07fdd2c731f22a00e3e2749834ea69cefbccc8722604dc392d1612e5f9344",
+        "dtype": "complex128",
+        "matches_existing_reference": true,
+        "shape": [
+          21039
+        ]
+      },
+      "waveform_median_seconds": 0.009255062499960331,
+      "waveform_seconds": [
+        0.012332541999967361,
+        0.006177582999953302
+      ]
+    }
+  ],
+  "collaboration_note": "2026-09-02 10:55 CST (mac): frozen strict-Metal summation inputs for kernel-only Mac/Linux CPU/CUDA validation",
+  "data_files": {
+    "KerrEccEqFluxData.h5": {
+      "bytes": 9857632,
+      "path": "src/few/data/KerrEccEqFluxData.h5",
+      "sha256": "db332e617223a650eb9f890c610e928afd095edea1454b544ad06651c03a5014"
+    },
+    "LPA.txt": {
+      "bytes": 30009,
+      "path": "src/few/data/LPA.txt",
+      "sha256": "a0aa28e9accfd05b8b2aceb6799b471bcb8d1756fb7b0bff61957a985a40c6c1"
+    },
+    "ZNAmps_l10_m10_n55_DS2Outer.h5": {
+      "bytes": 5089095248,
+      "path": "src/few/data/ZNAmps_l10_m10_n55_DS2Outer.h5",
+      "sha256": "3236d8b5eff618242291e9eeb24638dbbbb82fac464ae575dc3f2ba158c54834"
+    }
+  },
+  "host": {
+    "few": "2.1.0.post1.dev95+g5526b3360.d20260901",
+    "machine": "arm64",
+    "numpy": "2.5.2",
+    "platform": "macOS-26.5.2-arm64-arm-64bit",
+    "python": "3.12.12"
+  },
+  "metal": {
+    "device": {
+      "max_threads_per_threadgroup": 1024,
+      "name": "Apple M3 Pro",
+      "pipeline_compile_seconds": 0.023921375000099943,
+      "thread_execution_width": 32
+    },
+    "precision": "full-chain-double-single-high-low-fp32",
+    "sum_pipeline_compile_seconds": 0.0009125420001510065
+  },
+  "model_load_seconds": 7.232565375000377,
+  "peak_process_rss_mib": 6639.53125,
+  "reference_files": {
+    "artifact": {
+      "bytes": 33254256,
+      "path": "collaboration/mac/strict_metal_ds_reference.npz",
+      "sha256": "42bda4811e25f94797048b7168ca55e69a26d74ca8c388374052dc42922a1851"
+    },
+    "report": {
+      "bytes": 24317,
+      "path": "collaboration/mac/strict_metal_ds_report.json",
+      "sha256": "efe9779425c4a64470b3239f92ee950c12efbd309020a7dfd5c0acd0c5da0086"
+    }
+  },
+  "repository": {
+    "base_commit": "3774fd1f7dcd4521add53453aa85a2d209de4963",
+    "branch": "codex/apple-silicon-dual-host"
+  },
+  "schema": 1,
+  "seed": 20260902,
+  "source_files": {
+    "benchmark_metal_hybrid.py": {
+      "bytes": 7672,
+      "path": "collaboration/mac/metal_poc/benchmark_metal_hybrid.py",
+      "sha256": "d02ea2c87a2e3a5d655dccf7814690382d1c79274a39f0a7340defb307c14a66"
+    },
+    "benchmark_metal_interp.py": {
+      "bytes": 17799,
+      "path": "collaboration/mac/metal_poc/benchmark_metal_interp.py",
+      "sha256": "cd7251aa05c37e091e75ff33b338000969af85a93a16f987d1272a20c4f21a12"
+    },
+    "benchmark_metal_sum.py": {
+      "bytes": 11091,
+      "path": "collaboration/mac/metal_poc/benchmark_metal_sum.py",
+      "sha256": "2656aa7f122fad3b788ecf84dd8a4e7fc6573482984796e449c66d9a2e362148"
+    },
+    "generate_strict_metal_frozen_sum.py": {
+      "bytes": 14168,
+      "path": "collaboration/mac/metal_poc/generate_strict_metal_frozen_sum.py",
+      "sha256": "46cfc5dc5d7572168a80cd97332674ee17655b59461b48897fa1c1953ba5a7c9"
+    },
+    "generate_strict_metal_reference.py": {
+      "bytes": 14168,
+      "path": "collaboration/mac/metal_poc/generate_strict_metal_reference.py",
+      "sha256": "689e0877a6b644712b7112504250e806a9eb24e50d67c3a907c3f1d1fade17b5"
+    },
+    "metal_interp.mm": {
+      "bytes": 27285,
+      "path": "collaboration/mac/metal_poc/metal_interp.mm",
+      "sha256": "d1d830389b70700fefbc1e4b0e1b03d52e5402cbbb07b5b89b82202fbad7186a"
+    },
+    "metal_sum_ds.mm": {
+      "bytes": 22348,
+      "path": "collaboration/mac/metal_poc/metal_sum_ds.mm",
+      "sha256": "3ea6c83ed43ee095cf8ea73d81d00a8545b13ca1f7caad6534f453959c47b4af"
+    }
+  }
+}

@@ -175,3 +175,21 @@ memory, repeatability, and local Metal-versus-CPU metrics.
 The registered 5.09 GB amplitude H5 remains ignored and is never copied into
 the artifact. The final NPZ is approximately 33 MB and is intended only as a
 bounded cross-host validation payload, not as installed package data.
+
+<!-- 2026-09-02 11:01 CST (mac): Document the follow-up ABI capture that turns
+the existing same-input Metal gate into a portable Ubuntu CPU/CUDA test. -->
+
+Freeze the exact strict-Metal summation inputs with:
+
+```sh
+VECLIB_MAXIMUM_THREADS=1 .venv/bin/python \
+  collaboration/mac/metal_poc/generate_strict_metal_frozen_sum.py \
+  --repetitions 2
+```
+
+The capture wrapper copies the eight prepared arrays plus the five scalar ABI
+values before delegating each call to strict Metal. It also captures the raw
+internal Metal output, verifies the FEW distance divisor against the returned
+physical waveform bitwise, and requires two bitwise-identical captures and
+outputs per case. The resulting NPZ is only about 195 KB because the dense
+waveforms remain in the existing strict-Metal reference.

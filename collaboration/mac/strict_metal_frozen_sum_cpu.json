@@ -1,0 +1,415 @@
+{
+  "cases": [
+    {
+      "key": "baseline_short",
+      "metrics": {
+        "cross_host_acceptance_checks": {
+          "flat_mismatch": true,
+          "lpa_time_phase_optimized_mismatch": true,
+          "lpa_zero_lag_phase_optimized_mismatch": true,
+          "phase_optimized_vector_mismatch": true
+        },
+        "cross_host_acceptance_limits": {
+          "flat_mismatch": 1e-10,
+          "lpa_time_phase_optimized_mismatch": 1e-10,
+          "lpa_zero_lag_phase_optimized_mismatch": 1e-10,
+          "phase_optimized_vector_mismatch": 1e-10
+        },
+        "flat_mismatch": 0.0,
+        "local_elementwise_gate": {
+          "applicable_to_acceptance": true,
+          "checks": {
+            "normalized_max": true,
+            "relative_l2": true
+          },
+          "limits": {
+            "normalized_max": 5e-10,
+            "relative_l2": 5e-10
+          },
+          "reason": "binding kernel-only gate: both paths consume the identical Mac-captured amplitude spline, phase spline, modes, and Ylms"
+        },
+        "lpa_weighted": {
+          "best_circular_lag_samples": 0,
+          "best_circular_lag_seconds": 0.0,
+          "frequency_band_hz": [
+            3.168567807351077e-05,
+            0.03333333333333333
+          ],
+          "frequency_bins": 2103,
+          "interpretation": "engineering diagnostic; not a LISA TDI response",
+          "optimization": "global complex phase; optional circular discrete time lag",
+          "psd_interpolation": "log-log linear within the tabulated frequency band",
+          "spectral_convention": "raw rectangular-window DFT; PSD=LPA ASD squared",
+          "strain_convention": "two-sided DFT of complex h_plus-minus-i-h_cross",
+          "time_phase_optimized_mismatch": 2.220446049250313e-16,
+          "time_phase_optimized_overlap_raw": 0.9999999999999998,
+          "weighted_relative_error": 4.896488822780971e-14,
+          "zero_lag_phase_optimized_mismatch": 0.0,
+          "zero_lag_phase_optimized_overlap_raw": 1.0
+        },
+        "max_absolute": 9.054359218619534e-36,
+        "normalized_max": 4.739071208767946e-14,
+        "passed": true,
+        "phase_optimized_vector_mismatch": 0.0,
+        "relative_l2": 2.7231030652476323e-14,
+        "shape": [
+          2104
+        ]
+      },
+      "passed": true,
+      "replay": {
+        "array_sha256": "db7fb3139338136d1c13299c8c68cd6e9c3e6eefeafabcc5236403b88cca7cb5",
+        "bitwise_repeatable": true,
+        "input_transfer_seconds": 1.1209000149392523e-05,
+        "kernel_seconds": [
+          0.002026832999945327,
+          0.0018350840000493918
+        ],
+        "physical_array_sha256": "e0ec069d17c85a60bf02ffd4e1f00fce09291c66da236241467df0d31d9516a6"
+      },
+      "scalars": {
+        "captured_device": 0,
+        "delta_t": 15.0,
+        "init_length": 4,
+        "mode_count": 124,
+        "output_length": 2104
+      },
+      "strict_metal_array_sha256": "7e5fd83f3c4b6f4c4da14e95beaed8d837db16e359fd43347decff20085a450d"
+    },
+    {
+      "key": "baseline_one_year",
+      "metrics": {
+        "cross_host_acceptance_checks": {
+          "flat_mismatch": true,
+          "lpa_time_phase_optimized_mismatch": true,
+          "lpa_zero_lag_phase_optimized_mismatch": true,
+          "phase_optimized_vector_mismatch": true
+        },
+        "cross_host_acceptance_limits": {
+          "flat_mismatch": 1e-10,
+          "lpa_time_phase_optimized_mismatch": 1e-10,
+          "lpa_zero_lag_phase_optimized_mismatch": 1e-10,
+          "phase_optimized_vector_mismatch": 1e-10
+        },
+        "flat_mismatch": 0.0,
+        "local_elementwise_gate": {
+          "applicable_to_acceptance": true,
+          "checks": {
+            "normalized_max": true,
+            "relative_l2": true
+          },
+          "limits": {
+            "normalized_max": 5e-10,
+            "relative_l2": 5e-10
+          },
+          "reason": "binding kernel-only gate: both paths consume the identical Mac-captured amplitude spline, phase spline, modes, and Ylms"
+        },
+        "lpa_weighted": {
+          "best_circular_lag_samples": 0,
+          "best_circular_lag_seconds": 0.0,
+          "frequency_band_hz": [
+            1.0013259647149842e-05,
+            0.03333331748956807
+          ],
+          "frequency_bins": 2103246,
+          "interpretation": "engineering diagnostic; not a LISA TDI response",
+          "optimization": "global complex phase; optional circular discrete time lag",
+          "psd_interpolation": "log-log linear within the tabulated frequency band",
+          "spectral_convention": "raw rectangular-window DFT; PSD=LPA ASD squared",
+          "strain_convention": "two-sided DFT of complex h_plus-minus-i-h_cross",
+          "time_phase_optimized_mismatch": 1.1102230246251565e-16,
+          "time_phase_optimized_overlap_raw": 0.9999999999999999,
+          "weighted_relative_error": 2.8022858978050872e-11,
+          "zero_lag_phase_optimized_mismatch": 9.769962616701378e-15,
+          "zero_lag_phase_optimized_overlap_raw": 0.9999999999999902
+        },
+        "max_absolute": 1.1485364663587202e-32,
+        "normalized_max": 5.816313807152233e-11,
+        "passed": true,
+        "phase_optimized_vector_mismatch": 0.0,
+        "relative_l2": 1.676156112050185e-11,
+        "shape": [
+          2103877
+        ]
+      },
+      "passed": true,
+      "replay": {
+        "array_sha256": "9f6ccf36b0bee536ed072e45436eb08f308ae003c3d8a236aa547e8ead3bdece",
+        "bitwise_repeatable": true,
+        "input_transfer_seconds": 2.5409999580006115e-06,
+        "kernel_seconds": [
+          2.1463883750002424,
+          2.144789791000221
+        ],
+        "physical_array_sha256": "b5d4e398f34ae3cc39eaa4257705fd67ccfff563cf6bc62d2f509b2ad2675b70"
+      },
+      "scalars": {
+        "captured_device": 0,
+        "delta_t": 15.0,
+        "init_length": 8,
+        "mode_count": 124,
+        "output_length": 2103877
+      },
+      "strict_metal_array_sha256": "1cb0e410fbb58e567e3ac6a40e2f7435d00e589160f5efe0078952059a2c834c"
+    },
+    {
+      "key": "positive_spin_retrograde",
+      "metrics": {
+        "cross_host_acceptance_checks": {
+          "flat_mismatch": true,
+          "lpa_time_phase_optimized_mismatch": true,
+          "lpa_zero_lag_phase_optimized_mismatch": true,
+          "phase_optimized_vector_mismatch": true
+        },
+        "cross_host_acceptance_limits": {
+          "flat_mismatch": 1e-10,
+          "lpa_time_phase_optimized_mismatch": 1e-10,
+          "lpa_zero_lag_phase_optimized_mismatch": 1e-10,
+          "phase_optimized_vector_mismatch": 1e-10
+        },
+        "flat_mismatch": 0.0,
+        "local_elementwise_gate": {
+          "applicable_to_acceptance": true,
+          "checks": {
+            "normalized_max": true,
+            "relative_l2": true
+          },
+          "limits": {
+            "normalized_max": 5e-10,
+            "relative_l2": 5e-10
+          },
+          "reason": "binding kernel-only gate: both paths consume the identical Mac-captured amplitude spline, phase spline, modes, and Ylms"
+        },
+        "lpa_weighted": {
+          "best_circular_lag_samples": 0,
+          "best_circular_lag_seconds": 0.0,
+          "frequency_band_hz": [
+            1.2674873647353328e-05,
+            0.03333174897412741
+          ],
+          "frequency_bins": 21032,
+          "interpretation": "engineering diagnostic; not a LISA TDI response",
+          "optimization": "global complex phase; optional circular discrete time lag",
+          "psd_interpolation": "log-log linear within the tabulated frequency band",
+          "spectral_convention": "raw rectangular-window DFT; PSD=LPA ASD squared",
+          "strain_convention": "two-sided DFT of complex h_plus-minus-i-h_cross",
+          "time_phase_optimized_mismatch": 2.220446049250313e-16,
+          "time_phase_optimized_overlap_raw": 0.9999999999999998,
+          "weighted_relative_error": 2.909575702147737e-13,
+          "zero_lag_phase_optimized_mismatch": 4.440892098500626e-16,
+          "zero_lag_phase_optimized_overlap_raw": 0.9999999999999996
+        },
+        "max_absolute": 1.2830693150570398e-34,
+        "normalized_max": 6.345099062733126e-13,
+        "passed": true,
+        "phase_optimized_vector_mismatch": 2.220446049250313e-16,
+        "relative_l2": 1.864704278564233e-13,
+        "shape": [
+          21039
+        ]
+      },
+      "passed": true,
+      "replay": {
+        "array_sha256": "73dbd2b7136c7961def75db8fc1410823e01f1b2f001c1aa9f50e2a47f711149",
+        "bitwise_repeatable": true,
+        "input_transfer_seconds": 8.50000014906982e-06,
+        "kernel_seconds": [
+          0.030531499999597145,
+          0.030784541999310022
+        ],
+        "physical_array_sha256": "2ef47701ca660d079f0ce3e1743b720da2ab53db43e181007801d3efb053a78f"
+      },
+      "scalars": {
+        "captured_device": 0,
+        "delta_t": 15.0,
+        "init_length": 4,
+        "mode_count": 148,
+        "output_length": 21039
+      },
+      "strict_metal_array_sha256": "ba7fe2bf02eb93dc1db42891d633fdd4a3397bc1edb72be97e91e3a13d8f759f"
+    },
+    {
+      "key": "inner_orbit",
+      "metrics": {
+        "cross_host_acceptance_checks": {
+          "flat_mismatch": true,
+          "lpa_time_phase_optimized_mismatch": true,
+          "lpa_zero_lag_phase_optimized_mismatch": true,
+          "phase_optimized_vector_mismatch": true
+        },
+        "cross_host_acceptance_limits": {
+          "flat_mismatch": 1e-10,
+          "lpa_time_phase_optimized_mismatch": 1e-10,
+          "lpa_zero_lag_phase_optimized_mismatch": 1e-10,
+          "phase_optimized_vector_mismatch": 1e-10
+        },
+        "flat_mismatch": 2.220446049250313e-16,
+        "local_elementwise_gate": {
+          "applicable_to_acceptance": true,
+          "checks": {
+            "normalized_max": true,
+            "relative_l2": true
+          },
+          "limits": {
+            "normalized_max": 5e-10,
+            "relative_l2": 5e-10
+          },
+          "reason": "binding kernel-only gate: both paths consume the identical Mac-captured amplitude spline, phase spline, modes, and Ylms"
+        },
+        "lpa_weighted": {
+          "best_circular_lag_samples": 0,
+          "best_circular_lag_seconds": 0.0,
+          "frequency_band_hz": [
+            1.2674873647353328e-05,
+            0.03333174897412741
+          ],
+          "frequency_bins": 21032,
+          "interpretation": "engineering diagnostic; not a LISA TDI response",
+          "optimization": "global complex phase; optional circular discrete time lag",
+          "psd_interpolation": "log-log linear within the tabulated frequency band",
+          "spectral_convention": "raw rectangular-window DFT; PSD=LPA ASD squared",
+          "strain_convention": "two-sided DFT of complex h_plus-minus-i-h_cross",
+          "time_phase_optimized_mismatch": 2.220446049250313e-16,
+          "time_phase_optimized_overlap_raw": 0.9999999999999998,
+          "weighted_relative_error": 2.9871485656255504e-13,
+          "zero_lag_phase_optimized_mismatch": 3.3306690738754696e-16,
+          "zero_lag_phase_optimized_overlap_raw": 0.9999999999999997
+        },
+        "max_absolute": 1.809980258969981e-34,
+        "normalized_max": 7.421874207448797e-13,
+        "passed": true,
+        "phase_optimized_vector_mismatch": 0.0,
+        "relative_l2": 2.482522926253697e-13,
+        "shape": [
+          21039
+        ]
+      },
+      "passed": true,
+      "replay": {
+        "array_sha256": "2ff491463c19b93e0d16c80c03dd6c54797f7c8beab6a6fed739dfe4d773076e",
+        "bitwise_repeatable": true,
+        "input_transfer_seconds": 5.249999958323315e-06,
+        "kernel_seconds": [
+          0.02758995799922559,
+          0.02691720799975883
+        ],
+        "physical_array_sha256": "5dcc774d3d0435d075c3c1df1cb8d8dce5233d6d50c401cc2c7c15a606e27867"
+      },
+      "scalars": {
+        "captured_device": 0,
+        "delta_t": 15.0,
+        "init_length": 4,
+        "mode_count": 113,
+        "output_length": 21039
+      },
+      "strict_metal_array_sha256": "f828b9c59585e52f5a2a1c687988693f2fb4e5884eee2c8581a32674a1fc0c29"
+    },
+    {
+      "key": "zero_spin",
+      "metrics": {
+        "cross_host_acceptance_checks": {
+          "flat_mismatch": true,
+          "lpa_time_phase_optimized_mismatch": true,
+          "lpa_zero_lag_phase_optimized_mismatch": true,
+          "phase_optimized_vector_mismatch": true
+        },
+        "cross_host_acceptance_limits": {
+          "flat_mismatch": 1e-10,
+          "lpa_time_phase_optimized_mismatch": 1e-10,
+          "lpa_zero_lag_phase_optimized_mismatch": 1e-10,
+          "phase_optimized_vector_mismatch": 1e-10
+        },
+        "flat_mismatch": 1.1102230246251565e-16,
+        "local_elementwise_gate": {
+          "applicable_to_acceptance": true,
+          "checks": {
+            "normalized_max": true,
+            "relative_l2": true
+          },
+          "limits": {
+            "normalized_max": 5e-10,
+            "relative_l2": 5e-10
+          },
+          "reason": "binding kernel-only gate: both paths consume the identical Mac-captured amplitude spline, phase spline, modes, and Ylms"
+        },
+        "lpa_weighted": {
+          "best_circular_lag_samples": 0,
+          "best_circular_lag_seconds": 0.0,
+          "frequency_band_hz": [
+            1.2674873647353328e-05,
+            0.03333174897412741
+          ],
+          "frequency_bins": 21032,
+          "interpretation": "engineering diagnostic; not a LISA TDI response",
+          "optimization": "global complex phase; optional circular discrete time lag",
+          "psd_interpolation": "log-log linear within the tabulated frequency band",
+          "spectral_convention": "raw rectangular-window DFT; PSD=LPA ASD squared",
+          "strain_convention": "two-sided DFT of complex h_plus-minus-i-h_cross",
+          "time_phase_optimized_mismatch": 0.0,
+          "time_phase_optimized_overlap_raw": 1.0,
+          "weighted_relative_error": 2.881035054630204e-13,
+          "zero_lag_phase_optimized_mismatch": 2.220446049250313e-16,
+          "zero_lag_phase_optimized_overlap_raw": 0.9999999999999998
+        },
+        "max_absolute": 9.443365419547127e-35,
+        "normalized_max": 4.806630600773187e-13,
+        "passed": true,
+        "phase_optimized_vector_mismatch": 0.0,
+        "relative_l2": 1.7508166829140605e-13,
+        "shape": [
+          21039
+        ]
+      },
+      "passed": true,
+      "replay": {
+        "array_sha256": "13411965ee6662f64cf33552c1c6d661ff7853fd861e1feca1f1ee21ff4f5fdd",
+        "bitwise_repeatable": true,
+        "input_transfer_seconds": 4.499999704421498e-06,
+        "kernel_seconds": [
+          0.02914041699932568,
+          0.02902166700005182
+        ],
+        "physical_array_sha256": "07c1388567144eadf1d0220cce5a3084adb8e8f637973e83d97829bd2aa7cf0c"
+      },
+      "scalars": {
+        "captured_device": 0,
+        "delta_t": 15.0,
+        "init_length": 4,
+        "mode_count": 136,
+        "output_length": 21039
+      },
+      "strict_metal_array_sha256": "d4b07fdd2c731f22a00e3e2749834ea69cefbccc8722604dc392d1612e5f9344"
+    }
+  ],
+  "collaboration_note": "2026-09-02 10:55 CST (mac): kernel-only replay of frozen strict-Metal summation inputs; Linux should write results under its own directory",
+  "host": {
+    "backend": "cpu",
+    "few": "2.1.0.post1.dev95+g5526b3360.d20260901",
+    "machine": "arm64",
+    "numpy": "2.5.2",
+    "platform": "macOS-26.5.2-arm64-arm-64bit",
+    "python": "3.12.12"
+  },
+  "inputs": {
+    "artifact": {
+      "bytes": 195212,
+      "path": "collaboration/mac/strict_metal_frozen_sum_inputs.npz",
+      "sha256": "abbe058932078bda38fc4404aab1c49e6b54434f02640145b4ed9465d4cac1db"
+    },
+    "report": {
+      "bytes": 28533,
+      "path": "collaboration/mac/strict_metal_frozen_sum_report.json",
+      "sha256": "6064153fd5b98d1b35be2f086a6662956ec6e7d55a80b8464a9f0e3b87d3b989"
+    }
+  },
+  "memory": {
+    "peak_process_rss_mib": 923.75
+  },
+  "metal_reference": {
+    "bytes": 33254256,
+    "path": "collaboration/mac/strict_metal_ds_reference.npz",
+    "sha256": "42bda4811e25f94797048b7168ca55e69a26d74ca8c388374052dc42922a1851"
+  },
+  "passed": true,
+  "schema": 1
+}

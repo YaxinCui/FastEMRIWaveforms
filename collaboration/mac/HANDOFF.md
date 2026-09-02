@@ -400,3 +400,71 @@ contract requested by Linux commit 0120e06c. -->
 - The user explicitly directed handoff, commit, and push. This released-lock
   handoff and both verified artifacts are included in that single Mac commit;
   the pushed Git commit identity is the synchronization boundary for Linux.
+
+## 2026-09-02 11:01 CST — frozen summation inputs isolate the remaining delta
+
+<!-- 2026-09-02 11:01 CST (mac): Hand off the exact prepared summation ABI,
+Mac CPU kernel-only acceptance, and Ubuntu CPU/CUDA replay contract. -->
+
+- Pulled and started from clean synchronized commit `3774fd1f` on the only
+  allowed branch, `codex/apple-silicon-dual-host`. Ubuntu's preceding reports
+  showed that end-to-end cross-host waveforms pass every overlap gate while
+  independent one-year regeneration reaches normalized maximum `1.7693e-5`.
+- Added `generate_strict_metal_frozen_sum.py`, which captures the exact eight
+  arrays and five scalar values passed through FEW's 14-argument summation ABI
+  for all five established cases. Every prepared input, raw Metal output, and
+  returned physical Metal waveform repeated bitwise across two calls. All five
+  physical output hashes also match the existing 33 MB strict-Metal reference.
+- Frozen input artifact:
+  - path: `collaboration/mac/strict_metal_frozen_sum_inputs.npz`;
+  - size: 195,212 bytes;
+  - SHA256: `abbe058932078bda38fc4404aab1c49e6b54434f02640145b4ed9465d4cac1db`.
+- Capture report:
+  - path: `collaboration/mac/strict_metal_frozen_sum_report.json`;
+  - size: 28,533 bytes;
+  - SHA256: `6064153fd5b98d1b35be2f086a6662956ec6e7d55a80b8464a9f0e3b87d3b989`.
+- Added `strict_metal_frozen_sum.py` and ran its CPU path on Mac. All five
+  binding `5e-10` normalized-maximum and relative-L2 gates pass. The worst
+  case is the one-year baseline: normalized maximum `5.8163138e-11`, relative
+  L2 `1.6761561e-11`, flat and vector-phase mismatches at numerical zero, and
+  LPA zero-lag mismatch `9.77e-15`. The four short cases range from
+  `4.7391e-14` to `7.4219e-13` normalized maximum.
+- Mac CPU report:
+  - path: `collaboration/mac/strict_metal_frozen_sum_cpu.json`;
+  - size: 16,208 bytes;
+  - SHA256: `865e50c1b7458ba4cf55641e649384318dd072b960fa3aafa11426477df297f4`.
+- Conclusion: the strict Metal summation kernel meets the intended same-input
+  accuracy gate. The much larger independent Mac/Linux pointwise difference
+  is upstream trajectory/spline accumulation, not evidence of a Metal kernel
+  failure. This does not waive end-to-end overlap or scientific validation.
+- Ubuntu can run CPU and CUDA replays without the ignored 5.09 GB amplitude H5;
+  exact commands and Linux-owned output paths are in `validation/README.md`.
+  No production backend, build configuration, tolerance, or Linux-owned file
+  changed. These changes remain local until the user requests commit/push.
+
+<!-- 2026-09-02 11:03 CST (mac): Record final verification after correcting
+all collaboration timestamps to the actual CST sequence. -->
+
+- Final checks pass: pinned file identities; ZIP CRC; embedded/report/source
+  and per-array hashes; two-capture bitwise checks; the full five-case Mac CPU
+  replay; Ruff 0.9.2 check/format; Python compilation; `git diff --check`; and
+  both Apple Accelerate unit tests through `unittest`.
+
+## 2026-09-02 11:27 CST — user-directed frozen-summation GitHub handoff
+
+<!-- 2026-09-02 11:27 CST (mac): Record the exact synchronization intent for
+the user's handoff, commit, and push request without opening another branch. -->
+
+- Immediately before finalization, Mac fetched
+  `origin/codex/apple-silicon-dual-host` and confirmed zero ahead/behind
+  divergence at base commit `3774fd1f`. No new branch was created.
+- The synchronization set is limited to the frozen-input generator, portable
+  CPU/CUDA replay validator, three small Mac-owned evidence files, shared
+  validation documentation, Mac handoff/README records, and the released lock.
+  It contains no H5 table, compiled dylib, cache, production backend change,
+  tolerance change, or Linux-owned result.
+- After this commit reaches GitHub, Ubuntu should pull the same branch, verify
+  the pinned NPZ/report hashes in the preceding section, acquire the lock, and
+  run the two frozen CPU/CUDA commands from `validation/README.md`. Those two
+  Linux reports are the remaining evidence needed to close the kernel-only
+  cross-host elementwise question.
