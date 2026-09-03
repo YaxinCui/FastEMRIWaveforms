@@ -481,3 +481,174 @@ editing, and define the next Mac pull boundary. -->
   preceding section, and review the documented host-resident knot arrays
   before re-running its CPU checks or beginning opt-in Metal backend
   integration.
+
+<!-- 2026-09-03 15:44 CST (linux): Record takeover of Mac's combined
+production-Metal, knowledge-base, and trajectory-diagnostic handoff with exact
+artifact identities and a bounded Linux acceptance scope. -->
+
+## 2026-09-03 15:44 CST — production Metal portability acceptance started
+
+- Fast-forwarded the only allowed branch to Mac synchronization commit
+  `c78f00dd`, confirmed a clean worktree, and acquired the shared edit lock.
+  Ubuntu will not modify files under `collaboration/mac/`.
+- Verified the four Mac handoff artifacts exactly: production frozen report
+  SHA256 `9667f26b8ee121165066ef4d07fef487c861dd18fc517d7915617803dcf08298`,
+  end-to-end report SHA256
+  `ddd624832abcc1c72a908253d765952bf697bd86a3390428602130c971c10b4a`,
+  trajectory NPZ SHA256
+  `f3e60569274d6dbe084ac4d80e66c5180468601d91a10f18d5cc1804fc0e9d4f`,
+  and trajectory JSON SHA256
+  `bfce21ec9ac0cbb2cd7bccd8ad992bb18a5f22355f51c76a4edd1df232e63d34`.
+- Acceptance is intentionally layered: first prove `FEW_WITH_METAL=AUTO/OFF`
+  cannot leak Apple compilation or change Linux backend selection, then rerun
+  CPU/CUDA numerical coverage, and finally localize the first authenticated
+  Mac/Linux trajectory difference without changing production arithmetic.
+
+<!-- 2026-09-03 16:22 CST (linux): Record the completed Linux build/runtime
+boundary, the collaboration-tag version guard, and final CPU/CUDA regression
+evidence produced from the corrected source-built wheel. -->
+
+## 2026-09-03 16:22 CST — Linux production-Metal portability passed
+
+- Built the Mac handoff twice in separate `/tmp` trees with the micromamba
+  CMake 4.4.3, Ninja 1.13.2, GCC/G++/GFortran 14.4.0, nvcc 12.9.86, and
+  CPython 3.12.13 toolchain. Both invocations used `FEW_WITH_GPU=ON`,
+  `FEW_CUDA_ARCH=75`, and `FEW_LAPACKE_FETCH=ON`; the only requested option
+  difference was `-Ccmake.define.FEW_WITH_METAL=AUTO` versus `OFF`. The exact
+  build form was:
+
+  ```sh
+  PATH="$PREFIX/bin:$PATH" CONDA_PREFIX="$PREFIX" \
+    CMAKE_PREFIX_PATH="$PREFIX" \
+    CC="$PREFIX/bin/x86_64-conda-linux-gnu-gcc" \
+    CXX="$PREFIX/bin/x86_64-conda-linux-gnu-g++" \
+    FC="$PREFIX/bin/x86_64-conda-linux-gnu-gfortran" \
+    CUDACXX="$PREFIX/bin/nvcc" \
+    uv build --wheel --python .venv/bin/python \
+      --out-dir "$BUILD_ROOT/final-wheel" \
+      -Cbuild-dir="$BUILD_ROOT/build" \
+      -Ccmake.define.FEW_WITH_METAL=AUTO \
+      -Ccmake.define.FEW_WITH_GPU=ON \
+      -Ccmake.define.FEW_CUDA_ARCH=75 \
+      -Ccmake.define.FEW_LAPACKE_FETCH=ON .
+  ```
+
+  The `OFF` invocation substituted only `FEW_WITH_METAL=OFF`; its fresh-tree
+  retry also set `FETCHCONTENT_SOURCE_DIR_LAPACK` to the identical already
+  downloaded Reference LAPACK source.
+- The first fresh `OFF` configure encountered a GitHub `SSL connect error`
+  while fetching pinned CPM.cmake and stopped before FEW compilation. The
+  successful fresh retry reused the `AUTO` tree's CPM 0.40.7 file only after
+  its SHA256 matched the repository-pinned
+  `c0fc82149e00c43a21febe7b2ca57b2ffea2b8e88ab867022c21d6b81937eb50`;
+  this required no source or host-package change.
+- Both final builds contain four CPU plus four CUDA 12.x native modules. Their
+  caches contain no `CMAKE_OBJCXX_COMPILER`; Ninja/configure evidence contains
+  no Metal Objective-C++ source or Apple framework; target help contains no
+  Metal target; and neither wheel contains `few_backend_metal`. The two wheels
+  have identical names, sizes, entry names, and all 88 non-`RECORD` entry
+  bytes:
+  - `AUTO`: 4,987,207 bytes, SHA256
+    `ca6988e1d83f892594649d103d7d0ea5049f3d5822b8875cf147769dc446bd0e`;
+  - `OFF`: 4,987,207 bytes, SHA256
+    `bcf415581a5c1166c3fb590813a067228ac1f4d7e7708bc2dc845216d90bc8bb`.
+  Different top-level hashes arise only from regenerated ZIP `RECORD` bytes;
+  both temporary wheels remain outside Git.
+- Isolated runtime checks on both wheels load `cpu` and `cuda12x`; aliases
+  `cuda` and `gpu` both resolve to `cuda12x`; ordinary
+  `InterpolatedModeSum()` selects `cuda12x`; and `has_backend("metal")` is
+  false. Explicit `get_backend("metal")` raises `BackendAccessException`
+  caused by the documented `MissingHardware` message requiring an Apple
+  Silicon Mac, rather than importing or crashing.
+- The collaboration-only tag `apple-silicon-dual-host-v1` made the default
+  version parser mislabel the first otherwise-successful wheels as
+  `1.post1.dev9`. Added the tool-recommended `tag.strict = true` guard in
+  `pyproject.toml`; the final wheels now derive from release tag `v2.1.0` and
+  report `2.1.0.post1.dev109+gc78f00dda.d20260903`. No local or remote tag was
+  deleted, renamed, or rewritten.
+- Final-wheel fast regression commands used `PYTHONPATH` pointing at an
+  extracted final `AUTO` wheel, `FEW_FILE_ALLOW_DOWNLOAD=no`, the verified
+  repository data path, both `--disable slow` and `--disable high_memory`, and
+  either `FEW_ENABLED_BACKENDS=cpu` or `FEW_ENABLED_BACKENDS='cuda12x cpu'`:
+  - CPU-only: 47 tests in 98.701 seconds, all passed, 24 expected skips;
+  - CUDA-first: 49 tests in 121.590 seconds, all passed, 23 expected skips,
+    with GPU-capable classes explicitly reporting `cuda12x`.
+- Structured portability evidence is
+  `production_metal_portability.json`: 4,057 bytes, SHA256
+  `81098e511f9dff500c98476fc0737cf8f52b3c32c1bd289c79cad0db0615f4d2`.
+
+<!-- 2026-09-03 16:22 CST (linux): Record final-wheel frozen-sum acceptance,
+the Linux-only JSON portability repair, and the first authenticated
+Mac/x86_64 trajectory divergence without changing production arithmetic. -->
+
+## 2026-09-03 16:22 CST — frozen sum passed and trajectory first difference localized
+
+- Replayed Mac's exact frozen summation ABI twice per backend using the final
+  `AUTO` wheel. Every one of the five CPU and CUDA 12.x cases is finite,
+  bitwise repeatable within its backend, and passes the binding elementwise,
+  relative-L2, flat-overlap, and LPA engineering gates. The one-year case is
+  worst: CPU normalized maximum `5.8163138e-11`, CUDA
+  `5.8163246e-11`, versus the unchanged `5e-10` gate. Its CPU calls took
+  `7.14245/7.20544 s`; CUDA took `0.148845/0.120963 s`.
+- New final-wheel reports:
+  - `production_metal_frozen_sum_cpu.json`: 16,159 bytes, SHA256
+    `2437d98b910ecf0de06af79d82232deb18425773850f9821907ca074654b4380`;
+  - `production_metal_frozen_sum_cuda12x.json`: 16,248 bytes, SHA256
+    `7f859a7281ad6f6faba651873be57e75d9a97da89251bdb5b59c137fe6e29e0c`.
+- Ran Mac's authenticated trajectory command with the final CPU wheel. The
+  first run completed all numerical work but exposed a diagnostic-only Linux
+  bug: `np.unravel_index` returned `np.int64` values that standard JSON cannot
+  serialize when a cross-host difference exists. Converted only those report
+  indices to built-in `int`. Because that necessarily changes the validator's
+  own hash, provenance now authenticates the Mac artifact/report, parameters,
+  H5, and every scientific production source exactly, permits only the
+  validator itself to differ, and records both old/new validator identities in
+  the Linux report. Production trajectory and solver arithmetic are unchanged.
+- The fixed `_p_to_u` probe inputs and all seven fast-math and strict outputs
+  are bitwise identical across Mac and Ubuntu. Initial time, state, and first
+  step size (`0.04027279778232776`) are also identical. The first difference is
+  the DOP853 controller's error estimate on attempt 0: Mac
+  `1.7441379469420097e-5`, Ubuntu `1.7441113747154614e-5`. This changes the
+  proposed next step from Mac `0.14257937511242946` to Ubuntu
+  `0.1425796466422654`; accepted state first differs on the following attempt.
+- Mac completes 7 attempts while Ubuntu uses 8; the accept/reject decision
+  first differs at zero-based attempt 6. The sparse trajectory first differs
+  at `[2, 0]`, and the dense-output coefficient first differs at `[0, 1, 2]`.
+  Direct fast-math Mac/Linux and strict Mac/Linux comparisons have the same
+  first indices, shapes, values, and norms (trajectory normalized maximum
+  `0.2435984` in both). Therefore strict `_p_to_u` does not move Ubuntu closer
+  to Mac: the first divergence is the DOP853 error-estimation path, upstream of
+  the already accepted frozen CPU/CUDA/Metal summation.
+- Trajectory evidence:
+  - `trajectory_reproducibility.npz`: 15,623 bytes, SHA256
+    `fe50d82d5172eb0c08ffb66c764e489c3efb762101d2c782aa472e77183befe0`;
+  - `trajectory_reproducibility.json`: 30,898 bytes, SHA256
+    `a8d350ed83870b56905ca306d9723d0d6f98d50949719e1e4d6936585b493e70`.
+- This result does not justify changing production tolerances or arithmetic.
+  A next P0 experiment should freeze the first DOP853 stage derivatives and
+  error-norm inputs on both architectures, then separate RHS/flux interpolation
+  rounding from controller reduction/order effects before considering any
+  solver change.
+
+<!-- 2026-09-03 16:24 CST (linux): Release the edit lock after the complete
+final-wheel, report-integrity, formatting, ownership, and large-file audit
+passed; bind the reviewed payload to the ensuing local handoff commit. -->
+
+## 2026-09-03 16:24 CST — Ubuntu acceptance released for synchronization
+
+- Ruff 0.9.2 check/format verification, Python bytecode compilation, TOML and
+  every Linux JSON parse, recorded artifact SHA256 checks, and
+  `git diff --check` all pass.
+- The changed-path audit contains only the shared lock, this Linux handoff,
+  three Linux JSON reports, the Linux trajectory JSON/NPZ pair, the narrow
+  version policy, and the trajectory validator repair. There is no changed
+  path under `collaboration/mac/`; the ignored 5.09 GB H5 remains outside Git;
+  every new tracked candidate is under 31 KB.
+- Ubuntu releases the shared edit lock. The reviewed payload is ready for its
+  local handoff commit on `codex/apple-silicon-dual-host`; do not switch to Mac
+  until the user synchronizes that commit to GitHub and pulls it there.
+- On Mac, rebuild once with `FEW_WITH_METAL=AUTO` to confirm `tag.strict = true`
+  yields the `2.1.0` lineage without changing its accepted Metal binary or
+  numerical results. For the next numerical investigation, start at the first
+  DOP853 attempt's error-estimation inputs rather than `_p_to_u` or the mode-sum
+  kernel.

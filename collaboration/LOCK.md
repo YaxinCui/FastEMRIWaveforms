@@ -102,10 +102,14 @@ Metal integration, research index, and P0 trajectory diagnostic. -->
 payload passed remote-divergence, regression, artifact-integrity, secret, and
 large-file audits; the commit containing this record is the Ubuntu sync point. -->
 
+<!-- 2026-09-03 15:44 CST (linux): Acquire the edit lock after fast-forwarding to Mac commit c78f00dd and verifying all four production/trajectory handoff artifact identities. -->
+
+<!-- 2026-09-03 16:24 CST (linux): Release editing after Linux AUTO/OFF portability, final-wheel CPU/CUDA regressions, frozen-sum replay, and authenticated trajectory localization all passed. -->
+
 - Branch: `codex/apple-silicon-dual-host`
 - Active editor: `none`
-- Last editor: `mac` — Apple M3 Pro / arm64
-- Last lock acquired: 2026-09-03 15:25 CST (Asia/Shanghai)
-- Lock released: 2026-09-03 15:29 CST (Asia/Shanghai)
-- State: The combined Mac handoff is complete and released for commit/push;
-  Ubuntu may acquire the lock only after pulling the synchronization commit.
+- Last editor: `linux` — Ubuntu x86_64 / NVIDIA GeForce RTX 2080 Ti
+- Last lock acquired: 2026-09-03 15:44 CST (Asia/Shanghai)
+- Lock released: 2026-09-03 16:24 CST (Asia/Shanghai)
+- State: Ubuntu acceptance is complete and released for a local handoff commit;
+  the user may direct GitHub synchronization before Mac reacquires the lock.

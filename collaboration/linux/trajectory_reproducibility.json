@@ -1,0 +1,1060 @@
+{
+  "artifact": {
+    "arrays": {
+      "fastmath__attempt_accepted": {
+        "dtype": "bool",
+        "sha256": "d9a12d8449e2e1da619e4dd7b9c859316fdbbe1e1b123c7b0054420880a699fd",
+        "shape": [
+          8
+        ]
+      },
+      "fastmath__attempt_error": {
+        "dtype": "float64",
+        "sha256": "9ae17a27d901f94ae4b3e81abde6df1e9da70a444706f68e3f4e441b279629fb",
+        "shape": [
+          8
+        ]
+      },
+      "fastmath__attempt_error_old": {
+        "dtype": "float64",
+        "sha256": "2201eab1547e983c89b87f00c502cf90c88c77a564f98854347248e0dc4b48bc",
+        "shape": [
+          8
+        ]
+      },
+      "fastmath__attempt_h": {
+        "dtype": "float64",
+        "sha256": "4654e7db38404283c3a3fb95c395201a8d1445d45abae4d7f988fb346d26c40d",
+        "shape": [
+          8
+        ]
+      },
+      "fastmath__attempt_h_next": {
+        "dtype": "float64",
+        "sha256": "723f0dda9d6ac43a526a8e443d3a902282f0064a644edb5849242c0ffb59cd32",
+        "shape": [
+          8
+        ]
+      },
+      "fastmath__attempt_previous_reject": {
+        "dtype": "bool",
+        "sha256": "cd2662154e6d76b2b2b92e70c0cac3ccf534f9b74eb5b89819ec509083d00a50",
+        "shape": [
+          8
+        ]
+      },
+      "fastmath__attempt_state_after": {
+        "dtype": "float64",
+        "sha256": "2ae3090a0d765ff2516ff6808f517dfb82e6d36bf56ab273e287a175454674ce",
+        "shape": [
+          8,
+          6
+        ]
+      },
+      "fastmath__attempt_state_before": {
+        "dtype": "float64",
+        "sha256": "521af56937bad08a48aac1dadd01ee84bab9885f5d8e2abf89b2df2142f7f5fd",
+        "shape": [
+          8,
+          6
+        ]
+      },
+      "fastmath__attempt_t_after": {
+        "dtype": "float64",
+        "sha256": "4e5db0088294cd0ac41de64a14d9b001ddc991437df91101a90e392407438b5c",
+        "shape": [
+          8
+        ]
+      },
+      "fastmath__attempt_t_before": {
+        "dtype": "float64",
+        "sha256": "0b255eee33d1c466844adfe8c2792876638dabe76117dbaf6fb581ef785b730a",
+        "shape": [
+          8
+        ]
+      },
+      "fastmath__integrator_times": {
+        "dtype": "float64",
+        "sha256": "90143eba6e169c5117212953c375da77adf210650e134294b92a22a8f16d4644",
+        "shape": [
+          8
+        ]
+      },
+      "fastmath__p_to_u_probe_inputs": {
+        "dtype": "float64",
+        "sha256": "1e22381d7f72c6ce36c9717cd5d51e3d193ef547bb8d2d8687c286627616c457",
+        "shape": [
+          7,
+          2
+        ]
+      },
+      "fastmath__p_to_u_probe_outputs": {
+        "dtype": "float64",
+        "sha256": "2cc161c7322ac5245bd590ee513ebec26f5875e1dc9a15e0cc112f4b84092319",
+        "shape": [
+          7
+        ]
+      },
+      "fastmath__spline_coefficients": {
+        "dtype": "float64",
+        "sha256": "beddddcd3492917a6aed4ffd1e966cf4690ece1f68be699a42eefe8371b086bb",
+        "shape": [
+          7,
+          6,
+          8
+        ]
+      },
+      "fastmath__trajectory": {
+        "dtype": "float64",
+        "sha256": "76a9b212c424ce1f45e4690cb3d92c9a9562e5f602eb7ea3f0692a99ccc8a604",
+        "shape": [
+          8,
+          7
+        ]
+      },
+      "strict__attempt_accepted": {
+        "dtype": "bool",
+        "sha256": "d9a12d8449e2e1da619e4dd7b9c859316fdbbe1e1b123c7b0054420880a699fd",
+        "shape": [
+          8
+        ]
+      },
+      "strict__attempt_error": {
+        "dtype": "float64",
+        "sha256": "9ae17a27d901f94ae4b3e81abde6df1e9da70a444706f68e3f4e441b279629fb",
+        "shape": [
+          8
+        ]
+      },
+      "strict__attempt_error_old": {
+        "dtype": "float64",
+        "sha256": "2201eab1547e983c89b87f00c502cf90c88c77a564f98854347248e0dc4b48bc",
+        "shape": [
+          8
+        ]
+      },
+      "strict__attempt_h": {
+        "dtype": "float64",
+        "sha256": "4654e7db38404283c3a3fb95c395201a8d1445d45abae4d7f988fb346d26c40d",
+        "shape": [
+          8
+        ]
+      },
+      "strict__attempt_h_next": {
+        "dtype": "float64",
+        "sha256": "723f0dda9d6ac43a526a8e443d3a902282f0064a644edb5849242c0ffb59cd32",
+        "shape": [
+          8
+        ]
+      },
+      "strict__attempt_previous_reject": {
+        "dtype": "bool",
+        "sha256": "cd2662154e6d76b2b2b92e70c0cac3ccf534f9b74eb5b89819ec509083d00a50",
+        "shape": [
+          8
+        ]
+      },
+      "strict__attempt_state_after": {
+        "dtype": "float64",
+        "sha256": "2ae3090a0d765ff2516ff6808f517dfb82e6d36bf56ab273e287a175454674ce",
+        "shape": [
+          8,
+          6
+        ]
+      },
+      "strict__attempt_state_before": {
+        "dtype": "float64",
+        "sha256": "521af56937bad08a48aac1dadd01ee84bab9885f5d8e2abf89b2df2142f7f5fd",
+        "shape": [
+          8,
+          6
+        ]
+      },
+      "strict__attempt_t_after": {
+        "dtype": "float64",
+        "sha256": "4e5db0088294cd0ac41de64a14d9b001ddc991437df91101a90e392407438b5c",
+        "shape": [
+          8
+        ]
+      },
+      "strict__attempt_t_before": {
+        "dtype": "float64",
+        "sha256": "0b255eee33d1c466844adfe8c2792876638dabe76117dbaf6fb581ef785b730a",
+        "shape": [
+          8
+        ]
+      },
+      "strict__integrator_times": {
+        "dtype": "float64",
+        "sha256": "90143eba6e169c5117212953c375da77adf210650e134294b92a22a8f16d4644",
+        "shape": [
+          8
+        ]
+      },
+      "strict__p_to_u_probe_inputs": {
+        "dtype": "float64",
+        "sha256": "1e22381d7f72c6ce36c9717cd5d51e3d193ef547bb8d2d8687c286627616c457",
+        "shape": [
+          7,
+          2
+        ]
+      },
+      "strict__p_to_u_probe_outputs": {
+        "dtype": "float64",
+        "sha256": "2cc161c7322ac5245bd590ee513ebec26f5875e1dc9a15e0cc112f4b84092319",
+        "shape": [
+          7
+        ]
+      },
+      "strict__spline_coefficients": {
+        "dtype": "float64",
+        "sha256": "beddddcd3492917a6aed4ffd1e966cf4690ece1f68be699a42eefe8371b086bb",
+        "shape": [
+          7,
+          6,
+          8
+        ]
+      },
+      "strict__trajectory": {
+        "dtype": "float64",
+        "sha256": "76a9b212c424ce1f45e4690cb3d92c9a9562e5f602eb7ea3f0692a99ccc8a604",
+        "shape": [
+          8,
+          7
+        ]
+      }
+    },
+    "bytes": 15623,
+    "path": "collaboration/linux/trajectory_reproducibility.npz",
+    "sha256": "fe50d82d5172eb0c08ffb66c764e489c3efb762101d2c782aa472e77183befe0"
+  },
+  "collaboration_note": "2026-09-03 16:16:20 CST (linux): generated the opt-in trajectory reproducibility artifact; binary NPZ carries this embedded annotation",
+  "cross_host_reference": {
+    "artifact": {
+      "bytes": 15590,
+      "path": "collaboration/mac/trajectory_reproducibility.npz",
+      "sha256": "f3e60569274d6dbe084ac4d80e66c5180468601d91a10f18d5cc1804fc0e9d4f"
+    },
+    "comparison": {
+      "actual_only": [],
+      "all_bitwise_equal": false,
+      "arrays": {
+        "fastmath__attempt_accepted": {
+          "actual_dtype": "bool",
+          "actual_shape": [
+            8
+          ],
+          "common_first_axis_length": 7,
+          "common_prefix": {
+            "bitwise_equal": false,
+            "compatible": true,
+            "first_differing_flat_index": 6,
+            "first_differing_index": [
+              6
+            ]
+          },
+          "compatible": false,
+          "reference_dtype": "bool",
+          "reference_shape": [
+            7
+          ]
+        },
+        "fastmath__attempt_error": {
+          "actual_dtype": "float64",
+          "actual_shape": [
+            8
+          ],
+          "common_first_axis_length": 7,
+          "common_prefix": {
+            "bitwise_equal": false,
+            "compatible": true,
+            "first_differing_flat_index": 0,
+            "first_differing_index": [
+              0
+            ],
+            "max_absolute": 0.5121471627187048,
+            "normalized_max": 0.5537526822088835,
+            "relative_l2": 0.6163657041106514
+          },
+          "compatible": false,
+          "reference_dtype": "float64",
+          "reference_shape": [
+            7
+          ]
+        },
+        "fastmath__attempt_error_old": {
+          "actual_dtype": "float64",
+          "actual_shape": [
+            8
+          ],
+          "common_first_axis_length": 7,
+          "common_prefix": {
+            "bitwise_equal": false,
+            "compatible": true,
+            "first_differing_flat_index": 1,
+            "first_differing_index": [
+              1
+            ],
+            "max_absolute": 0.5121471627187048,
+            "normalized_max": 14.173821066671598,
+            "relative_l2": 14.1731969173761
+          },
+          "compatible": false,
+          "reference_dtype": "float64",
+          "reference_shape": [
+            7
+          ]
+        },
+        "fastmath__attempt_h": {
+          "actual_dtype": "float64",
+          "actual_shape": [
+            8
+          ],
+          "common_first_axis_length": 7,
+          "common_prefix": {
+            "bitwise_equal": false,
+            "compatible": true,
+            "first_differing_flat_index": 1,
+            "first_differing_index": [
+              1
+            ],
+            "max_absolute": 9.95890383906099,
+            "normalized_max": 0.271841997599186,
+            "relative_l2": 0.2406257813911692
+          },
+          "compatible": false,
+          "reference_dtype": "float64",
+          "reference_shape": [
+            7
+          ]
+        },
+        "fastmath__attempt_h_next": {
+          "actual_dtype": "float64",
+          "actual_shape": [
+            8
+          ],
+          "common_first_axis_length": 7,
+          "common_prefix": {
+            "bitwise_equal": false,
+            "compatible": true,
+            "first_differing_flat_index": 0,
+            "first_differing_index": [
+              0
+            ],
+            "max_absolute": 9.95890383906099,
+            "normalized_max": 0.271841997599186,
+            "relative_l2": 0.1969913994028066
+          },
+          "compatible": false,
+          "reference_dtype": "float64",
+          "reference_shape": [
+            7
+          ]
+        },
+        "fastmath__attempt_previous_reject": {
+          "actual_dtype": "bool",
+          "actual_shape": [
+            8
+          ],
+          "common_first_axis_length": 7,
+          "common_prefix": {
+            "bitwise_equal": true,
+            "compatible": true,
+            "first_differing_flat_index": null,
+            "first_differing_index": null
+          },
+          "compatible": false,
+          "reference_dtype": "bool",
+          "reference_shape": [
+            7
+          ]
+        },
+        "fastmath__attempt_state_after": {
+          "actual_dtype": "float64",
+          "actual_shape": [
+            8,
+            6
+          ],
+          "common_first_axis_length": 7,
+          "common_prefix": {
+            "bitwise_equal": false,
+            "compatible": true,
+            "first_differing_flat_index": 6,
+            "first_differing_index": [
+              1,
+              0
+            ],
+            "max_absolute": 0.5071085175090322,
+            "normalized_max": 0.04610216238805127,
+            "relative_l2": 0.035850903340938406
+          },
+          "compatible": false,
+          "reference_dtype": "float64",
+          "reference_shape": [
+            7,
+            6
+          ]
+        },
+        "fastmath__attempt_state_before": {
+          "actual_dtype": "float64",
+          "actual_shape": [
+            8,
+            6
+          ],
+          "common_first_axis_length": 7,
+          "common_prefix": {
+            "bitwise_equal": false,
+            "compatible": true,
+            "first_differing_flat_index": 12,
+            "first_differing_index": [
+              2,
+              0
+            ],
+            "max_absolute": 0.36337326594748354,
+            "normalized_max": 0.03303393326795305,
+            "relative_l2": 0.021588325592337965
+          },
+          "compatible": false,
+          "reference_dtype": "float64",
+          "reference_shape": [
+            7,
+            6
+          ]
+        },
+        "fastmath__attempt_t_after": {
+          "actual_dtype": "float64",
+          "actual_shape": [
+            8
+          ],
+          "common_first_axis_length": 7,
+          "common_prefix": {
+            "bitwise_equal": false,
+            "compatible": true,
+            "first_differing_flat_index": 1,
+            "first_differing_index": [
+              1
+            ],
+            "max_absolute": 21.027756532377936,
+            "normalized_max": 0.30140693435491883,
+            "relative_l2": 0.34600532295055164
+          },
+          "compatible": false,
+          "reference_dtype": "float64",
+          "reference_shape": [
+            7
+          ]
+        },
+        "fastmath__attempt_t_before": {
+          "actual_dtype": "float64",
+          "actual_shape": [
+            8
+          ],
+          "common_first_axis_length": 7,
+          "common_prefix": {
+            "bitwise_equal": false,
+            "compatible": true,
+            "first_differing_flat_index": 2,
+            "first_differing_index": [
+              2
+            ],
+            "max_absolute": 15.607141412069815,
+            "normalized_max": 0.471081626776162,
+            "relative_l2": 0.4929992271326625
+          },
+          "compatible": false,
+          "reference_dtype": "float64",
+          "reference_shape": [
+            7
+          ]
+        },
+        "fastmath__integrator_times": {
+          "bitwise_equal": false,
+          "compatible": true,
+          "first_differing_flat_index": 2,
+          "first_differing_index": [
+            2
+          ],
+          "max_absolute": 7687513.995178126,
+          "normalized_max": 0.2237091075223561,
+          "relative_l2": 0.25383654033969777
+        },
+        "fastmath__p_to_u_probe_inputs": {
+          "bitwise_equal": true,
+          "compatible": true,
+          "first_differing_flat_index": null,
+          "first_differing_index": null,
+          "max_absolute": 0.0,
+          "normalized_max": 0.0,
+          "relative_l2": 0.0
+        },
+        "fastmath__p_to_u_probe_outputs": {
+          "bitwise_equal": true,
+          "compatible": true,
+          "first_differing_flat_index": null,
+          "first_differing_index": null,
+          "max_absolute": 0.0,
+          "normalized_max": 0.0,
+          "relative_l2": 0.0
+        },
+        "fastmath__spline_coefficients": {
+          "bitwise_equal": false,
+          "compatible": true,
+          "first_differing_flat_index": 10,
+          "first_differing_index": [
+            0,
+            1,
+            2
+          ],
+          "max_absolute": 0.36337326594748354,
+          "normalized_max": 0.03303393326795305,
+          "relative_l2": 0.026626854125926032
+        },
+        "fastmath__trajectory": {
+          "bitwise_equal": false,
+          "compatible": true,
+          "first_differing_flat_index": 14,
+          "first_differing_index": [
+            2,
+            0
+          ],
+          "max_absolute": 7687513.995178126,
+          "normalized_max": 0.24359837483433078,
+          "relative_l2": 0.2298043462127788
+        },
+        "strict__attempt_accepted": {
+          "actual_dtype": "bool",
+          "actual_shape": [
+            8
+          ],
+          "common_first_axis_length": 7,
+          "common_prefix": {
+            "bitwise_equal": false,
+            "compatible": true,
+            "first_differing_flat_index": 6,
+            "first_differing_index": [
+              6
+            ]
+          },
+          "compatible": false,
+          "reference_dtype": "bool",
+          "reference_shape": [
+            7
+          ]
+        },
+        "strict__attempt_error": {
+          "actual_dtype": "float64",
+          "actual_shape": [
+            8
+          ],
+          "common_first_axis_length": 7,
+          "common_prefix": {
+            "bitwise_equal": false,
+            "compatible": true,
+            "first_differing_flat_index": 0,
+            "first_differing_index": [
+              0
+            ],
+            "max_absolute": 0.5121471627187048,
+            "normalized_max": 0.5537526822088835,
+            "relative_l2": 0.6163657041106514
+          },
+          "compatible": false,
+          "reference_dtype": "float64",
+          "reference_shape": [
+            7
+          ]
+        },
+        "strict__attempt_error_old": {
+          "actual_dtype": "float64",
+          "actual_shape": [
+            8
+          ],
+          "common_first_axis_length": 7,
+          "common_prefix": {
+            "bitwise_equal": false,
+            "compatible": true,
+            "first_differing_flat_index": 1,
+            "first_differing_index": [
+              1
+            ],
+            "max_absolute": 0.5121471627187048,
+            "normalized_max": 14.173821066671598,
+            "relative_l2": 14.1731969173761
+          },
+          "compatible": false,
+          "reference_dtype": "float64",
+          "reference_shape": [
+            7
+          ]
+        },
+        "strict__attempt_h": {
+          "actual_dtype": "float64",
+          "actual_shape": [
+            8
+          ],
+          "common_first_axis_length": 7,
+          "common_prefix": {
+            "bitwise_equal": false,
+            "compatible": true,
+            "first_differing_flat_index": 1,
+            "first_differing_index": [
+              1
+            ],
+            "max_absolute": 9.95890383906099,
+            "normalized_max": 0.271841997599186,
+            "relative_l2": 0.2406257813911692
+          },
+          "compatible": false,
+          "reference_dtype": "float64",
+          "reference_shape": [
+            7
+          ]
+        },
+        "strict__attempt_h_next": {
+          "actual_dtype": "float64",
+          "actual_shape": [
+            8
+          ],
+          "common_first_axis_length": 7,
+          "common_prefix": {
+            "bitwise_equal": false,
+            "compatible": true,
+            "first_differing_flat_index": 0,
+            "first_differing_index": [
+              0
+            ],
+            "max_absolute": 9.95890383906099,
+            "normalized_max": 0.271841997599186,
+            "relative_l2": 0.1969913994028066
+          },
+          "compatible": false,
+          "reference_dtype": "float64",
+          "reference_shape": [
+            7
+          ]
+        },
+        "strict__attempt_previous_reject": {
+          "actual_dtype": "bool",
+          "actual_shape": [
+            8
+          ],
+          "common_first_axis_length": 7,
+          "common_prefix": {
+            "bitwise_equal": true,
+            "compatible": true,
+            "first_differing_flat_index": null,
+            "first_differing_index": null
+          },
+          "compatible": false,
+          "reference_dtype": "bool",
+          "reference_shape": [
+            7
+          ]
+        },
+        "strict__attempt_state_after": {
+          "actual_dtype": "float64",
+          "actual_shape": [
+            8,
+            6
+          ],
+          "common_first_axis_length": 7,
+          "common_prefix": {
+            "bitwise_equal": false,
+            "compatible": true,
+            "first_differing_flat_index": 6,
+            "first_differing_index": [
+              1,
+              0
+            ],
+            "max_absolute": 0.5071085175090322,
+            "normalized_max": 0.04610216238805127,
+            "relative_l2": 0.035850903340938406
+          },
+          "compatible": false,
+          "reference_dtype": "float64",
+          "reference_shape": [
+            7,
+            6
+          ]
+        },
+        "strict__attempt_state_before": {
+          "actual_dtype": "float64",
+          "actual_shape": [
+            8,
+            6
+          ],
+          "common_first_axis_length": 7,
+          "common_prefix": {
+            "bitwise_equal": false,
+            "compatible": true,
+            "first_differing_flat_index": 12,
+            "first_differing_index": [
+              2,
+              0
+            ],
+            "max_absolute": 0.36337326594748354,
+            "normalized_max": 0.03303393326795305,
+            "relative_l2": 0.021588325592337965
+          },
+          "compatible": false,
+          "reference_dtype": "float64",
+          "reference_shape": [
+            7,
+            6
+          ]
+        },
+        "strict__attempt_t_after": {
+          "actual_dtype": "float64",
+          "actual_shape": [
+            8
+          ],
+          "common_first_axis_length": 7,
+          "common_prefix": {
+            "bitwise_equal": false,
+            "compatible": true,
+            "first_differing_flat_index": 1,
+            "first_differing_index": [
+              1
+            ],
+            "max_absolute": 21.027756532377936,
+            "normalized_max": 0.30140693435491883,
+            "relative_l2": 0.34600532295055164
+          },
+          "compatible": false,
+          "reference_dtype": "float64",
+          "reference_shape": [
+            7
+          ]
+        },
+        "strict__attempt_t_before": {
+          "actual_dtype": "float64",
+          "actual_shape": [
+            8
+          ],
+          "common_first_axis_length": 7,
+          "common_prefix": {
+            "bitwise_equal": false,
+            "compatible": true,
+            "first_differing_flat_index": 2,
+            "first_differing_index": [
+              2
+            ],
+            "max_absolute": 15.607141412069815,
+            "normalized_max": 0.471081626776162,
+            "relative_l2": 0.4929992271326625
+          },
+          "compatible": false,
+          "reference_dtype": "float64",
+          "reference_shape": [
+            7
+          ]
+        },
+        "strict__integrator_times": {
+          "bitwise_equal": false,
+          "compatible": true,
+          "first_differing_flat_index": 2,
+          "first_differing_index": [
+            2
+          ],
+          "max_absolute": 7687513.995178126,
+          "normalized_max": 0.2237091075223561,
+          "relative_l2": 0.25383654033969777
+        },
+        "strict__p_to_u_probe_inputs": {
+          "bitwise_equal": true,
+          "compatible": true,
+          "first_differing_flat_index": null,
+          "first_differing_index": null,
+          "max_absolute": 0.0,
+          "normalized_max": 0.0,
+          "relative_l2": 0.0
+        },
+        "strict__p_to_u_probe_outputs": {
+          "bitwise_equal": true,
+          "compatible": true,
+          "first_differing_flat_index": null,
+          "first_differing_index": null,
+          "max_absolute": 0.0,
+          "normalized_max": 0.0,
+          "relative_l2": 0.0
+        },
+        "strict__spline_coefficients": {
+          "bitwise_equal": false,
+          "compatible": true,
+          "first_differing_flat_index": 10,
+          "first_differing_index": [
+            0,
+            1,
+            2
+          ],
+          "max_absolute": 0.36337326594748354,
+          "normalized_max": 0.03303393326795305,
+          "relative_l2": 0.026626854125926032
+        },
+        "strict__trajectory": {
+          "bitwise_equal": false,
+          "compatible": true,
+          "first_differing_flat_index": 14,
+          "first_differing_index": [
+            2,
+            0
+          ],
+          "max_absolute": 7687513.995178126,
+          "normalized_max": 0.24359837483433078,
+          "relative_l2": 0.2298043462127788
+        }
+      },
+      "reference_only": []
+    },
+    "integrity": "passed",
+    "report": {
+      "bytes": 13052,
+      "path": "collaboration/mac/trajectory_reproducibility.json",
+      "sha256": "bfce21ec9ac0cbb2cd7bccd8ad992bb18a5f22355f51c76a4edd1df232e63d34"
+    },
+    "source_provenance": {
+      "allowed_portability_only_differences": {
+        "validation/trajectory_reproducibility.py": {
+          "current": {
+            "bytes": 21915,
+            "path": "validation/trajectory_reproducibility.py",
+            "sha256": "24da3721a357aa1427b7d7cc2028fd310b0788961b5cb29696069a2b51b5e82d"
+          },
+          "reference": {
+            "bytes": 20061,
+            "path": "validation/trajectory_reproducibility.py",
+            "sha256": "ad34c693bdbcf782d60cce1d28754be5a2a7a22d776df0e028ef67799766e01c"
+          }
+        }
+      },
+      "exact_match": false,
+      "scientific_sources_exact": true
+    }
+  },
+  "data_files": [
+    {
+      "bytes": 9857632,
+      "path": "src/few/data/KerrEccEqFluxData.h5",
+      "sha256": "db332e617223a650eb9f890c610e928afd095edea1454b544ad06651c03a5014"
+    }
+  ],
+  "inputs": {
+    "M": 1000000.0,
+    "Phi_phi0": 0.3,
+    "Phi_r0": 0.7,
+    "Phi_theta0": 0.0,
+    "T": 1.0,
+    "a": 0.7,
+    "dt": 15.0,
+    "e0": 0.4,
+    "err": 1e-11,
+    "mu": 10.0,
+    "p0": 11.0,
+    "xI0": 1.0
+  },
+  "repository": {
+    "branch": "codex/apple-silicon-dual-host",
+    "commit": "c78f00dda72e8108c27198d169b89cfaca464413",
+    "dirty": true
+  },
+  "runtime": {
+    "few": "2.1.0.post1.dev109+gc78f00dda.d20260903",
+    "machine": "x86_64",
+    "numba": "0.67.0",
+    "numpy": "2.5.2",
+    "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
+    "python": "3.12.13",
+    "scipy": "1.18.1"
+  },
+  "same_host_fastmath_vs_strict": {
+    "actual_only": [],
+    "all_bitwise_equal": true,
+    "arrays": {
+      "attempt_accepted": {
+        "bitwise_equal": true,
+        "compatible": true,
+        "first_differing_flat_index": null,
+        "first_differing_index": null
+      },
+      "attempt_error": {
+        "bitwise_equal": true,
+        "compatible": true,
+        "first_differing_flat_index": null,
+        "first_differing_index": null,
+        "max_absolute": 0.0,
+        "normalized_max": 0.0,
+        "relative_l2": 0.0
+      },
+      "attempt_error_old": {
+        "bitwise_equal": true,
+        "compatible": true,
+        "first_differing_flat_index": null,
+        "first_differing_index": null,
+        "max_absolute": 0.0,
+        "normalized_max": 0.0,
+        "relative_l2": 0.0
+      },
+      "attempt_h": {
+        "bitwise_equal": true,
+        "compatible": true,
+        "first_differing_flat_index": null,
+        "first_differing_index": null,
+        "max_absolute": 0.0,
+        "normalized_max": 0.0,
+        "relative_l2": 0.0
+      },
+      "attempt_h_next": {
+        "bitwise_equal": true,
+        "compatible": true,
+        "first_differing_flat_index": null,
+        "first_differing_index": null,
+        "max_absolute": 0.0,
+        "normalized_max": 0.0,
+        "relative_l2": 0.0
+      },
+      "attempt_previous_reject": {
+        "bitwise_equal": true,
+        "compatible": true,
+        "first_differing_flat_index": null,
+        "first_differing_index": null
+      },
+      "attempt_state_after": {
+        "bitwise_equal": true,
+        "compatible": true,
+        "first_differing_flat_index": null,
+        "first_differing_index": null,
+        "max_absolute": 0.0,
+        "normalized_max": 0.0,
+        "relative_l2": 0.0
+      },
+      "attempt_state_before": {
+        "bitwise_equal": true,
+        "compatible": true,
+        "first_differing_flat_index": null,
+        "first_differing_index": null,
+        "max_absolute": 0.0,
+        "normalized_max": 0.0,
+        "relative_l2": 0.0
+      },
+      "attempt_t_after": {
+        "bitwise_equal": true,
+        "compatible": true,
+        "first_differing_flat_index": null,
+        "first_differing_index": null,
+        "max_absolute": 0.0,
+        "normalized_max": 0.0,
+        "relative_l2": 0.0
+      },
+      "attempt_t_before": {
+        "bitwise_equal": true,
+        "compatible": true,
+        "first_differing_flat_index": null,
+        "first_differing_index": null,
+        "max_absolute": 0.0,
+        "normalized_max": 0.0,
+        "relative_l2": 0.0
+      },
+      "integrator_times": {
+        "bitwise_equal": true,
+        "compatible": true,
+        "first_differing_flat_index": null,
+        "first_differing_index": null,
+        "max_absolute": 0.0,
+        "normalized_max": 0.0,
+        "relative_l2": 0.0
+      },
+      "p_to_u_probe_inputs": {
+        "bitwise_equal": true,
+        "compatible": true,
+        "first_differing_flat_index": null,
+        "first_differing_index": null,
+        "max_absolute": 0.0,
+        "normalized_max": 0.0,
+        "relative_l2": 0.0
+      },
+      "p_to_u_probe_outputs": {
+        "bitwise_equal": true,
+        "compatible": true,
+        "first_differing_flat_index": null,
+        "first_differing_index": null,
+        "max_absolute": 0.0,
+        "normalized_max": 0.0,
+        "relative_l2": 0.0
+      },
+      "spline_coefficients": {
+        "bitwise_equal": true,
+        "compatible": true,
+        "first_differing_flat_index": null,
+        "first_differing_index": null,
+        "max_absolute": 0.0,
+        "normalized_max": 0.0,
+        "relative_l2": 0.0
+      },
+      "trajectory": {
+        "bitwise_equal": true,
+        "compatible": true,
+        "first_differing_flat_index": null,
+        "first_differing_index": null,
+        "max_absolute": 0.0,
+        "normalized_max": 0.0,
+        "relative_l2": 0.0
+      }
+    },
+    "reference_only": []
+  },
+  "schema": "few-trajectory-reproducibility-v1",
+  "source_files": [
+    {
+      "bytes": 21915,
+      "path": "validation/trajectory_reproducibility.py",
+      "sha256": "24da3721a357aa1427b7d7cc2028fd310b0788961b5cb29696069a2b51b5e82d"
+    },
+    {
+      "bytes": 27412,
+      "path": "src/few/trajectory/ode/flux.py",
+      "sha256": "1f915406bfaa506380e4ce40a638a19fa09a966b2f67defb66165f9fd41e11fe"
+    },
+    {
+      "bytes": 25343,
+      "path": "src/few/trajectory/dopr853.py",
+      "sha256": "d0229fd3ca4d37d250ab2b4779665a23c7f5f3b672408f9892547811a2d04bd2"
+    },
+    {
+      "bytes": 26633,
+      "path": "src/few/trajectory/integrate.py",
+      "sha256": "4a28f6aaadd42b9ad302801513aa7a0b3c7e47766a6800a724925345700703d1"
+    },
+    {
+      "bytes": 15633,
+      "path": "src/few/trajectory/inspiral.py",
+      "sha256": "ebe30aa00b656b4529ba5a0c96377bf2959600d1463952f4cf710350f9678df9"
+    },
+    {
+      "bytes": 8039,
+      "path": "src/few/utils/elliptic.py",
+      "sha256": "8e432b82f884ae3cb73d2a96db448e80217d06ea6461084b2bc02979d553358d"
+    }
+  ],
+  "variants": {
+    "fastmath": {
+      "accepted_attempts": 7,
+      "attempts": 8,
+      "elapsed_seconds": 0.003293190966360271,
+      "minimum_distance_from_acceptance_boundary": 0.1761925096470407,
+      "p_sep_cache": 3.853166802402846,
+      "rejected_attempts": 1,
+      "trajectory_points": 8,
+      "variant": "fastmath"
+    },
+    "strict": {
+      "accepted_attempts": 7,
+      "attempts": 8,
+      "elapsed_seconds": 0.003393116989172995,
+      "minimum_distance_from_acceptance_boundary": 0.1761925096470407,
+      "p_sep_cache": 3.853166802402846,
+      "rejected_attempts": 1,
+      "trajectory_points": 8,
+      "variant": "strict"
+    }
+  }
+}

@@ -350,7 +350,12 @@ def numeric_comparison(reference: np.ndarray, actual: np.ndarray) -> dict[str, A
         "first_differing_index": (
             None
             if first_flat_index is None
-            else list(np.unravel_index(first_flat_index, reference.shape))
+            # 2026-09-03 16:09 CST (linux): Convert NumPy scalar indices to
+            # built-in ints so a cross-host difference remains JSON serializable.
+            else [
+                int(index)
+                for index in np.unravel_index(first_flat_index, reference.shape)
+            ]
         ),
     }
     if np.issubdtype(reference.dtype, np.number) and not np.issubdtype(
@@ -556,9 +561,31 @@ def main() -> int:
         reference_arrays, reference_report = load_verified_reference(
             reference_path, reference_report_path
         )
-        for key in ("inputs", "source_files", "data_files"):
+        for key in ("inputs", "data_files"):
             if reference_report[key] != metadata[key]:
                 raise RuntimeError(f"Current/reference provenance mismatch: {key}")
+        # 2026-09-03 16:13 CST (linux): The first cross-host comparison exposed
+        # that NumPy integer indices were not JSON serializable. Authenticate
+        # every scientific source and data input exactly, while permitting and
+        # recording only this validator's portability-only source difference.
+        reference_sources = {
+            item["path"]: item for item in reference_report["source_files"]
+        }
+        current_sources = {item["path"]: item for item in metadata["source_files"]}
+        differing_source_paths = sorted(
+            path
+            for path in reference_sources.keys() | current_sources.keys()
+            if reference_sources.get(path) != current_sources.get(path)
+        )
+        allowed_source_differences = {"validation/trajectory_reproducibility.py"}
+        unexpected_source_differences = sorted(
+            set(differing_source_paths) - allowed_source_differences
+        )
+        if unexpected_source_differences:
+            raise RuntimeError(
+                "Current/reference provenance mismatch: source_files "
+                f"{unexpected_source_differences}"
+            )
         report["cross_host_reference"] = {
             "artifact": {
                 "path": display_path(reference_path),
@@ -571,6 +598,17 @@ def main() -> int:
                 "sha256": sha256_file(reference_report_path),
             },
             "integrity": "passed",
+            "source_provenance": {
+                "exact_match": not differing_source_paths,
+                "allowed_portability_only_differences": {
+                    path: {
+                        "reference": reference_sources.get(path),
+                        "current": current_sources.get(path),
+                    }
+                    for path in differing_source_paths
+                },
+                "scientific_sources_exact": not unexpected_source_differences,
+            },
             "comparison": compare_array_sets(reference_arrays, arrays),
         }
 

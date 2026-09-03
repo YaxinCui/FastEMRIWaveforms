@@ -1,0 +1,119 @@
+{
+  "schema": "few-linux-production-metal-portability-v1",
+  "collaboration_note": "2026-09-03 16:21 CST (linux): Record the isolated Linux AUTO/OFF build, backend-selection, packaging-version, and CPU/CUDA regression evidence for Mac's opt-in production Metal handoff.",
+  "source": {
+    "branch": "codex/apple-silicon-dual-host",
+    "mac_sync_commit": "c78f00dda72e8108c27198d169b89cfaca464413",
+    "final_version": "2.1.0.post1.dev109+gc78f00dda.d20260903"
+  },
+  "host": {
+    "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
+    "machine": "x86_64",
+    "gpu": "NVIDIA GeForce RTX 2080 Ti",
+    "driver_cuda": 13020,
+    "runtime_cuda": 12090
+  },
+  "toolchain": {
+    "python": "3.12.13",
+    "cmake": "4.4.3",
+    "ninja": "1.13.2",
+    "gcc": "14.4.0",
+    "nvcc": "12.9.86",
+    "cupy": "14.2.0",
+    "numpy": "2.5.2",
+    "scipy": "1.18.1",
+    "numba": "0.67.0"
+  },
+  "builds": {
+    "auto": {
+      "few_with_metal": "AUTO",
+      "few_with_gpu": "ON",
+      "few_cuda_arch": "75",
+      "completed": true,
+      "final_rebuild_wall_seconds": 27.9,
+      "objective_cxx_compiler_configured": false,
+      "apple_framework_reference_found": false,
+      "metal_build_target_found": false,
+      "metal_native_extension_packaged": false,
+      "cpu_native_modules": 4,
+      "cuda12x_native_modules": 4,
+      "wheel": {
+        "name": "fastemriwaveforms-2.1.0.post1.dev109+gc78f00dda.d20260903-cp312-cp312-linux_x86_64.whl",
+        "bytes": 4987207,
+        "sha256": "ca6988e1d83f892594649d103d7d0ea5049f3d5822b8875cf147769dc446bd0e"
+      }
+    },
+    "off": {
+      "few_with_metal": "OFF",
+      "few_with_gpu": "ON",
+      "few_cuda_arch": "75",
+      "completed": true,
+      "final_rebuild_wall_seconds": 26.1,
+      "objective_cxx_compiler_configured": false,
+      "apple_framework_reference_found": false,
+      "metal_build_target_found": false,
+      "metal_native_extension_packaged": false,
+      "cpu_native_modules": 4,
+      "cuda12x_native_modules": 4,
+      "wheel": {
+        "name": "fastemriwaveforms-2.1.0.post1.dev109+gc78f00dda.d20260903-cp312-cp312-linux_x86_64.whl",
+        "bytes": 4987207,
+        "sha256": "bcf415581a5c1166c3fb590813a067228ac1f4d7e7708bc2dc845216d90bc8bb"
+      }
+    },
+    "wheel_equivalence": {
+      "entry_names_equal": true,
+      "non_record_entries_compared": 88,
+      "non_record_different_entries": []
+    }
+  },
+  "runtime_selection": {
+    "auto": {
+      "cpu": "cpu",
+      "cuda": "cuda12x",
+      "gpu": "cuda12x",
+      "ordinary_interpolated_mode_sum": "cuda12x",
+      "has_metal": false,
+      "explicit_metal_exception": "BackendAccessException caused by MissingHardware: The 'metal' backend requires an Apple Silicon Mac."
+    },
+    "off": {
+      "cpu": "cpu",
+      "cuda": "cuda12x",
+      "gpu": "cuda12x",
+      "ordinary_interpolated_mode_sum": "cuda12x",
+      "has_metal": false,
+      "explicit_metal_exception": "BackendAccessException caused by MissingHardware: The 'metal' backend requires an Apple Silicon Mac."
+    }
+  },
+  "fast_regressions": {
+    "cpu_only": {
+      "tests": 47,
+      "suite_seconds": 98.701,
+      "skipped": 24,
+      "passed": true
+    },
+    "cuda12x_first": {
+      "tests": 49,
+      "suite_seconds": 121.59,
+      "skipped": 23,
+      "passed": true
+    }
+  },
+  "packaging_version_guard": {
+    "problem_tag": "apple-silicon-dual-host-v1",
+    "incorrect_version_before_guard": "1.post1.dev9+gc78f00dda.d20260903",
+    "policy": "tool.setuptools_scm tag.strict = true",
+    "nearest_release_tag_after_guard": "v2.1.0",
+    "remote_tag_modified": false
+  },
+  "transient_failures": [
+    {
+      "stage": "first independent OFF configure",
+      "error": "SSL connect error while downloading pinned CPM.cmake from GitHub",
+      "classification": "network dependency fetch before FEW compilation",
+      "resolution": "reused the AUTO build's SHA256-verified CPM 0.40.7 file and identical Reference LAPACK source in a fresh OFF build directory",
+      "source_change_required": false
+    }
+  ],
+  "passed": true
+}

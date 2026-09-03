@@ -99,6 +99,9 @@ scripts.few_files = "few.cmd.files:main"         #@SKIP_PLUGIN@
 version_scheme = "no-guess-dev"
 local_scheme = "node-and-date"
 version_file = "src/few/_version.py"
+# 2026-09-03 16:19 CST (linux): Ignore collaboration/event tags without a
+# dotted release version so apple-silicon-dual-host-v1 cannot downgrade FEW.
+tag.strict = true
 #@FALLBACK_VERSION@
 
 [tool.scikit-build]
