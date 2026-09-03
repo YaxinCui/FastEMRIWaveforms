@@ -681,3 +681,309 @@ including the precision caveat and next-host synchronization boundary. -->
   policy and retained Metal result. Further optimization should profile the
   remaining CPU trajectory/amplitude stages independently rather than weaken
   the already accepted Metal precision contract.
+
+<!-- 2026-09-03 17:10 CST (linux): Record the documentation-only start of the
+user-requested Apple Silicon CPU adaptation report and its evidence boundary. -->
+
+## 2026-09-03 17:10 CST — Apple Silicon CPU report started
+
+- Remote and local `codex/apple-silicon-dual-host` both resolve to `e2967b67`;
+  the worktree was clean before acquiring the lock.
+- The report will distinguish the FP64 Accelerate/GCD CPU implementation from
+  the later opt-in Metal GPU backend. Its implementation claims must cite
+  pinned project code; its library and concurrency claims must cite primary
+  Apple/Netlib/FEW sources; measured claims must cite accepted Mac/Linux
+  reports. No production code or Mac-owned artifact will be changed.
+
+<!-- 2026-09-03 17:18 CST (linux): Record the completed CPU adaptation report,
+its identity, evidence audit, index update, and released documentation lock. -->
+
+## 2026-09-03 17:18 CST — Apple Silicon CPU report complete
+
+- Added `knowledge/APPLE_SILICON_CPU_ADAPTATION_REPORT.md`: 12,955 bytes,
+  SHA256
+  `87fa4bd944d93566873b5c497e3167e472acab7fa06a122392f7eb87404c2d05`.
+  Its 4,764-character body is approximately 2–3 A4 pages; the separately
+  labelled bibliography/code index is excluded from that count.
+- The report explains FEW's pipeline, Accelerate BLAS/LAPACK substitution,
+  GCD independence requirement, exact CMake/C++ implementation, three-layer
+  correctness strategy, measured A/B results, and CPU-versus-Metal boundary at
+  an upper-undergraduate computer-science/physics level.
+- All 17 citation identifiers resolve to primary Apple/Netlib/FEW sources,
+  pinned fork code, or accepted dual-host evidence. Recomputed speedup ratios
+  agree with every reported rounded value; external and pinned source URLs,
+  `git diff --check`, ownership, and body-length audits pass.
+- Linked the report from `knowledge/README.md`. No production source,
+  numerical artifact, Mac-owned file, tolerance, or large H5 changed. The lock
+  is released; these documentation changes remain uncommitted pending user
+  review or an explicit synchronization request.
+
+<!-- 2026-09-03 17:31 CST (linux): Record the start and strict ownership scope
+for the user-requested FEW teaching presentation. -->
+
+## 2026-09-03 17:31 CST — FEW teaching deck in progress
+
+- Acquired the documentation lock to create a 20–30 slide Chinese PowerPoint
+  explaining FEW's physics, numerical pipeline, code architecture, validation,
+  and Apple Silicon/CUDA adaptation for upper-undergraduate computer-science
+  and physics students.
+- The deck will keep per-slide source notes and cite primary literature,
+  official project documentation, pinned repository code, and accepted
+  dual-host measurements. Production source, numerical data, Mac-owned files,
+  and validation thresholds remain read-only.
+
+<!-- 2026-09-03 17:37 CST (linux): Record the presentation-runtime blocker and
+release the documentation lock without emitting an unverified PPTX. -->
+
+## 2026-09-03 17:37 CST — FEW teaching deck blocked before authoring
+
+- The required `load_workspace_dependencies` presentation-runtime facility is
+  not exposed in this session, no `RUNTIME_NODE`, `RUNTIME_NODE_MODULES`, or
+  `RUNTIME_BIN_DIR` values were supplied, and a read-only Node resolution check
+  returned `ERR_MODULE_NOT_FOUND` for `@oai/artifact-tool`.
+- The mandated presentation workflow forbids substituting `python-pptx` or an
+  unpinned system/global runtime. Therefore no PPTX, temporary builder, or
+  presentation asset was written, and no production/Mac-owned file changed.
+- The documentation lock is released. Resume by loading the presentation
+  workspace dependencies, then author the planned 20–30 slide deck with
+  per-slide `[Sources]` speaker-note blocks and full-slide render QA.
+
+<!-- 2026-09-03 17:55 CST (linux): Record the user-directed future Mac PPT
+ownership and the start of the separate CPU test-report task. -->
+
+## 2026-09-03 17:55 CST — Mac PPT continuation and CPU test report started
+
+- User decision: the Mac host will generate the 20–30 slide Chinese FEW
+  principles-and-implementation teaching deck after synchronization. It must
+  use the presentation runtime when `load_workspace_dependencies` supplies
+  `RUNTIME_NODE`, `RUNTIME_NODE_MODULES`, and `RUNTIME_BIN_DIR`, keep a
+  `[Sources]` block in every slide's speaker notes, and render/inspect every
+  slide before delivery.
+- The intended audience is upper-undergraduate computer-science and physics
+  students. The narrative should move from EMRI/LISA physical intuition to the
+  trajectory–amplitude–mode-selection–summation pipeline, then code structure,
+  CPU/CUDA/Metal execution, validation, and the accepted hybrid architecture.
+- Linux now owns only a documentation task: write an evidence-based Apple
+  Silicon CPU acceleration test report covering objectives, scope, experiment
+  construction, performance controls, numerical error metrics, and the boundary
+  between engineering consistency and scientific acceptability. Production
+  code, validation artifacts, and all Mac-owned files remain unchanged.
+
+<!-- 2026-09-03 18:01 CST (linux): Record the completed CPU test report,
+verified identity, Mac PPT continuation, and released documentation lock. -->
+
+## 2026-09-03 18:01 CST — CPU test report complete; PPT assigned to Mac
+
+- Added `knowledge/APPLE_SILICON_CPU_ACCELERATION_TEST_REPORT.md`: 24,053
+  bytes, SHA256
+  `fca0f977bf62d65403c61df2333bbb3548e2ff1aa97506e8db1bc001d1a03743`.
+- The report separates completed M3 Pro/Ubuntu evidence from proposed release
+  coverage. It defines build/package, operator, concurrency, module,
+  end-to-end, high-memory Kerr, long-duration, performance, resource, and
+  scientific-accuracy tests; gives exact error formulas and current project
+  gates; and concludes that the measured CPU implementation error is accepted
+  within tested scope but full LISA/TDI/SNR/parameter-bias coverage remains a
+  separate scientific gate.
+- All 19 citation identifiers resolve to primary Apple/Python/NumPy/Netlib/FEW
+  sources, pinned fork code, or accepted dual-host evidence. All 20 external or
+  pinned URLs returned HTTP 200; `git diff --check`, formula-presence, citation
+  closure, and Mac-ownership audits pass.
+- The future 20–30 slide FEW teaching deck is explicitly assigned to Mac after
+  synchronization and requires the presentation runtime plus per-slide source
+  notes and full render QA. No PPTX was generated on Ubuntu; no production
+  source, numerical artifact, validation tolerance, large H5, or Mac-owned file
+  changed. The lock is released and the documentation remains uncommitted.
+
+<!-- 2026-09-03 18:12 CST (linux): Record the user's new cross-host phase split,
+the Mac Metal deliverables, and the Ubuntu CUDA FP64/FP32 mixed-precision
+design/validation boundary. This explicitly supersedes the earlier one-branch
+restriction for the new CUDA research phase, but no branch is created while
+the current documentation changes remain uncommitted. -->
+
+## 2026-09-03 18:12 CST — Metal deliverables and CUDA mixed-precision phase
+
+### User-authorized change of responsibilities
+
+- **Mac owns three Apple Silicon GPU deliverables after the current files are
+  committed, pushed, and pulled there:**
+  1. an evidence-based Chinese explanation of FEW acceleration on the M-series
+     GPU through Metal, written for upper-undergraduate computer-science and
+     physics students;
+  2. a 20–30 slide Chinese teaching PPT covering FEW's physics and numerical
+     pipeline, the CPU/Metal hybrid implementation, validation, performance,
+     and limitations;
+  3. a Metal GPU test guide/report explaining what must be tested, the test
+     range and controls, how numerical error is measured, and which errors are
+     acceptable for engineering consistency versus scientific simulation.
+- **Ubuntu owns a later CUDA research phase:** create a new branch from the
+  synchronized baseline and adapt FEW from its current FP64-oriented CUDA path
+  to an explicit, opt-in FP64/FP32 mixed-precision path. Numerically sensitive
+  work stays in FP64; only stages that pass sensitivity tests may use FP32.
+- This instruction explicitly authorizes a new branch for that CUDA phase and
+  therefore supersedes the earlier “only `codex/apple-silicon-dual-host`” rule
+  for this specific work. The proposed branch name is
+  `codex/cuda-mixed-precision`. Ubuntu must not create it until the present
+  uncommitted documentation is synchronized and the worktree is clean.
+
+### Mac: required content and evidence boundaries
+
+- The GPU explanation must distinguish **Metal compute** from Apple's MPS
+  framework and must describe the implemented scope precisely. It should cover
+  unified memory, GPU parallel execution, FEW's trajectory–amplitude–mode
+  selection–summation pipeline, host/device precision boundaries, and why a
+  hybrid CPU/Metal architecture is appropriate. It must not describe the
+  current work as “all of FEW runs on the GPU” unless measurements prove that.
+- Explain which FP64-sensitive or control-heavy stages remain on CPU and which
+  high-parallelism operations run on Metal. Tie every implementation statement
+  to pinned source code, Apple documentation, FEW papers, or accepted test
+  evidence; label proposals separately from implemented facts.
+- The PPT should progress from EMRI/LISA physical intuition through the FEW
+  numerical pipeline and code structure to CPU/Metal execution, validation,
+  performance, and known limitations. Keep a `[Sources]` block in every
+  slide's speaker notes, preserve asset provenance, and render/inspect all
+  slides before delivery.
+- Before authoring, Mac should check whether `load_workspace_dependencies`
+  exposes `RUNTIME_NODE`, `RUNTIME_NODE_MODULES`, `RUNTIME_BIN_DIR`, and
+  `@oai/artifact-tool`. If that required runtime is unavailable, record the
+  blocker rather than silently substituting an unapproved presentation path.
+- The Metal test guide should cover build/package checks, backend discovery,
+  frozen-input kernel comparisons, representative end-to-end waveforms,
+  repeatability, CPU fallback/default behavior, cold and warm timings, transfer
+  cost, peak memory, and both ordinary and high-memory Kerr data when present.
+  Include interior and boundary parameters, short and long duration cases, and
+  all previously accepted five-case/full-table evidence.
+- Report component-wise maximum/relative-L2 error plus waveform mismatch after
+  time alignment, phase alignment, and—when appropriate—linear phase
+  alignment. Separate “same inputs, different backend” error from differences
+  caused by independent trajectory generation. Full LISA/TDI, SNR, and
+  parameter-bias checks remain distinct scientific-acceptance gates.
+
+### Ubuntu: proposed CUDA FP64/FP32 partition
+
+- Keep the existing FP64 CUDA implementation unchanged as the default and
+  reference path. Add an explicit opt-in mixed backend or mode (provisionally
+  `cuda_mixed`); do not globally downcast arrays, relax existing tolerances, or
+  redefine the current `cuda12x` behavior merely to make tests pass.
+- Initially retain FP64 for trajectory ODE state and adaptive error control,
+  orbital frequencies and long-duration phase accumulation, separatrix/domain
+  mappings, time/spline coordinates, waveform normalization, final complex
+  accumulation/reduction, and reference/mismatch calculations.
+- Evaluate FP32 **one stage at a time** for bandwidth- or throughput-heavy
+  intermediates such as ROMAN neural-network hidden-layer GEMM/activations,
+  sensitivity-qualified amplitude interpolation, and mode screening/importance
+  estimates. Promote outputs back to FP64 at explicit boundaries. “Candidate”
+  means unproven until operator and end-to-end tests pass.
+- The first phase is FP64+FP32 only. Do not silently enable TF32, FP16, or
+  Tensor Core modes: they require separate error budgets and explicit user
+  authorization. Record each kernel's effective dtype, accumulation dtype,
+  and promotion boundary so results are auditable.
+
+### Ubuntu: implementation and acceptance sequence
+
+1. After synchronization, verify a clean `codex/apple-silicon-dual-host`
+   worktree at the intended baseline, then create
+   `codex/cuda-mixed-precision`. Do not carry the present uncommitted reports
+   across the branch boundary accidentally.
+2. Establish the existing CUDA FP64 accuracy, timing, and memory baseline.
+   Freeze trajectory, amplitude, and summation inputs where possible so each
+   candidate stage can be isolated.
+3. Convert exactly one candidate stage, compare its operator output against
+   FP64, then run end-to-end Schwarzschild/AAK/Kerr cases spanning short and
+   one-year durations plus interior and boundary parameter regions.
+4. Evaluate maximum/relative-L2 errors and flat, phase-aligned, and linear-phase
+   aligned mismatch; then apply full LISA/TDI, SNR, or parameter-bias gates when
+   claiming scientific equivalence. Derive acceptance thresholds from the
+   existing cited test report and science requirements before tuning code.
+5. Measure repeated cold/warm latency, throughput, transfer cost, peak memory,
+   and run-to-run variability. Keep a candidate only if it provides a real
+   end-to-end benefit without crossing its predeclared error budget; otherwise
+   revert that stage to FP64.
+
+### Synchronization boundary
+
+- No new branch is created in this turn because two new reports and associated
+  handoff/index edits are still uncommitted on
+  `codex/apple-silicon-dual-host`. First commit and push that baseline, let Mac
+  pull it and complete its three deliverables, and synchronize the agreed
+  source commit. Ubuntu can then create the mixed-precision branch from that
+  clean commit.
+- Ubuntu edited only its own handoff and the shared lock for this instruction;
+  Mac-owned handoff/evidence remains read-only.
+
+<!-- 2026-09-03 18:16 CST (linux): Release the documentation lock after a clean
+diff audit. The new CUDA branch remains intentionally uncreated until the
+current baseline is committed, pushed, pulled, and verified clean. -->
+
+<!-- 2026-09-03 18:20 CST (linux): Record the user's clarification that Ubuntu
+must optimize for validated acceleration rather than implement a predetermined
+FP64+FP32 recipe; this entry supersedes only the fixed-format language in the
+18:12 plan, while retaining its synchronization and scientific-validation
+requirements. -->
+
+## 2026-09-03 18:20 CST — CUDA mix is outcome-driven, not FP64+FP32-fixed
+
+- The Ubuntu branch objective is now: **find the fastest repeatable FEW CUDA
+  execution policy that stays within a predeclared scientific error budget**.
+  FP64+FP32 is only a candidate. Hardware-supported FP16 or matrix formats,
+  mixed accumulation, double-single/compensated techniques, adaptive
+  high-precision fallback, and CPU/GPU stage placement may also be evaluated.
+- Storage dtype, arithmetic dtype, and accumulation dtype must be treated as
+  separate choices. Profiling may also justify kernel fusion, batching,
+  persistent buffers, cache/layout changes, or removal of conversions and
+  synchronizations; the project is not required to obtain its speedup from a
+  dtype conversion.
+- The accepted FP64 CUDA route remains the unchanged default and oracle. Every
+  candidate stays opt-in, is introduced one stage at a time, and must show a
+  repeatable **end-to-end** gain—not only a microkernel gain—without exceeding
+  operator, waveform, LISA/TDI, SNR, or parameter-bias gates appropriate to the
+  claim.
+- The actual RTX 2080 Ti capabilities constrain the candidate set. Do not
+  emulate an unsupported format just because it appears in a generic mixed-
+  precision list, and do not enable a hardware math mode silently. Record the
+  effective input, compute, and accumulation formats in every result.
+- Updated `knowledge/MIXED_PRECISION_PLAN.md` to make this performance-first,
+  validation-constrained policy the governing objective. The proposed branch
+  name `codex/cuda-mixed-precision` and the clean synchronization boundary are
+  unchanged; the branch is still not created in this turn.
+
+<!-- 2026-09-03 18:22 CST (linux): Release the documentation lock after
+`git diff --check` passed; no production code, branch, numerical artifact, or
+Mac-owned file was changed by this clarification. -->
+
+<!-- 2026-09-03 21:32 CST (linux): Record the start and exact scope of the
+user-requested handoff/commit/push after confirming that local HEAD and the
+fetched collaboration branch both equal e2967b67. -->
+
+## 2026-09-03 21:32 CST — synchronization package started
+
+- Acquired the shared documentation lock after fetching
+  `origin/codex/apple-silicon-dual-host`; the branch is neither ahead nor
+  behind, and both local and remote start at `e2967b67`.
+- This handoff package contains the two cited Apple Silicon CPU reports, their
+  knowledge-index entries, the corrected performance-first mixed-compute plan,
+  this Linux handoff, and the shared lock transition.
+- Mac's next responsibilities remain the M-series Metal GPU explanation, the
+  20–30 slide teaching PPT, and the Metal test guide/report described in the
+  18:12 section. Mac should read the 18:20 clarification as governing: Ubuntu's
+  later CUDA branch is not tied to FP64+FP32 and will select the fastest
+  scientifically accepted precision/execution mix by measurement.
+- No production source, test tolerance, numerical artifact, large H5,
+  Mac-owned file, or new branch is included in this synchronization package.
+
+<!-- 2026-09-03 21:34 CST (linux): Record completion of the pre-commit audit and
+release the shared lock. The six intended files are ready to commit and push on
+codex/apple-silicon-dual-host; the actual commit identity will be reported to
+the user after Git creates and the remote accepts it. -->
+
+## 2026-09-03 21:34 CST — handoff package ready
+
+- `git diff --check` passes. Both new report SHA256 identities still match the
+  18:01 record, their knowledge-index links resolve by filename, and all edited
+  files carry CST/Linux annotations.
+- The intended commit contains exactly six paths:
+  `collaboration/LOCK.md`, `collaboration/linux/HANDOFF.md`,
+  `knowledge/README.md`, `knowledge/MIXED_PRECISION_PLAN.md`,
+  `knowledge/APPLE_SILICON_CPU_ADAPTATION_REPORT.md`, and
+  `knowledge/APPLE_SILICON_CPU_ACCELERATION_TEST_REPORT.md`.
+- The shared lock is released before synchronization. Mac may take over only
+  after pulling the pushed commit and confirming a clean worktree.

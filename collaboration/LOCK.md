@@ -110,11 +110,35 @@ large-file audits; the commit containing this record is the Ubuntu sync point. -
 
 <!-- 2026-09-03 16:30 CST (linux): Release editing after recording the accepted hybrid architecture interpretation and preparing the two-commit Ubuntu synchronization boundary. -->
 
+<!-- 2026-09-03 17:10 CST (linux): Acquire the lock for the user-requested, source-cited 1–3 page Apple Silicon CPU adaptation report; production code and Mac-owned evidence remain read-only. -->
+
+<!-- 2026-09-03 17:18 CST (linux): Release editing after the cited Apple Silicon CPU report passed source-link, citation, arithmetic, length, ownership, and diff audits. -->
+
+<!-- 2026-09-03 17:31 CST (linux): Acquire the documentation lock for the user-requested 20–30 slide FEW principles-and-implementation teaching deck; production code, numerical data, and Mac-owned evidence remain read-only. -->
+
+<!-- 2026-09-03 17:37 CST (linux): Release the documentation lock because the required presentation dependency loader is unavailable and @oai/artifact-tool cannot be resolved; no deck binary or project source was changed. -->
+
+<!-- 2026-09-03 17:55 CST (linux): Acquire the documentation lock to record the future Mac PPT handoff and write the user-requested Apple Silicon CPU acceleration test/acceptance report; production code, numerical artifacts, and Mac-owned files remain read-only. -->
+
+<!-- 2026-09-03 18:01 CST (linux): Release the documentation lock after recording the Mac PPT continuation and completing the cited Apple Silicon CPU test/acceptance report; citation, URL, diff, and ownership audits pass. -->
+
+<!-- 2026-09-03 18:12 CST (linux): Acquire the documentation lock to record the user-authorized phase split: Mac owns the Apple Silicon Metal GPU explanation/PPT/test guide, while Ubuntu will later branch for an opt-in CUDA FP64/FP32 mixed-precision experiment. No branch or production source is changed in this documentation turn. -->
+
+<!-- 2026-09-03 18:16 CST (linux): Release the documentation lock after recording the complete Mac deliverables, the explicit exception to the previous branch restriction, the proposed CUDA mixed-precision branch, and its precision/validation gates. -->
+
+<!-- 2026-09-03 18:19 CST (linux): Reacquire the documentation lock to incorporate the user's clarification that CUDA mixed computation is outcome-driven rather than fixed to FP64+FP32; candidate precisions and CPU/GPU stage placement must be selected by measured speedup under scientific error gates. -->
+
+<!-- 2026-09-03 18:22 CST (linux): Release the documentation lock after updating the governing mixed-compute plan and Ubuntu handoff: the winning precision/execution mix is now an experimental result selected by end-to-end speed and scientific acceptance. -->
+
+<!-- 2026-09-03 21:32 CST (linux): Acquire the documentation lock for the user-requested Ubuntu handoff, commit, and push. The remote and local branch both resolve to e2967b67 before packaging; only the already documented reports, shared knowledge index/plan, Linux handoff, and lock are in scope. -->
+
+<!-- 2026-09-03 21:34 CST (linux): Release editing after the six-file documentation package passed diff, timestamp-comment, ownership, report-identity, and knowledge-index audits; it is ready for the requested commit and push. -->
+
 - Branch: `codex/apple-silicon-dual-host`
 - Active editor: `none`
 - Last editor: `linux` — Ubuntu x86_64 / NVIDIA GeForce RTX 2080 Ti
-- Last lock acquired: 2026-09-03 16:29 CST (Asia/Shanghai)
-- Lock released: 2026-09-03 16:30 CST (Asia/Shanghai)
-- State: Ubuntu acceptance plus the hybrid CPU/Metal conclusion are released
-  for the user-directed push; Mac may reacquire only after pulling both Ubuntu
-  commits from GitHub.
+- Last lock acquired: 2026-09-03 21:32 CST (Asia/Shanghai)
+- Lock released: 2026-09-03 21:34 CST (Asia/Shanghai)
+- State: The CPU reports, Mac Metal/PPT/test assignment, and outcome-driven
+  CUDA mixed-compute plan are ready for synchronization on the current branch.
+  No CUDA branch or production source was changed.

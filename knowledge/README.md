@@ -10,11 +10,26 @@
 and whole-pipeline review, and update the Metal status after explicit production
 integration without changing CPU/CUDA defaults. -->
 
+<!-- 2026-09-03 17:18 CST (linux): Index the user-requested, source-cited
+undergraduate-level Apple Silicon CPU adaptation report. -->
+
+<!-- 2026-09-03 18:00 CST (linux): Index the evidence-based Apple Silicon CPU
+acceleration test report and scientific-acceptance plan. -->
+
 This index favors primary documentation and papers. It records why a technique
 is relevant before code or large reference artifacts are added to the project.
 
 The detailed evidence matrix and implementation gates are in
 [APPLE_SILICON_RESEARCH.md](APPLE_SILICON_RESEARCH.md).
+
+The concise explanation of the Apple Silicon FP64 CPU adaptation—principles,
+Accelerate/GCD implementation, measured results, and validation boundaries—is
+in [APPLE_SILICON_CPU_ADAPTATION_REPORT.md](APPLE_SILICON_CPU_ADAPTATION_REPORT.md).
+
+The completed evidence, reproducible performance protocol, layered test matrix,
+numerical error definitions, current regression gates, and the boundary between
+engineering and LISA/SNR-dependent scientific acceptance are in
+[APPLE_SILICON_CPU_ACCELERATION_TEST_REPORT.md](APPLE_SILICON_CPU_ACCELERATION_TEST_REPORT.md).
 
 The opt-in FP64/FP32/FP16 workload partition, staged prototype order, and
 waveform-level acceptance gates are in

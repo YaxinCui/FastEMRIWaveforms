@@ -4,9 +4,38 @@
 
 <!-- 2026-09-01 23:37 CST (linux): Reconcile this plan with pulled Mac commit 5c872d31, which demonstrates an isolated strict double-single Metal prototype but does not yet constitute production integration. -->
 
+<!-- 2026-09-03 18:20 CST (linux): Apply the user's clarification that the CUDA goal is not a prescribed FP64+FP32 combination. The governing objective is the fastest validated mix of precision, storage, accumulation, CPU/GPU placement, and fallback supported by the actual hardware. -->
+
 Status: research and implementation proposal. Nothing in this document changes
 the production default, which remains the accepted FP64/complex-FP64 backend on
 Apple Accelerate CPU, Linux CPU, and CUDA 12.x.
+
+## Governing objective after the 2026-09-03 clarification
+
+The deliverable is **measurable end-to-end acceleration under a predeclared
+scientific error budget**, not a mandatory FP64+FP32 implementation. FP64,
+FP32, FP16, hardware-supported matrix formats, compensated accumulation,
+double-single arithmetic, and CPU/GPU stage splitting are candidates rather
+than requirements. Storage precision, compute precision, and accumulation
+precision may differ.
+
+The search must be evidence driven:
+
+1. profile the FP64 reference to locate actual time, bandwidth, allocation, and
+   synchronization costs;
+2. test one precision or execution-boundary change at a time;
+3. reject any candidate that has no repeatable end-to-end benefit, even if its
+   isolated kernel is faster;
+4. reject or add an adaptive high-precision fallback when the candidate crosses
+   its waveform/science error budget;
+5. select the fastest surviving policy for each model or workload instead of
+   forcing one global dtype policy.
+
+The local GPU's supported arithmetic determines which formats can be tried.
+Unsupported or nonaccelerated formats must not be emulated merely to satisfy a
+named-precision plan. Likewise, kernel fusion, batching, persistent buffers,
+cache layout, fewer conversions, and CPU/GPU scheduling are in scope when they
+produce a larger validated gain than dtype reduction alone.
 
 ## Post-pull feasibility update
 
@@ -30,11 +59,11 @@ for determining portable precision boundaries and performance behavior.
 
 ## Decision summary
 
-Mixed precision is worth prototyping because the current RTX 2080 Ti is a
+Mixed computation is worth prototyping because the current RTX 2080 Ti is a
 Turing GPU with much more FP32 capacity than FP64 capacity and with Tensor
 Cores for mixed-precision matrix operations. The production-oriented design
-should not cast the whole waveform model to a single lower precision. It should
-instead use:
+should not cast the whole waveform model to a single lower precision. The
+following is a conservative starting hypothesis, not a prescribed final mix:
 
 - FP64 for trajectory integration, orbital frequencies, separatrix/domain
   decisions, time, phase, and final scientific comparisons;
@@ -123,13 +152,20 @@ selection, and amplify cancellation. If FP16 coefficients are studied later,
 they need per-mode or per-block scaling plus an FP64 fallback and must remain a
 separate experimental option.
 
-## Proposed user-facing modes
+## Illustrative user-facing modes
 
 - `precision="fp64"`: unchanged default and reference behavior.
 - `precision="mixed32"`: FP64 dynamics/phases/final accumulation with FP32
   coefficient storage and selected amplitude kernels.
 - `precision="mixed16"`: later opt-in mode, initially limited to dense ROMAN
   matrix multiplication with FP32 accumulation.
+
+These names illustrate an auditable interface; they do not require FP32 or
+FP16 to survive profiling and validation. The implementation may instead
+select per-stage policies (for example, high-precision trajectory and phase,
+lower-precision amplitude kernels, high-precision accumulation), adaptive
+fallback, or a hardware-specific policy. An `auto` policy may be considered
+only after deterministic explicit policies are reproducible.
 
 The precision mode must be explicit in metadata, reports, cache names, and
 reproducibility artifacts. A reduced-precision cache must not impersonate the
@@ -140,18 +176,21 @@ registered FP64 H5 file or reuse its checksum.
 1. Profile the accepted FP64 CUDA path with kernel, memory-bandwidth, transfer,
    and CPU/GPU synchronization timings. Separate cold model construction from
    repeated waveform generation.
-2. Add a standalone, provenance-recorded FP32 coefficient-cache converter.
-   Stream the source H5 so conversion does not require two complete tables in
-   memory. Keep the original registered file untouched.
-3. Add an opt-in FP32 `AmpInterp2D` CUDA kernel and dtype-specific buffers.
-   First retain FP64 trajectory, phases, mode selection, and final summation.
-4. Test FP32 storage with FP64 interpolation separately from FP32 storage plus
-   FP32 interpolation. This distinguishes memory/bandwidth benefits from
-   arithmetic-precision effects.
-5. Replace only suitable ROMAN real `Dgemm` calls with a `GemmEx` experiment
-   using FP16 inputs and FP32 accumulation. Tensor Cores accelerate dense
-   matrix blocks; they do not automatically accelerate irregular interpolation
-   or transcendental kernels.
+2. Rank candidate interventions from the profile: reduced storage precision,
+   reduced compute precision, mixed accumulation, kernel fusion, batching,
+   persistent buffers, fewer conversions/transfers, or a changed CPU/GPU
+   boundary. Record expected benefit and risk before implementation.
+3. Implement the highest-value candidate behind an explicit opt-in policy.
+   If it changes coefficient storage, stream conversion from the source H5,
+   preserve checksum provenance, and keep the registered file untouched.
+4. Separate storage, arithmetic, and accumulation experiments. For example,
+   compare reduced storage with FP64 interpolation, reduced storage plus
+   reduced interpolation, and reduced multiplication with FP32 or FP64
+   accumulation. This identifies the source of speed and error.
+5. Apply hardware-supported matrix formats only to profiled dense operations
+   such as suitable ROMAN layers. Tensor Cores do not automatically accelerate
+   irregular interpolation or transcendental kernels, and an unsupported
+   format is not a useful target on the local GPU.
 6. Use the isolated Mac double-single Metal prototype as feasibility evidence,
    then validate it over the broader CPU/CUDA reference grid before any backend
    registration. Apple GPU support remains a separate implementation, not an
@@ -206,6 +245,9 @@ costs.
 - Do not use FP16 for trajectory integration, time, or phase evolution.
 - Do not claim a Tensor Core speedup for non-matrix kernels without profiling.
 - Do not judge success from `allclose` alone.
+- Do not keep a named precision mode merely because it was proposed; keep only
+  policies that improve repeatable end-to-end performance within the error
+  budget.
 - Stop or add an adaptive FP64 fallback if reduced precision changes domain
   decisions, selected modes, produces unstable long-duration phase error, or
   exceeds the documented waveform error budget.
@@ -214,9 +256,10 @@ costs.
 
 Proceed on two explicit experimental tracks. First, validate Mac's strict
 double-single amplitude/summation prototype against a broader Ubuntu FP64/CUDA
-reference grid and LISA-weighted mismatch. Second, implement `mixed32` for the
-Kerr coefficient cache and amplitude interpolation on CUDA behind an explicit
-option, comparing FP64, FP32 storage with FP64 arithmetic, full FP32
-interpolation, and adaptive FP32 with FP64 fallback. Defer FP16 ROMAN Tensor
-Core production work until one of these tracks demonstrates a measured,
-scientifically accepted end-to-end benefit.
+reference grid and LISA-weighted mismatch. Second, profile the CUDA FP64 path
+and implement the single highest-value opt-in candidate, comparing its storage,
+compute, accumulation, transfer, and fallback variants independently. FP32
+Kerr interpolation is one plausible first candidate, not a requirement. The
+milestone succeeds only when at least one policy produces a repeatable,
+scientifically accepted end-to-end gain; the winning precision mix is an
+experimental result.
