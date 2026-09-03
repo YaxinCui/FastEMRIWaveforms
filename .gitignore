@@ -181,3 +181,6 @@ src/few/CITATION.cff
 *.DS_Store
 
 memray*
+# 2026-09-02 14:48 CST (mac): Keep locally downloaded research papers out of
+# Git while tracking their URL/SHA256 index for reproducible dual-host use.
+knowledge/library/downloads/

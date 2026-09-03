@@ -238,6 +238,41 @@ The tracked frozen-input NPZ is approximately 195 KB. Ubuntu still needs the
 existing 33 MB strict-Metal waveform reference, but it does not need another
 H5 transfer for this kernel-only replay.
 
+<!-- 2026-09-02 13:52 CST (mac): Add the installed opt-in Metal backend to the
+same frozen-input acceptance contract used for the isolated PoC and Ubuntu. -->
+
+After building the Apple Silicon Metal extension, validate that the registered
+backend reproduces the accepted strict kernel with:
+
+```sh
+VECLIB_MAXIMUM_THREADS=1 .venv/bin/python \
+  validation/strict_metal_frozen_sum.py \
+  --backend metal --repetitions 2
+```
+
+The default output is Mac-owned
+`collaboration/mac/strict_metal_production_backend.json`; CPU and CUDA defaults
+and the existing evidence files are not overwritten.
+
+<!-- 2026-09-02 14:10 CST (mac): Document the installed-backend, public-API
+acceptance that complements the frozen kernel-only replay. -->
+
+The full-table end-to-end acceptance exercises the public
+`force_backend="metal"` path over five Kerr waveforms, compares it to CPU
+summation inside the same generator, checks repeatability and unchanged CPU
+state, and records source/data hashes:
+
+```sh
+VECLIB_MAXIMUM_THREADS=1 .venv/bin/python \
+  validation/metal_backend_end_to_end.py --repetitions 2
+```
+
+This command requires the ignored 5.09 GB
+`ZNAmps_l10_m10_n55_DS2Outer.h5` table and writes only
+`collaboration/mac/metal_backend_end_to_end.json`. It enforces `5e-10`
+normalized-maximum and relative-L2 limits plus a `1e-10` flat-mismatch limit;
+it does not replace the wider cross-host or PSD-weighted scientific campaign.
+
 <!-- 2026-09-02 13:32 CST (linux): Document the mixed host/device pointer
 placement required by the CUDA summation ABI after the first frozen replay
 exposed an all-device transfer segfault. -->
@@ -249,3 +284,55 @@ interpolation/phase coefficients, mode indices, and Ylms remain CuPy device
 arrays. Treating every frozen array as a device pointer is invalid for this
 mixed ABI and causes a native segmentation fault before a numerical report can
 be produced.
+
+## Cross-host trajectory reproducibility diagnostic
+
+<!-- 2026-09-02 17:48 CST (mac): Document the production-neutral fast-math A/B
+and adaptive-step trace added after independent one-year construction exposed
+a larger upstream Mac/Linux pointwise difference. -->
+
+`trajectory_reproducibility.py` runs the established one-year Kerr baseline
+twice: once with the production `_p_to_u` Numba `fastmath=True` mapping and once
+with an instance-local `fastmath=False` replacement. It does not edit the
+production trajectory source. Both variants capture:
+
+- the eight-point sparse trajectory and DOP853 dense-output coefficients;
+- each attempted step's time, step size, error estimate, previous-reject state,
+  acceptance decision, next step size, and state before/after the attempt;
+- fixed direct `_p_to_u` probes that do not depend on a host-computed trajectory;
+- exact source/data hashes, runtime versions, and per-array hashes.
+
+The 5.09 GB amplitude table is not used. Only the registered 9.86 MB
+`KerrEccEqFluxData.h5` file is required.
+
+Mac regeneration uses:
+
+```sh
+.venv/bin/python validation/trajectory_reproducibility.py \
+  --output-prefix collaboration/mac/trajectory_reproducibility
+```
+
+The accepted Mac artifact is only about 16 KB. On M3 Pro, fast-math and strict
+variants are bitwise equal for all 30 captured arrays, all seven attempts are
+accepted, and the smallest `abs(err - 1)` is `0.07513375704875513`. Therefore a
+one- or two-ULP direct flip of the `err <= 1` branch is not supported for this
+Mac baseline. Ubuntu is still required to determine whether the hosts differ
+before that controller decision or retain the same step topology with different
+states/coefficients.
+
+After synchronization, Ubuntu owns the lock and runs:
+
+```sh
+.venv/bin/python validation/trajectory_reproducibility.py \
+  --output-prefix collaboration/linux/trajectory_reproducibility \
+  --reference-artifact collaboration/mac/trajectory_reproducibility.npz \
+  --reference-report collaboration/mac/trajectory_reproducibility.json
+```
+
+Ubuntu writes only to `collaboration/linux/`. Its JSON report compares every
+array byte-for-byte and numerically, first verifies the reference NPZ against
+its JSON, embedded metadata, and per-array hashes, records the first differing
+element when shapes agree, and compares the common first-axis prefix if the
+number of DOP853 attempts differs. A fast-math effect is established only if
+the Ubuntu strict variant moves materially closer to the Mac strict artifact;
+same-host equality alone is not sufficient.

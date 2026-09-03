@@ -305,3 +305,37 @@ Required next validation includes a spin/eccentricity/separatrix grid,
 prograde and retrograde cases, longer trajectories, explicit mode selections,
 flat and LISA PSD-weighted overlaps with documented time/phase optimization,
 maximum phase/amplitude error, cold/warm/batch timing, and unified-memory peak.
+
+## 2026-09-02 production integration checkpoint
+
+<!-- 2026-09-02 14:10 CST (mac): Supersede the PoC-only status with the
+smallest cross-host-validated production boundary and preserve its limits. -->
+
+The strict double-single time-domain sum is now integrated as an explicit
+`metal` backend. It retains NumPy host storage and delegates every other FEW
+method to the CPU backend, so existing CPU/CUDA automatic preference lists and
+array semantics do not change. The Schwarzschild mapping call that previously
+treated every GPU as CuPy now tests `uses_cupy` explicitly.
+
+The implementation owns one runtime-compiled safe/precise Metal pipeline per
+backend instance through a narrow Objective-C++/Cython ABI. CMake defaults to
+building it only on Apple Silicon, rejects `FEW_WITH_METAL=ON` elsewhere, and
+omits the entire Objective-C++ graph for `OFF`, CUDA-only plugin, and bare
+builds. A standalone arm64 wheel build and isolated wheel import passed; the
+wheel contains the compiled extension but no Metal/Cython sources or large H5
+table.
+
+Frozen identical-input validation is exact for all five accepted cases. The
+full-table public-API run also passes all elementwise/L2/mismatch gates. Its
+one-year case has normalized maximum `5.8169724e-11`, relative L2
+`1.6761562e-11`, flat mismatch zero, and a measured warm end-to-end speedup of
+`9.15x` on the M3 Pro. A separate short Schwarzschild public-API check has
+normalized maximum `6.77e-14`.
+
+This checkpoint deliberately does not integrate Metal amplitude
+interpolation: persistent H5 slice-plan ownership needs a separate production
+lifecycle, while summation already captures the dominant long-waveform gain.
+It also does not make Metal automatic, accelerate frequency-domain summation,
+reuse per-call buffers, or claim a completed LISA PSD/parameter-bias study.
+Ubuntu still needs to accept the new build/registry boundary with Metal
+disabled while rerunning CPU/CUDA regression checks.

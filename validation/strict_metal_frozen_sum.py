@@ -39,6 +39,11 @@ DEFAULT_METAL_REFERENCE = (
     PROJECT_ROOT / "collaboration/mac/strict_metal_ds_reference.npz"
 )
 DEFAULT_OUTPUT = PROJECT_ROOT / "collaboration/mac/strict_metal_frozen_sum_cpu.json"
+# 2026-09-02 13:52 CST (mac): Give the production Metal backend its own Mac-
+# owned evidence file so it cannot overwrite the accepted CPU replay.
+DEFAULT_METAL_OUTPUT = (
+    PROJECT_ROOT / "collaboration/mac/strict_metal_production_backend.json"
+)
 LPA_PATH = PROJECT_ROOT / "src/few/data/LPA.txt"
 # 2026-09-02 11:00 CST (mac): Pin the reviewed capture and report identities so
 # Ubuntu rejects partial transfers, stale regeneration, or metadata drift.
@@ -259,15 +264,24 @@ def memory_snapshot(backend: Any) -> dict[str, float]:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--backend", choices=("cpu", "cuda12x"), default="cpu")
+    # 2026-09-02 13:52 CST (mac): Reuse the integrity-bound frozen contract to
+    # accept the installed Metal backend, not only the earlier isolated PoC.
+    parser.add_argument("--backend", choices=("cpu", "cuda12x", "metal"), default="cpu")
     parser.add_argument("--inputs", type=Path, default=DEFAULT_INPUTS)
     parser.add_argument("--input-report", type=Path, default=DEFAULT_INPUT_REPORT)
     parser.add_argument("--metal-reference", type=Path, default=DEFAULT_METAL_REFERENCE)
-    parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument("--output", type=Path)
     parser.add_argument("--repetitions", type=int, default=2)
     args = parser.parse_args()
     if args.repetitions < 2:
         raise ValueError("At least two kernel repetitions are required")
+    output_path = (
+        DEFAULT_METAL_OUTPUT
+        if args.output is None and args.backend == "metal"
+        else DEFAULT_OUTPUT
+        if args.output is None
+        else args.output
+    )
 
     embedded, frozen_cases, frozen_identities = load_inputs(
         args.inputs, args.input_report
@@ -312,7 +326,7 @@ def main() -> None:
         "schema": 1,
         "collaboration_note": (
             "2026-09-02 10:55 CST (mac): kernel-only replay of frozen strict-"
-            "Metal summation inputs; Linux should write results under its own directory"
+            "Metal summation inputs; each host writes results under its own directory"
         ),
         "host": {
             "platform": platform.platform(),
@@ -328,8 +342,8 @@ def main() -> None:
         "memory": memory_snapshot(backend),
         "passed": all(case["passed"] for case in case_reports),
     }
-    args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")
     sys.stdout.write(json.dumps(report, indent=2, sort_keys=True) + "\n")
     if not report["passed"]:
         raise SystemExit(1)

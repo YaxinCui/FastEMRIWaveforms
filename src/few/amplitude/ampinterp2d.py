@@ -549,7 +549,9 @@ class AmpInterpSchwarzEcc(AmplitudeBase, SchwarzschildEccentric):
 
         assert self.xp.all(xI == 1.0)
 
-        u = self.xp.asarray(schwarzecc_p_to_y(p, e, use_gpu=self.backend.uses_gpu))
+        # 2026-09-02 13:50 CST (mac): Array placement follows CuPy, not generic
+        # GPU execution; the Metal hybrid intentionally retains NumPy storage.
+        u = self.xp.asarray(schwarzecc_p_to_y(p, e, use_gpu=self.backend.uses_cupy))
         w = e.copy()
 
         tw, tu, c = self.tck[:3]

@@ -4,6 +4,7 @@ add_subdirectory(cutils)
 # Handle Git Metadata
 get_target_property(_FEW_WITH_CPU fastemriwaveforms WITH_CPU)
 get_target_property(_FEW_WITH_GPU fastemriwaveforms WITH_GPU)
+get_target_property(_FEW_WITH_METAL fastemriwaveforms WITH_METAL)
 
 message(CHECK_START "Building few.git_version metadata")
 message(CHECK_START "Find Git executable")
@@ -40,6 +41,12 @@ if(Git_FOUND)
     if(_FEW_WITH_GPU)
       install(FILES ${CMAKE_CURRENT_BINARY_DIR}/git_version.py
               DESTINATION few_backend_cuda${CUDAToolkit_VERSION_MAJOR}x)
+    endif()
+    if(_FEW_WITH_METAL)
+      # 2026-09-02 13:50 CST (mac): Give the Apple backend the same build
+      # provenance module as CPU/CUDA wheels and editable installs.
+      install(FILES ${CMAKE_CURRENT_BINARY_DIR}/git_version.py
+              DESTINATION few_backend_metal)
     endif()
 
     message(CHECK_PASS "done")

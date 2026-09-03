@@ -284,6 +284,7 @@ endfunction()
 # GPU backend need to be compiled. Let's retrieve these information here:
 get_target_property(FEW_WITH_CPU fastemriwaveforms WITH_CPU)
 get_target_property(FEW_WITH_GPU fastemriwaveforms WITH_GPU)
+get_target_property(FEW_WITH_METAL fastemriwaveforms WITH_METAL)
 get_target_property(FEW_USE_APPLE_ACCELERATE fastemriwaveforms
                     USE_APPLE_ACCELERATE)
 
@@ -318,6 +319,33 @@ if(SKBUILD_STATE STREQUAL "editable")
   set(BACKEND_BASE_OUTPUT_DIRECTORY "${fastemriwaveforms_BINARY_DIR}/src")
 else()
   set(BACKEND_BASE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}")
+endif()
+
+# 2026-09-02 13:50 CST (mac): Resolve system frameworks once for the isolated
+# Apple Metal extension. This block is absent from non-Apple build graphs.
+if(FEW_WITH_METAL)
+  find_library(FEW_METAL_FRAMEWORK Metal REQUIRED)
+  find_library(FEW_FOUNDATION_FRAMEWORK Foundation REQUIRED)
+  find_library(FEW_METAL_ACCELERATE_FRAMEWORK Accelerate REQUIRED)
+
+  function(apply_metal_backend_common_options libname)
+    set(target_name "few_metal_${libname}")
+    set_property(
+      TARGET ${target_name}
+      PROPERTY LIBRARY_OUTPUT_DIRECTORY
+               "${BACKEND_BASE_OUTPUT_DIRECTORY}/few_backend_metal")
+    set_property(TARGET ${target_name} PROPERTY OUTPUT_NAME ${libname})
+    set_target_properties(${target_name} PROPERTIES CXX_STANDARD 17
+                                                    OBJCXX_STANDARD 17)
+    target_compile_options(${target_name}
+                           PRIVATE "$<$<COMPILE_LANGUAGE:OBJCXX>:-fobjc-arc>")
+    target_include_directories(${target_name}
+                               PRIVATE ${Python_NumPy_INCLUDE_DIR})
+    target_link_libraries(
+      ${target_name} PRIVATE ${FEW_METAL_FRAMEWORK} ${FEW_FOUNDATION_FRAMEWORK}
+                             ${FEW_METAL_ACCELERATE_FRAMEWORK})
+    install(TARGETS ${target_name} DESTINATION few_backend_metal)
+  endfunction()
 endif()
 
 # apply_cpu_backend_common_options
@@ -497,6 +525,25 @@ if(FEW_WITH_GPU)
   target_sources(
     few_gpu_pyinterp PUBLIC FILE_SET HEADERS FILES cuda_complex.hpp global.h
                             interpolate.hh)
+endif()
+
+# IV. Declare the explicitly selected Apple Metal hybrid backend. It shares
+# NumPy storage and all non-summation CPU methods, so only pyinterp is replaced.
+if(FEW_WITH_METAL)
+  add_custom_command(
+    OUTPUT "pymetal.cxx"
+    COMMENT "Cythonize pymetal.pyx into the Metal pyinterp module"
+    COMMAND
+      Python::Interpreter -m cython "${CMAKE_CURRENT_SOURCE_DIR}/pymetal.pyx"
+      --output-file "${CMAKE_CURRENT_BINARY_DIR}/pymetal.cxx" -3 -+
+      --module-name "pyinterp" -I "${CMAKE_CURRENT_SOURCE_DIR}"
+    DEPENDS "pymetal.pyx" "metal_sum.hh"
+    VERBATIM)
+
+  python_add_library(few_metal_pyinterp MODULE WITH_SOABI pymetal.cxx
+                     metal_sum.mm)
+  apply_metal_backend_common_options(pyinterp)
+  target_sources(few_metal_pyinterp PUBLIC FILE_SET HEADERS FILES metal_sum.hh)
 endif()
 
 # -------------

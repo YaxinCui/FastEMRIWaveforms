@@ -468,3 +468,234 @@ the user's handoff, commit, and push request without opening another branch. -->
   run the two frozen CPU/CUDA commands from `validation/README.md`. Those two
   Linux reports are the remaining evidence needed to close the kernel-only
   cross-host elementwise question.
+
+## 2026-09-02 14:10 CST — opt-in Metal production integration ready
+
+<!-- 2026-09-02 14:10 CST (mac): Hand off the production boundary, exact Mac
+evidence, packaging result, remaining Ubuntu acceptance, and local Git state. -->
+
+- Fast-forwarded to Ubuntu handoff `a7c04d81`. Ubuntu's identical-input CPU and
+  CUDA replays pass all five strict gates; the one-year normalized maxima are
+  approximately `5.8163e-11` for both. This confirms the earlier independent
+  cross-host `1.7693e-5` pointwise delta is created before summation in
+  trajectory/spline accumulation, not by the strict Metal kernel.
+- Integrated only the strict time-domain mode sum as an explicit
+  `force_backend="metal"` path. NumPy remains `xp`; all unswapped methods come
+  from the CPU backend; the existing CUDA/CPU preference lists are unchanged.
+  The build uses a new Apple-only Objective-C++/Cython module and the existing
+  runtime Metal compiler, with no PyTorch, MPS, or MLX dependency.
+- `FEW_WITH_METAL=AUTO` configured and built `few_metal_pyinterp` on this M3
+  Pro. `FEW_WITH_METAL=OFF` configured without Objective-C++ and exposed no
+  Metal target. The editable source installation was rebuilt in the existing
+  uv CPython 3.12.12 `.venv` with Metal and Apple Accelerate enabled.
+- Production frozen replay result:
+  - `collaboration/mac/strict_metal_production_backend.json`;
+  - 15,760 bytes;
+  - SHA256 `9667f26b8ee121165066ef4d07fef487c861dd18fc517d7915617803dcf08298`;
+  - all five physical arrays exactly match the isolated strict-Metal reference
+    hashes, so normalized maximum, relative L2, and flat mismatch are all zero.
+- Public-API full-table result:
+  - `collaboration/mac/metal_backend_end_to_end.json`;
+  - 11,502 bytes;
+  - SHA256 `ddd624832abcc1c72a908253d765952bf697bd86a3390428602130c971c10b4a`;
+  - all five cases are finite and bitwise repeatable; CPU before/after is
+    bitwise unchanged; every `5e-10` elementwise/L2 and `1e-10` mismatch gate
+    passes;
+  - one year / 2,103,877 samples / 124 modes: normalized maximum
+    `5.8169724e-11`, relative L2 `1.6761562e-11`, flat mismatch zero, CPU warm
+    median `2.11565 s`, Metal warm median `0.231114 s`, speedup `9.154x`, last
+    GPU command `0.07561 s`;
+  - short, retrograde, inner-orbit, and zero-spin normalized maxima range from
+    `4.617e-14` to `7.442e-13`, with warm speedups from `1.44x` to `2.21x`;
+  - model load was `6.952 s`; peak process RSS was `6553.7 MiB`.
+- A targeted 2,104-sample Schwarzschild public-API CPU/Metal comparison also
+  passes after separating generic GPU capability from CuPy array placement:
+  normalized maximum `6.772e-14`, relative L2 `3.167e-14`.
+- The standard fast suite passed 47 tests in `61.380 s`, with 19 intended
+  `slow/high_memory` skips. Metal unit/lifecycle tests, Ruff 0.9.2, CMake
+  formatting, warning-as-error Objective-C++ compilation, `compileall`, and
+  `git diff --check` pass.
+- A source-built macOS arm64 wheel is 399,459 bytes. An isolated import loaded
+  its Metal namespace and created the pipeline; the extension links only
+  system Metal, Foundation, Accelerate, C++, Objective-C, CoreFoundation, and
+  libSystem. The wheel contains no `.mm`, `.pyx`, `.hh`, or 5.09 GB H5 file.
+  The ignored H5 was restored with SHA256
+  `3236d8b5eff618242291e9eeb24638dbbbb82fac464ae575dc3f2ba158c54834`.
+- Remaining scope is intentionally explicit: Metal is not automatic; amplitude
+  and frequency-domain paths remain CPU; per-call Metal buffers are not yet
+  cached; wider parameter/mode and LISA PSD/parameter-bias validation remains
+  future work. No validation tolerance was relaxed.
+
+### Ubuntu continuation after user-directed synchronization
+
+1. Pull only `codex/apple-silicon-dual-host`, verify it contains this handoff,
+   and acquire the shared lock. Do not edit `collaboration/mac/`.
+2. Configure/build with `FEW_WITH_METAL=AUTO` and separately `OFF`; both must
+   resolve to a Linux build with no Objective-C++ compiler, Apple frameworks,
+   Metal extension, or regression in CPU/CUDA targets.
+3. Verify ordinary module construction still selects CUDA/CPU according to the
+   pre-existing preference and that explicit `get_backend("metal")` fails with
+   the documented unavailable-hardware boundary rather than an import crash.
+4. Rerun the Linux CPU/CUDA targeted tests and frozen-summation replays into new
+   Linux-owned report paths. If the 5.09 GB table remains present, an optional
+   full Kerr regression may reuse it; it is not needed for build portability or
+   frozen-kernel acceptance and must remain outside Git.
+5. Record exact commands, versions, report hashes, timings, and failures in
+   `collaboration/linux/HANDOFF.md`, release the lock, and wait for the user to
+   direct the next synchronization.
+
+These production-integration changes are local and uncommitted. Mac must not
+switch hosts until the user explicitly requests the reviewed handoff commit
+and push.
+
+## 2026-09-02 15:24 CST — multidisciplinary research and architecture review
+
+<!-- 2026-09-02 15:24 CST (mac): Hand off the source-verified local literature
+archive, whole-pipeline error model, HDF5 audit, and prioritized follow-up plan;
+no production behavior changed during this research pass. -->
+
+- Expanded the local literature archive to 36 valid PDFs / 74,051,443 bytes,
+  covering FEW/EMRI physics, waveform-accuracy standards, LISA response and
+  noise, FFT/NUFFT and likelihood acceleration, reproducible arithmetic,
+  Apple Metal, and CUDA. `knowledge/library/downloads/` is ignored; the tracked
+  `knowledge/library/MANIFEST.tsv` records URLs, bytes, pages, and SHA-256 for
+  independent reconstruction. All entries passed a local file/hash/page check.
+- `knowledge/library/INDEX.md` maps each source family to an observed FEW
+  problem rather than treating the archive as an undirected bibliography.
+  `pypdf` 6.16.2 was installed only into the existing local `.venv` to validate
+  the PDFs; it is not an FEW dependency.
+- `knowledge/FEW_ARCHITECTURE_AND_APPLE_ADAPTATION.md` separates four error
+  layers: physical-model error, numerical algorithm/interpolation error,
+  identical-input backend error, and detector-weighted scientific error. The
+  published order-`1e-5` model mismatch, the measured `5.82e-11` strict-Metal
+  same-input difference, and the independent cross-host `1.77e-5` pointwise
+  drift must not be compared as if they were one metric.
+- Source inspection reinforces that the independent one-year cross-host drift
+  should be localized first in adaptive DOP853 decisions, dense-output knots,
+  orbital-frequency/phase accumulation, and transcendental functions. The
+  frozen-input summation results already exclude the Metal mode sum as its
+  source. Proposed follow-up is an opt-in checkpoint tracer, tolerance sweep,
+  and fixed-step/fixed-knot reference experiment.
+- The registered `ZNAmps_l10_m10_n55_DS2Outer.h5` is 5,089,095,248 bytes on
+  disk, with two dominant contiguous coefficient arrays of shapes
+  `(33, 6993, 2, 1089)` and `(33, 6993, 2, 289)`. The current constructor reads
+  both arrays completely and creates holders for all 33 spins, although one
+  waveform evaluation uses one exact spin slice or two adjacent slices.
+  Lazy hyperslab loading plus a bounded slice cache is therefore a high-value
+  P1 prototype; it needs cold/warm latency, RSS, concurrency, amplitude, and
+  waveform comparisons before acceptance.
+- The Metal executor already persists its device, queue, and pipeline, but each
+  call still allocates thirteen buffers, performs CPU FP64-to-high/low splitting
+  and phase preparation, waits synchronously, and reconstructs complex output.
+  Reusable capacity buffers, static mode/Ylm caches, and counter-guided profiling
+  are the next measured Metal optimizations after correctness is frozen.
+- Longer term, separate array placement, accelerator identity, precision, and
+  per-kernel capability instead of treating them as one global backend. A typed
+  buffer/lifetime boundary is needed before asynchronous or broader mixed-device
+  execution.
+- No production source, build setting, tolerance, report, or HDF5 data was
+  changed by this research-only portion. The production integration earlier in
+  this handoff remains uncommitted and still awaits user-directed synchronization
+  and Ubuntu portability/CUDA regression work.
+
+## 2026-09-02 17:48 CST — P0 trajectory reproducibility experiment prepared
+
+<!-- 2026-09-02 17:48 CST (mac): Hand off the first user-directed execution
+result, including the falsified Mac-local branch-flip assumption and the exact
+Ubuntu replay command; production trajectory behavior remains unchanged. -->
+
+- Added `validation/trajectory_reproducibility.py`. It replaces `_p_to_u` only
+  in the diagnostic process, so `src/few/trajectory/ode/flux.py` and production
+  behavior are unchanged. It captures fast-math and strict variants, all DOP853
+  attempt decisions/states, sparse output, dense-output coefficients, fixed
+  mapping probes, source/data hashes, and optional cross-host comparisons.
+- Used the exact established one-year baseline: `M=1e6`, `mu=10`, `a=0.7`,
+  `p0=11`, `e0=0.4`, `xI0=1`, phases `(0.3, 0, 0.7)`, `T=1`, `dt=15`, and
+  `err=1e-11`.
+- Mac fast-math versus strict is bitwise equal across all 30 arrays, including
+  mapping probes, seven attempted/accepted steps, all states, the eight-point
+  trajectory, and `(7,6,8)` dense-output coefficients. An independent complete
+  rerun also reproduced every captured array bitwise.
+- There are no rejected steps. DOP853 errors are approximately
+  `[1.744e-5, 1.279e-4, 2.980e-4, 1.503e-6, 3.760e-7, 3.613e-2, 0.924866]`;
+  the nearest acceptance-boundary distance is `0.07513375704875513`. This
+  falsifies the narrow claim that a one- or two-ULP difference directly flips
+  `err <= 1.0` on the Mac baseline. It does not exclude earlier host-dependent
+  state/derivative differences or later dense-output evaluation differences.
+- Mac evidence:
+  - `collaboration/mac/trajectory_reproducibility.npz`: 15,590 bytes, SHA256
+    `f3e60569274d6dbe084ac4d80e66c5180468601d91a10f18d5cc1804fc0e9d4f`;
+  - `collaboration/mac/trajectory_reproducibility.json`: 13,052 bytes, SHA256
+    `bfce21ec9ac0cbb2cd7bccd8ad992bb18a5f22355f51c76a4edd1df232e63d34`;
+  - required `KerrEccEqFluxData.h5`: 9,857,632 bytes, SHA256
+    `db332e617223a650eb9f890c610e928afd095edea1454b544ad06651c03a5014`.
+- The artifact/report embedded metadata, all 30 array hashes, six source hashes,
+  and data hash pass integrity validation. Ruff 0.9.2 check/format and Python
+  compilation pass. No 5.09 GB amplitude table is needed for the replay.
+
+### Ubuntu continuation after the next user-directed synchronization
+
+1. Pull only `codex/apple-silicon-dual-host`, verify the two Mac identities
+   above, then acquire the shared lock. Do not edit `collaboration/mac/`.
+2. Run:
+
+   ```sh
+   .venv/bin/python validation/trajectory_reproducibility.py \
+     --output-prefix collaboration/linux/trajectory_reproducibility \
+     --reference-artifact collaboration/mac/trajectory_reproducibility.npz \
+     --reference-report collaboration/mac/trajectory_reproducibility.json
+   ```
+
+3. Determine the first differing layer separately for fast-math and strict:
+   fixed mapping probe, initial/adaptive step values, accepted state, sparse
+   trajectory, or dense-output coefficient. Report whether strict moves closer
+   to Mac; do not infer this from same-host equality alone.
+4. Record the Linux NPZ/JSON identities and interpretation in the Linux handoff,
+   release the lock, and wait for user-directed synchronization back to Mac.
+
+These diagnostic changes and the earlier production Metal integration remain
+local and uncommitted. Mac must not switch hosts before the user directs the
+handoff commit/push.
+
+## 2026-09-03 15:29 CST — combined Mac handoff prepared for synchronization
+
+<!-- 2026-09-03 15:29 CST (mac): Close the user-directed combined Metal,
+knowledge-base, and trajectory-diagnostic work set after a fresh remote audit,
+fast regression run, artifact identity check, and large-file exclusion check. -->
+
+- The commit containing this section is the single synchronization boundary for
+  the opt-in production Metal backend, the reproducible research index, and the
+  production-neutral P0 trajectory diagnostic described above. It remains on
+  the only permitted branch, `codex/apple-silicon-dual-host`.
+- Immediately before preparation, local `HEAD` and
+  `origin/codex/apple-silicon-dual-host` both resolved to `a7c04d81402e`; there
+  was no unseen Ubuntu commit or merge to reconcile.
+- Final Mac checks passed:
+  - Ruff 0.9.2 check and format verification on all new/changed Python
+    validators and Metal tests;
+  - Python bytecode compilation and `git diff --check`;
+  - the standard fast suite: 47 tests in 56.665 s, all passed, 19 intentional
+    `slow`/`high_memory`/platform skips;
+  - report/artifact SHA-256 identities exactly match the values recorded in the
+    2026-09-02 handoff sections.
+- The Git payload contains no downloaded research PDF, virtual environment,
+  cache/build output, or 5,089,095,248-byte Kerr amplitude table. Only the
+  small tracked `knowledge/library/INDEX.md` and `MANIFEST.tsv` describe the
+  ignored 36-PDF local archive. The previously tracked 98.12 MiB Schwarzschild
+  data table is unchanged.
+
+### Ubuntu continuation contract
+
+1. Pull this same branch and verify the commit plus the four Mac artifact hashes
+   recorded above; then acquire `collaboration/LOCK.md` and write only the Linux
+   collaboration area for host-specific evidence.
+2. Confirm Linux builds with `FEW_WITH_METAL=AUTO` and `FEW_WITH_METAL=OFF`,
+   preserves CPU/CUDA targets, and reports the explicitly requested Metal mode
+   as unavailable rather than attempting to compile Apple sources.
+3. Run the CPU/CUDA regression checks and the exact authenticated trajectory
+   replay command in the previous section. Localize the first Mac/Linux
+   trajectory difference before proposing any production arithmetic change.
+4. Record Linux report identities and conclusions in
+   `collaboration/linux/HANDOFF.md`, release the shared lock, commit, and wait
+   for the user-directed host switch. Do not copy the ignored 5.09 GB H5 or the
+   local paper archive through Git.

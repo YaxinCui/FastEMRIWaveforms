@@ -6,6 +6,10 @@
 
 <!-- 2026-09-01 23:37 CST (linux): Cross-link the pulled Mac strict double-single Metal feasibility evidence with the mixed-precision plan. -->
 
+<!-- 2026-09-02 15:17 CST (mac): Link the reproducible local literature archive
+and whole-pipeline review, and update the Metal status after explicit production
+integration without changing CPU/CUDA defaults. -->
+
 This index favors primary documentation and papers. It records why a technique
 is relevant before code or large reference artifacts are added to the project.
 
@@ -17,9 +21,20 @@ waveform-level acceptance gates are in
 [MIXED_PRECISION_PLAN.md](MIXED_PRECISION_PLAN.md).
 
 The measured native-Metal float/double-single feasibility study is in
-[APPLE_GPU_METAL_FEASIBILITY.md](APPLE_GPU_METAL_FEASIBILITY.md). It remains
-isolated from the production backend and is the Apple-side experimental input
-to the mixed-precision plan.
+[APPLE_GPU_METAL_FEASIBILITY.md](APPLE_GPU_METAL_FEASIBILITY.md). It records the
+historical proof of concept that led to the now-integrated, explicitly opt-in
+strict time-domain Metal mode-sum backend. CPU and CUDA defaults remain
+unchanged.
+
+The source-verified, local-only literature collection and its problem-to-source
+map are in [library/INDEX.md](library/INDEX.md). Exact URLs, sizes, page counts,
+and SHA-256 digests are tracked in
+[library/MANIFEST.tsv](library/MANIFEST.tsv); the 74 MB of PDF payloads are
+ignored by Git and independently reconstructible on either host.
+
+The end-to-end pipeline, layered error budget, 5 GB HDF5 access audit, backend
+architecture risks, and prioritized experiment sequence are in
+[FEW_ARCHITECTURE_AND_APPLE_ADAPTATION.md](FEW_ARCHITECTURE_AND_APPLE_ADAPTATION.md).
 
 ## Apple numerical acceleration
 
@@ -87,5 +102,8 @@ to the mixed-precision plan.
 The first macOS path uses Accelerate's FP64 `dgemm`, `zgemm`, and `dgtsv`.
 This removes an accidental Homebrew/gfortran runtime dependency and accelerates
 the ROMAN dense layers without changing FEW's double/complex-double storage.
-Metal/MPS remains a later experimental path gated by measured end-to-end
-waveform mismatch, not by kernel throughput alone.
+The strict time-domain mode sum also has an explicit Apple-Metal implementation
+using double-single arithmetic with NumPy host arrays. It remains opt-in and is
+gated by frozen-input, one-year waveform, packaging, and cross-host validation;
+broader Metal coverage must still be justified by end-to-end measurements rather
+than kernel throughput alone.

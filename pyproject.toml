@@ -126,6 +126,7 @@ sdist.exclude = [
 wheel.exclude = [
   "**.pyx",
   "**.cu",
+  "**.mm", # 2026-09-02 13:52 CST (mac): exclude compiled Metal source from wheels
   "**.cxx",
   "**.hh",
   "**.h",

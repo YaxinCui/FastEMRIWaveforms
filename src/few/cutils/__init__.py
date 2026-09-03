@@ -1,5 +1,7 @@
 import dataclasses
 import enum
+import platform
+import sys
 import types
 import typing
 
@@ -101,6 +103,11 @@ class Backend:
         GPU = enum.auto()
         """Flag indicating that backend uses GPU hardware"""
 
+        # 2026-09-02 13:50 CST (mac): Distinguish host-resident Metal hybrids
+        # from CUDA/CuPy backends while retaining the generic GPU capability.
+        METAL = enum.auto()
+        """Flag indicating that backend delegates selected kernels to Metal."""
+
         NONE = 0
         """Special flag representing no activated feature"""
 
@@ -157,6 +164,11 @@ class Backend:
         """Shortcut to check whether a backend uses CUDA devices"""
         return self.supports(feature=Backend.Feature.CUDA)
 
+    @property
+    def uses_metal(self) -> bool:
+        """Shortcut to check whether a backend delegates kernels to Metal."""
+        return self.supports(feature=Backend.Feature.METAL)
+
 
 class CpuBackend(Backend):
     """Implementation of the CPU backend"""
@@ -201,6 +213,45 @@ class CpuBackend(Backend):
             methods=self.cpu_methods_loader(),
             features=Backend.Feature.NUMPY,
         )
+
+
+class MetalBackend(Backend):
+    """Explicit Apple Silicon hybrid using NumPy storage and Metal summation."""
+
+    def __init__(self):
+        # 2026-09-02 13:50 CST (mac): Fail explicitly off Apple Silicon. The
+        # backend is registered cross-platform so configuration files remain
+        # portable, but it is never selected ahead of CUDA or CPU.
+        name = "metal"
+        if sys.platform != "darwin" or platform.machine() != "arm64":
+            raise MissingHardware("The 'metal' backend requires an Apple Silicon Mac.")
+
+        try:
+            import few_backend_metal.pyinterp as metal_pyinterp
+        except (ModuleNotFoundError, ImportError) as error:
+            raise BackendNotInstalled(
+                "The 'metal' backend was not built into this FEW installation."
+            ) from error
+
+        methods = CpuBackend.cpu_methods_loader()
+        try:
+            self._metal_summation = metal_pyinterp.MetalSummation()
+        except RuntimeError as error:
+            raise SoftwareException(
+                "The 'metal' backend could not create its Metal pipeline."
+            ) from error
+        methods.get_waveform_wrap = self._metal_summation.get_waveform_wrap
+        Feature = Backend.Feature
+        super().__init__(
+            name=name,
+            methods=methods,
+            features=Feature.NUMPY | Feature.GPU | Feature.METAL,
+        )
+
+    @property
+    def last_gpu_seconds(self) -> float:
+        """GPU duration reported by the most recent synchronized sum."""
+        return float(self._metal_summation.last_gpu_seconds)
 
 
 class _CudaBackend(Backend):
@@ -514,6 +565,9 @@ class Cuda12xBackend(_CudaBackend):
 KNOWN_BACKENDS = {
     "cuda12x": Cuda12xBackend,
     "cpu": CpuBackend,
+    # 2026-09-02 13:50 CST (mac): Register Metal for explicit force/config
+    # lookup without adding it to any automatic module preference list.
+    "metal": MetalBackend,
 }
 """List of existing backends, per default order of preference."""
 

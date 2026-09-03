@@ -1,0 +1,417 @@
+{
+  "cases": [
+    {
+      "cpu": {
+        "before_after_bitwise": true,
+        "bitwise_repeatable": true,
+        "cold_seconds": 6.786442625001655,
+        "gpu_seconds": [],
+        "warm_median_seconds": 0.024917104001360713,
+        "warm_seconds": [
+          0.0317698750004638,
+          0.018064333002257627
+        ]
+      },
+      "dtype": "complex128",
+      "finite": true,
+      "inputs": {
+        "Phi_phi0": 0.3,
+        "Phi_r0": 0.7,
+        "Phi_theta0": 0.0,
+        "T": 0.001,
+        "a": 0.7,
+        "dist": 1.0,
+        "dt": 15.0,
+        "e0": 0.4,
+        "key": "baseline_short",
+        "p0": 11.0,
+        "xI0": 1.0
+      },
+      "key": "baseline_short",
+      "metal": {
+        "bitwise_repeatable": true,
+        "cold_seconds": 0.019378000000870088,
+        "gpu_seconds": [
+          0.0003366250020917505,
+          0.0004301249973650556,
+          0.000432624998211395
+        ],
+        "warm_median_seconds": 0.017313624999587773,
+        "warm_seconds": [
+          0.017347875000268687,
+          0.01727937499890686
+        ]
+      },
+      "metal_vs_cpu": {
+        "checks": {
+          "flat_mismatch": true,
+          "normalized_max": true,
+          "relative_l2": true
+        },
+        "flat_mismatch": 1.1102230246251565e-16,
+        "limits": {
+          "flat_mismatch": 1e-10,
+          "normalized_max": 5e-10,
+          "relative_l2": 5e-10
+        },
+        "normalized_max": 4.61703420160703e-14,
+        "passed": true,
+        "relative_l2": 2.718721665518066e-14
+      },
+      "modes_kept": 124,
+      "passed": true,
+      "shape": [
+        2104
+      ],
+      "warm_end_to_end_speedup": 1.4391615852806083
+    },
+    {
+      "cpu": {
+        "before_after_bitwise": true,
+        "bitwise_repeatable": true,
+        "cold_seconds": 2.1957523750024848,
+        "gpu_seconds": [],
+        "warm_median_seconds": 2.1156473959981668,
+        "warm_seconds": [
+          2.1398258749977686,
+          2.091468916998565
+        ]
+      },
+      "dtype": "complex128",
+      "finite": true,
+      "inputs": {
+        "Phi_phi0": 0.3,
+        "Phi_r0": 0.7,
+        "Phi_theta0": 0.0,
+        "T": 1.0,
+        "a": 0.7,
+        "dist": 1.0,
+        "dt": 15.0,
+        "e0": 0.4,
+        "key": "baseline_one_year",
+        "p0": 11.0,
+        "xI0": 1.0
+      },
+      "key": "baseline_one_year",
+      "metal": {
+        "bitwise_repeatable": true,
+        "cold_seconds": 0.2305026670001098,
+        "gpu_seconds": [
+          0.07833762500013108,
+          0.07880270833629766,
+          0.07561112499752198
+        ],
+        "warm_median_seconds": 0.23111441649962217,
+        "warm_seconds": [
+          0.23199341600047774,
+          0.2302354169987666
+        ]
+      },
+      "metal_vs_cpu": {
+        "checks": {
+          "flat_mismatch": true,
+          "normalized_max": true,
+          "relative_l2": true
+        },
+        "flat_mismatch": 0.0,
+        "limits": {
+          "flat_mismatch": 1e-10,
+          "normalized_max": 5e-10,
+          "relative_l2": 5e-10
+        },
+        "normalized_max": 5.816972425119773e-11,
+        "passed": true,
+        "relative_l2": 1.6761562037497053e-11
+      },
+      "modes_kept": 124,
+      "passed": true,
+      "shape": [
+        2103877
+      ],
+      "warm_end_to_end_speedup": 9.154112616776658
+    },
+    {
+      "cpu": {
+        "before_after_bitwise": true,
+        "bitwise_repeatable": true,
+        "cold_seconds": 0.0627625840024848,
+        "gpu_seconds": [],
+        "warm_median_seconds": 0.045384791499600396,
+        "warm_seconds": [
+          0.04496245799964527,
+          0.045807124999555526
+        ]
+      },
+      "dtype": "complex128",
+      "finite": true,
+      "inputs": {
+        "Phi_phi0": 0.3,
+        "Phi_r0": 0.7,
+        "Phi_theta0": 0.0,
+        "T": 0.01,
+        "a": 0.7,
+        "dist": 1.0,
+        "dt": 15.0,
+        "e0": 0.4,
+        "key": "positive_spin_retrograde",
+        "p0": 11.0,
+        "xI0": -1.0
+      },
+      "key": "positive_spin_retrograde",
+      "metal": {
+        "bitwise_repeatable": true,
+        "cold_seconds": 0.0242202500012354,
+        "gpu_seconds": [
+          0.003970124998886604,
+          0.004008208332379581,
+          0.0039104999996197876
+        ],
+        "warm_median_seconds": 0.022006437500749598,
+        "warm_seconds": [
+          0.02157945799990557,
+          0.022433417001593625
+        ]
+      },
+      "metal_vs_cpu": {
+        "checks": {
+          "flat_mismatch": true,
+          "normalized_max": true,
+          "relative_l2": true
+        },
+        "flat_mismatch": 0.0,
+        "limits": {
+          "flat_mismatch": 1e-10,
+          "normalized_max": 5e-10,
+          "relative_l2": 5e-10
+        },
+        "normalized_max": 6.370751292340123e-13,
+        "passed": true,
+        "relative_l2": 1.8663156433876654e-13
+      },
+      "modes_kept": 148,
+      "passed": true,
+      "shape": [
+        21039
+      ],
+      "warm_end_to_end_speedup": 2.0623415988187306
+    },
+    {
+      "cpu": {
+        "before_after_bitwise": true,
+        "bitwise_repeatable": true,
+        "cold_seconds": 0.05418450000070152,
+        "gpu_seconds": [],
+        "warm_median_seconds": 0.042736041999887675,
+        "warm_seconds": [
+          0.043156709001777926,
+          0.042315374997997424
+        ]
+      },
+      "dtype": "complex128",
+      "finite": true,
+      "inputs": {
+        "Phi_phi0": 0.3,
+        "Phi_r0": 0.7,
+        "Phi_theta0": 0.0,
+        "T": 0.01,
+        "a": 0.6,
+        "dist": 1.0,
+        "dt": 15.0,
+        "e0": 0.3,
+        "key": "inner_orbit",
+        "p0": 8.0,
+        "xI0": 1.0
+      },
+      "key": "inner_orbit",
+      "metal": {
+        "bitwise_repeatable": true,
+        "cold_seconds": 0.018759667000267655,
+        "gpu_seconds": [
+          0.0012791250010195654,
+          0.0012751249996654224,
+          0.0016332499981217552
+        ],
+        "warm_median_seconds": 0.01937072900000203,
+        "warm_seconds": [
+          0.018817374999343883,
+          0.019924083000660175
+        ]
+      },
+      "metal_vs_cpu": {
+        "checks": {
+          "flat_mismatch": true,
+          "normalized_max": true,
+          "relative_l2": true
+        },
+        "flat_mismatch": 0.0,
+        "limits": {
+          "flat_mismatch": 1e-10,
+          "normalized_max": 5e-10,
+          "relative_l2": 5e-10
+        },
+        "normalized_max": 7.442445214116808e-13,
+        "passed": true,
+        "relative_l2": 2.4824178529500067e-13
+      },
+      "modes_kept": 113,
+      "passed": true,
+      "shape": [
+        21039
+      ],
+      "warm_end_to_end_speedup": 2.206217535740818
+    },
+    {
+      "cpu": {
+        "before_after_bitwise": true,
+        "bitwise_repeatable": true,
+        "cold_seconds": 0.06165362500178162,
+        "gpu_seconds": [],
+        "warm_median_seconds": 0.04485974949966476,
+        "warm_seconds": [
+          0.04452520799895865,
+          0.04519429100037087
+        ]
+      },
+      "dtype": "complex128",
+      "finite": true,
+      "inputs": {
+        "Phi_phi0": 0.3,
+        "Phi_r0": 0.7,
+        "Phi_theta0": 0.0,
+        "T": 0.01,
+        "a": 0.0,
+        "dist": 1.0,
+        "dt": 15.0,
+        "e0": 0.4,
+        "key": "zero_spin",
+        "p0": 11.0,
+        "xI0": 1.0
+      },
+      "key": "zero_spin",
+      "metal": {
+        "bitwise_repeatable": true,
+        "cold_seconds": 0.020819749999645865,
+        "gpu_seconds": [
+          0.003579166666895617,
+          0.0035992499979329295,
+          0.0037144583329791203
+        ],
+        "warm_median_seconds": 0.02204789550160058,
+        "warm_seconds": [
+          0.02126750000024913,
+          0.022828291002952028
+        ]
+      },
+      "metal_vs_cpu": {
+        "checks": {
+          "flat_mismatch": true,
+          "normalized_max": true,
+          "relative_l2": true
+        },
+        "flat_mismatch": 0.0,
+        "limits": {
+          "flat_mismatch": 1e-10,
+          "normalized_max": 5e-10,
+          "relative_l2": 5e-10
+        },
+        "normalized_max": 4.810488299443609e-13,
+        "passed": true,
+        "relative_l2": 1.7510771040203474e-13
+      },
+      "modes_kept": 136,
+      "passed": true,
+      "shape": [
+        21039
+      ],
+      "warm_end_to_end_speedup": 2.0346499508947753
+    }
+  ],
+  "collaboration_note": "2026-09-02 14:02 CST (mac): installed explicit Metal backend, shared-generator CPU comparison, no global callable injection",
+  "data_files": {
+    "KerrEccEqFluxData.h5": {
+      "bytes": 9857632,
+      "path": "src/few/data/KerrEccEqFluxData.h5",
+      "sha256": "db332e617223a650eb9f890c610e928afd095edea1454b544ad06651c03a5014"
+    },
+    "ZNAmps_l10_m10_n55_DS2Outer.h5": {
+      "bytes": 5089095248,
+      "path": "src/few/data/ZNAmps_l10_m10_n55_DS2Outer.h5",
+      "sha256": "3236d8b5eff618242291e9eeb24638dbbbb82fac464ae575dc3f2ba158c54834"
+    }
+  },
+  "host": {
+    "few": "1.post1.dev8+ga7c04d814.d20260902",
+    "machine": "arm64",
+    "numpy": "2.5.2",
+    "platform": "macOS-26.5.2-arm64-arm-64bit",
+    "python": "3.12.12"
+  },
+  "model_load_seconds": 6.952414999999746,
+  "passed": true,
+  "peak_process_rss_mib": 6553.734375,
+  "repository": {
+    "base_commit": "a7c04d81402e2d301076cb41a6f890d4496bc9d2",
+    "branch": "codex/apple-silicon-dual-host"
+  },
+  "schema": 1,
+  "selection": {
+    "amplitude_backend": "metal",
+    "default_backend": "cpu",
+    "metal_feature": true,
+    "numpy_host_storage": true,
+    "requested_backend": "metal",
+    "summation_backend": "metal"
+  },
+  "source_files": {
+    "CMakeLists.txt": {
+      "bytes": 11022,
+      "path": "CMakeLists.txt",
+      "sha256": "e39ba5eb1847796dc0fd3aced7fa55e853c0052b9c34be04c73a62212697e629"
+    },
+    "src/few/CMakeLists.txt": {
+      "bytes": 2126,
+      "path": "src/few/CMakeLists.txt",
+      "sha256": "75f88f72f57edd4d9ff33b606cc2fa8e51d97e6125073d12d9519b9f92db032d"
+    },
+    "src/few/amplitude/ampinterp2d.py": {
+      "bytes": 26026,
+      "path": "src/few/amplitude/ampinterp2d.py",
+      "sha256": "79516c4c3c89d450a50541bb7adf1809eea4b1a6851299cd52fd8d67e960eb80"
+    },
+    "src/few/cutils/CMakeLists.txt": {
+      "bytes": 24569,
+      "path": "src/few/cutils/CMakeLists.txt",
+      "sha256": "c1303efa03024ff9c9d3bfc369b21469ded0bdb731f51faab6e701eba30d90f3"
+    },
+    "src/few/cutils/__init__.py": {
+      "bytes": 25656,
+      "path": "src/few/cutils/__init__.py",
+      "sha256": "fc90970106afaa2015531c56677acf275527aacc2e925dba6af59b263d3e93bf"
+    },
+    "src/few/cutils/metal_sum.hh": {
+      "bytes": 709,
+      "path": "src/few/cutils/metal_sum.hh",
+      "sha256": "c9580d2bceec5194ff425b823629518b5ef1a1379982e909edb736b429ab0153"
+    },
+    "src/few/cutils/metal_sum.mm": {
+      "bytes": 22752,
+      "path": "src/few/cutils/metal_sum.mm",
+      "sha256": "6686d27c238d1c0368c19c1d8eb63733baec8586dc79b3d59598d404d3355d9c"
+    },
+    "src/few/cutils/pymetal.pyx": {
+      "bytes": 4617,
+      "path": "src/few/cutils/pymetal.pyx",
+      "sha256": "6215d1ca80fb9ef1ecd98172bde5ff149e269fd75ec55c7c6f813ae9403e1c97"
+    },
+    "src/few/utils/baseclasses.py": {
+      "bytes": 29143,
+      "path": "src/few/utils/baseclasses.py",
+      "sha256": "026c43ba7d1b006198a1675e698cbf1621c27a83567082c72d55e7df24249ed4"
+    },
+    "validation/metal_backend_end_to_end.py": {
+      "bytes": 10515,
+      "path": "validation/metal_backend_end_to_end.py",
+      "sha256": "29ca436a02d7ebe07c0e05cc4c235b12f40dc704c2d2c746b1f320586f547902"
+    }
+  }
+}

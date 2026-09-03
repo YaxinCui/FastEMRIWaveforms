@@ -76,11 +76,36 @@
 
 <!-- 2026-09-02 13:35 CST (linux): Release editing after committing the passed frozen-summation CPU/CUDA validation and CUDA ABI fix as 4d7936be for the user-directed handoff. -->
 
+<!-- 2026-09-02 13:42 CST (mac): Acquire the project edit lock after fast-forwarding to Ubuntu handoff a7c04d81; begin the explicitly opt-in production-integration phase while preserving CPU/CUDA defaults and platform portability. -->
+
+<!-- 2026-09-02 14:10 CST (mac): Release editing after the explicit Metal production build, five-case acceptance, wheel audit, regression suite, and Ubuntu handoff all passed; changes remain local pending a user-directed commit/push. -->
+
+<!-- 2026-09-02 14:45 CST (mac): Reacquire the edit lock for the user-directed literature archive and whole-pipeline FEW/Apple architecture review; production backend behavior remains frozen during this research pass. -->
+
+<!-- 2026-09-02 15:24 CST (mac): Release editing after validating the 36-PDF
+local-only archive, recording its reproducible manifest and problem map, and
+handing off the whole-pipeline architecture/data/error review. -->
+
+<!-- 2026-09-02 17:31 CST (mac): Acquire the edit lock for the user-directed
+P0 trajectory-reproducibility experiments, beginning with an isolated
+fastmath/strict `_p_to_u` A/B and portable Mac-to-Ubuntu evidence. -->
+
+<!-- 2026-09-02 17:56 CST (mac): Release editing after the Mac fast-math/strict
+trajectory and DOP853 trace repeated bitwise, passed provenance/integrity
+checks, and was documented for an authenticated Ubuntu replay. -->
+
+<!-- 2026-09-03 15:25 CST (mac): Reacquire the edit lock solely for the
+user-directed final audit, handoff record, commit, and push of the completed
+Metal integration, research index, and P0 trajectory diagnostic. -->
+
+<!-- 2026-09-03 15:29 CST (mac): Release editing after the combined handoff
+payload passed remote-divergence, regression, artifact-integrity, secret, and
+large-file audits; the commit containing this record is the Ubuntu sync point. -->
+
 - Branch: `codex/apple-silicon-dual-host`
 - Active editor: `none`
-- Last editor: `linux` — Ubuntu x86_64 / NVIDIA GeForce RTX 2080 Ti
-- Lock released: 2026-09-02 13:35 CST (Asia/Shanghai)
-- Previous lock: Linux acquired at 2026-09-02 11:41 CST
-- State: passed frozen-summation validation and CUDA ABI fix commit `4d7936be`
-  plus this released-lock handoff are finalized for the user-directed push.
-  Mac may acquire only after pulling the synchronized collaboration branch.
+- Last editor: `mac` — Apple M3 Pro / arm64
+- Last lock acquired: 2026-09-03 15:25 CST (Asia/Shanghai)
+- Lock released: 2026-09-03 15:29 CST (Asia/Shanghai)
+- State: The combined Mac handoff is complete and released for commit/push;
+  Ubuntu may acquire the lock only after pulling the synchronization commit.

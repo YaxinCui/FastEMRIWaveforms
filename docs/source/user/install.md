@@ -45,7 +45,7 @@ To quickly find the right installation instructions for your needs, follow these
 | **Install via pip (user)**      | [Generic pip](#using-pip) | [Generic pip](#using-pip) | Not available | [Generic pip](#using-pip) | [CC-IN2P3 pip](#on-the-cc-in2p3-cluster-with-gpu-support) |
 | **Install via conda (user)**    | [Generic conda](#using-conda) | [Generic conda](#using-conda) | [Windows conda](#on-windows) | [Generic conda](#using-conda) | [CC-IN2P3 conda](#on-the-cc-in2p3-cluster-with-gpu-support) |
 | **From source (developer)**          | [Generic source](#from-source) | [Mac source](#on-mac-os-from-sources) | [Windows source](#on-windows) | [CNES source](#on-cnes-cluster-with-gpu-and-jupyter-hub-supports) | [CC-IN2P3 source](#on-the-cc-in2p3-cluster-with-gpu-support) |
-| **GPU support**          | [See Generic](#generic-installation-instructions) | Not available | Not available | [CNES GPU](#on-cnes-cluster-with-gpu-and-jupyter-hub-supports) | [CC-IN2P3 GPU](#on-the-cc-in2p3-cluster-with-gpu-support) |
+| **GPU support**          | [See Generic](#generic-installation-instructions) | [Metal from source](#on-mac-os-from-sources) | Not available | [CNES GPU](#on-cnes-cluster-with-gpu-and-jupyter-hub-supports) | [CC-IN2P3 GPU](#on-the-cc-in2p3-cluster-with-gpu-support) |
 | **Jupyter Hub**          | N/A | N/A | N/A | [CNES Jupyter](#make-the-conda-environment-available-as-a-jupyter-hub-kernel) | [CC-IN2P3 Jupyter](#enable-the-jupyter-hub-kernel) |
 
 :::{tip}
@@ -259,6 +259,30 @@ micromamba create -n few_env python=3.12 cxx-compiler pkgconfig conda-forge/labe
 
 Then activate this environment and proceed with the installation of FEW
 as described [above](#from-source).
+
+<!-- 2026-09-02 13:55 CST (mac): Add the Apple Silicon build and runtime opt-in
+for the validated NumPy/Metal hybrid without presenting it as the default. -->
+
+On Apple Silicon, the source build detects Metal automatically. It can be made
+explicit during installation with:
+
+```sh
+pip install -e . --config-settings=cmake.define.FEW_WITH_METAL=ON
+```
+
+Select it per generator; ordinary construction continues to select CPU:
+
+```python
+from few.waveform import FastKerrEccentricEquatorialFlux
+
+waveform = FastKerrEccentricEquatorialFlux(force_backend="metal")
+```
+
+This first opt-in backend retains NumPy host arrays and CPU implementations for
+all other operations, while strict double-single time-domain mode summation is
+submitted to Metal. It is currently validated for
+`FastKerrEccentricEquatorialFlux`; frequency-domain summation and amplitude
+interpolation still use their CPU implementations.
 
 
 ## On Windows
@@ -501,6 +525,9 @@ Many options are available to change the installation behaviour. These can be se
   - `ON`: Forcefully enable GPU support (install will fail if GPU prerequisites are not met)
   - `OFF`: Disable GPU support
   - `AUTO` (default): Check whether `nvcc` and the `CUDA Toolkit` are available in environment and enable/disable GPU support accordingly.
+- `FEW_WITH_METAL=ON|OFF|[AUTO]`: Whether the explicit Apple Metal hybrid is
+  built. `AUTO` enables it only on Apple Silicon; `ON` rejects unsupported
+  platforms; `OFF` omits the Metal extension entirely.
 - `FEW_CUDA_ARCH`: List of CUDA architectures that will be targeted by the CUDA compiler using [CMake CUDA_ARCHITECTURES](https://cmake.org/cmake/help/latest/prop_tgt/CUDA_ARCHITECTURES.html) syntax. (Default = `all`).
 
 Example of custom install with specific options to forcefully enable GPU support with support for the host's GPU only (`native` architecture) using LAPACK fetched from internet:

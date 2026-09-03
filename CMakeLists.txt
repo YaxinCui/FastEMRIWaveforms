@@ -35,6 +35,14 @@ set_property(CACHE FEW_WITH_GPU PROPERTY STRINGS "AUTO" "ON" "OFF" "ONLY"
                                          "BARE")
 set_property(GLOBAL APPEND PROPERTY FEW_OPTION_NAMES FEW_WITH_GPU)
 
+# 2026-09-02 13:50 CST (mac): Build the Metal module automatically only on Apple
+# Silicon. Runtime selection remains explicit and never changes the established
+# CUDA/CPU backend preference.
+set(FEW_WITH_METAL "AUTO" CACHE STRING
+                                "Whether to compile the Apple Metal backend")
+set_property(CACHE FEW_WITH_METAL PROPERTY STRINGS "AUTO" "ON" "OFF")
+set_property(GLOBAL APPEND PROPERTY FEW_OPTION_NAMES FEW_WITH_METAL)
+
 # FEW_CUDA_ARCH will be passed as the CUDA_ARCHITECTURES property for the CUDA
 # backend if it is compiled. See the documentation of CUDA_ARCHITECTURES:
 # https://cmake.org/cmake/help/latest/prop_tgt/CUDA_ARCHITECTURES.html
@@ -127,6 +135,30 @@ endif()
 # 2026-09-01 19:06 CST (mac): expose the resolved Apple option to subtargets.
 set_property(TARGET fastemriwaveforms PROPERTY USE_APPLE_ACCELERATE
                                                ${FEW_USE_APPLE_ACCELERATE})
+
+# 2026-09-02 13:50 CST (mac): Resolve and validate Metal independently of the
+# CPU Accelerate switch because Metal also uses Accelerate for FP64/FP32 splits.
+if(NOT "${FEW_WITH_METAL}" MATCHES "^(AUTO|ON|OFF)$")
+  message(FATAL_ERROR "FEW_WITH_METAL must be one of AUTO, ON, or OFF; got "
+                      "'${FEW_WITH_METAL}'.")
+endif()
+if(FEW_WITH_METAL STREQUAL "AUTO")
+  if(APPLE AND CMAKE_SYSTEM_PROCESSOR MATCHES "^(arm64|aarch64)$")
+    set(FEW_WITH_METAL "ON")
+  else()
+    set(FEW_WITH_METAL "OFF")
+  endif()
+elseif(FEW_WITH_METAL STREQUAL "ON"
+       AND NOT (APPLE AND CMAKE_SYSTEM_PROCESSOR MATCHES "^(arm64|aarch64)$"))
+  message(FATAL_ERROR "FEW_WITH_METAL=ON requires Apple Silicon macOS.")
+endif()
+if(FEW_WITH_GPU STREQUAL "ONLY" OR FEW_WITH_GPU STREQUAL "BARE")
+  set(FEW_WITH_METAL "OFF")
+endif()
+set_property(TARGET fastemriwaveforms PROPERTY WITH_METAL ${FEW_WITH_METAL})
+if(FEW_WITH_METAL)
+  enable_language(OBJCXX)
+endif()
 
 # ---- Enable building the CPU version of backends by default ----
 set_target_properties(fastemriwaveforms PROPERTIES WITH_CPU ON)

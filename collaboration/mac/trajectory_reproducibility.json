@@ -1,0 +1,458 @@
+{
+  "artifact": {
+    "arrays": {
+      "fastmath__attempt_accepted": {
+        "dtype": "bool",
+        "sha256": "c36336f242c655c52fa06c4d03f665ca9ea0bb84f20f1b1f90976aa58ca40a4a",
+        "shape": [
+          7
+        ]
+      },
+      "fastmath__attempt_error": {
+        "dtype": "float64",
+        "sha256": "7bf1f0cb1792e6df375327602d974e23924db742b94ce791013f9749daf7bf9a",
+        "shape": [
+          7
+        ]
+      },
+      "fastmath__attempt_error_old": {
+        "dtype": "float64",
+        "sha256": "51530ee49b6cb88acad6dc752bf6614956cb8f27a02aa2a4dda34d0d3104c098",
+        "shape": [
+          7
+        ]
+      },
+      "fastmath__attempt_h": {
+        "dtype": "float64",
+        "sha256": "af4cf9f34c9d54f37217a9390fee5afef457747f03dcb4abec0de51d6a506f4a",
+        "shape": [
+          7
+        ]
+      },
+      "fastmath__attempt_h_next": {
+        "dtype": "float64",
+        "sha256": "df3ad92b963f13391a314b8235419892ac844ce4810ece326f3ea01b8f404cb1",
+        "shape": [
+          7
+        ]
+      },
+      "fastmath__attempt_previous_reject": {
+        "dtype": "bool",
+        "sha256": "837885c8f8091aeaeb9ec3c3f85a6ff470a415e610b8ba3e49f9b33c9cf9d619",
+        "shape": [
+          7
+        ]
+      },
+      "fastmath__attempt_state_after": {
+        "dtype": "float64",
+        "sha256": "08db45f1aceb4cad3730354e40befa03a6fcdfe87fa05cdc5c7172eea0cd9ca1",
+        "shape": [
+          7,
+          6
+        ]
+      },
+      "fastmath__attempt_state_before": {
+        "dtype": "float64",
+        "sha256": "395455261a0ed309df94c41037b7cb6a34cd6a736360ba14d47a65a3b967c80a",
+        "shape": [
+          7,
+          6
+        ]
+      },
+      "fastmath__attempt_t_after": {
+        "dtype": "float64",
+        "sha256": "426bcd0edd3f2e75c0c6131c0dc98fc36a69bac1b1524d475de2696a5b65c515",
+        "shape": [
+          7
+        ]
+      },
+      "fastmath__attempt_t_before": {
+        "dtype": "float64",
+        "sha256": "04f42f49f2992f2eb4ec9c56c4d964a5ed1665f8974c97b138f7b03fbe887175",
+        "shape": [
+          7
+        ]
+      },
+      "fastmath__integrator_times": {
+        "dtype": "float64",
+        "sha256": "aa0fb38322f0de8c322fdd8a410fbe494313861499990e22dacbf81bed0a6d53",
+        "shape": [
+          8
+        ]
+      },
+      "fastmath__p_to_u_probe_inputs": {
+        "dtype": "float64",
+        "sha256": "1e22381d7f72c6ce36c9717cd5d51e3d193ef547bb8d2d8687c286627616c457",
+        "shape": [
+          7,
+          2
+        ]
+      },
+      "fastmath__p_to_u_probe_outputs": {
+        "dtype": "float64",
+        "sha256": "2cc161c7322ac5245bd590ee513ebec26f5875e1dc9a15e0cc112f4b84092319",
+        "shape": [
+          7
+        ]
+      },
+      "fastmath__spline_coefficients": {
+        "dtype": "float64",
+        "sha256": "66e90303f08c54c7f5f0754fe0411778f2dc80e53bce612ca326bf10dc80ad31",
+        "shape": [
+          7,
+          6,
+          8
+        ]
+      },
+      "fastmath__trajectory": {
+        "dtype": "float64",
+        "sha256": "9d639e16f0b9cfea8d084099e4068bbdcf84b0c31aae81f6ca27591365d8ad06",
+        "shape": [
+          8,
+          7
+        ]
+      },
+      "strict__attempt_accepted": {
+        "dtype": "bool",
+        "sha256": "c36336f242c655c52fa06c4d03f665ca9ea0bb84f20f1b1f90976aa58ca40a4a",
+        "shape": [
+          7
+        ]
+      },
+      "strict__attempt_error": {
+        "dtype": "float64",
+        "sha256": "7bf1f0cb1792e6df375327602d974e23924db742b94ce791013f9749daf7bf9a",
+        "shape": [
+          7
+        ]
+      },
+      "strict__attempt_error_old": {
+        "dtype": "float64",
+        "sha256": "51530ee49b6cb88acad6dc752bf6614956cb8f27a02aa2a4dda34d0d3104c098",
+        "shape": [
+          7
+        ]
+      },
+      "strict__attempt_h": {
+        "dtype": "float64",
+        "sha256": "af4cf9f34c9d54f37217a9390fee5afef457747f03dcb4abec0de51d6a506f4a",
+        "shape": [
+          7
+        ]
+      },
+      "strict__attempt_h_next": {
+        "dtype": "float64",
+        "sha256": "df3ad92b963f13391a314b8235419892ac844ce4810ece326f3ea01b8f404cb1",
+        "shape": [
+          7
+        ]
+      },
+      "strict__attempt_previous_reject": {
+        "dtype": "bool",
+        "sha256": "837885c8f8091aeaeb9ec3c3f85a6ff470a415e610b8ba3e49f9b33c9cf9d619",
+        "shape": [
+          7
+        ]
+      },
+      "strict__attempt_state_after": {
+        "dtype": "float64",
+        "sha256": "08db45f1aceb4cad3730354e40befa03a6fcdfe87fa05cdc5c7172eea0cd9ca1",
+        "shape": [
+          7,
+          6
+        ]
+      },
+      "strict__attempt_state_before": {
+        "dtype": "float64",
+        "sha256": "395455261a0ed309df94c41037b7cb6a34cd6a736360ba14d47a65a3b967c80a",
+        "shape": [
+          7,
+          6
+        ]
+      },
+      "strict__attempt_t_after": {
+        "dtype": "float64",
+        "sha256": "426bcd0edd3f2e75c0c6131c0dc98fc36a69bac1b1524d475de2696a5b65c515",
+        "shape": [
+          7
+        ]
+      },
+      "strict__attempt_t_before": {
+        "dtype": "float64",
+        "sha256": "04f42f49f2992f2eb4ec9c56c4d964a5ed1665f8974c97b138f7b03fbe887175",
+        "shape": [
+          7
+        ]
+      },
+      "strict__integrator_times": {
+        "dtype": "float64",
+        "sha256": "aa0fb38322f0de8c322fdd8a410fbe494313861499990e22dacbf81bed0a6d53",
+        "shape": [
+          8
+        ]
+      },
+      "strict__p_to_u_probe_inputs": {
+        "dtype": "float64",
+        "sha256": "1e22381d7f72c6ce36c9717cd5d51e3d193ef547bb8d2d8687c286627616c457",
+        "shape": [
+          7,
+          2
+        ]
+      },
+      "strict__p_to_u_probe_outputs": {
+        "dtype": "float64",
+        "sha256": "2cc161c7322ac5245bd590ee513ebec26f5875e1dc9a15e0cc112f4b84092319",
+        "shape": [
+          7
+        ]
+      },
+      "strict__spline_coefficients": {
+        "dtype": "float64",
+        "sha256": "66e90303f08c54c7f5f0754fe0411778f2dc80e53bce612ca326bf10dc80ad31",
+        "shape": [
+          7,
+          6,
+          8
+        ]
+      },
+      "strict__trajectory": {
+        "dtype": "float64",
+        "sha256": "9d639e16f0b9cfea8d084099e4068bbdcf84b0c31aae81f6ca27591365d8ad06",
+        "shape": [
+          8,
+          7
+        ]
+      }
+    },
+    "bytes": 15590,
+    "path": "collaboration/mac/trajectory_reproducibility.npz",
+    "sha256": "f3e60569274d6dbe084ac4d80e66c5180468601d91a10f18d5cc1804fc0e9d4f"
+  },
+  "collaboration_note": "2026-09-02 17:53:28 CST (mac): generated the opt-in trajectory reproducibility artifact; binary NPZ carries this embedded annotation",
+  "data_files": [
+    {
+      "bytes": 9857632,
+      "path": "src/few/data/KerrEccEqFluxData.h5",
+      "sha256": "db332e617223a650eb9f890c610e928afd095edea1454b544ad06651c03a5014"
+    }
+  ],
+  "inputs": {
+    "M": 1000000.0,
+    "Phi_phi0": 0.3,
+    "Phi_r0": 0.7,
+    "Phi_theta0": 0.0,
+    "T": 1.0,
+    "a": 0.7,
+    "dt": 15.0,
+    "e0": 0.4,
+    "err": 1e-11,
+    "mu": 10.0,
+    "p0": 11.0,
+    "xI0": 1.0
+  },
+  "repository": {
+    "branch": "codex/apple-silicon-dual-host",
+    "commit": "a7c04d81402e2d301076cb41a6f890d4496bc9d2",
+    "dirty": true
+  },
+  "runtime": {
+    "few": "1.post1.dev8+ga7c04d814.d20260902",
+    "machine": "arm64",
+    "numba": "0.67.0",
+    "numpy": "2.5.2",
+    "platform": "macOS-26.5.2-arm64-arm-64bit",
+    "python": "3.12.12",
+    "scipy": "1.18.1"
+  },
+  "same_host_fastmath_vs_strict": {
+    "actual_only": [],
+    "all_bitwise_equal": true,
+    "arrays": {
+      "attempt_accepted": {
+        "bitwise_equal": true,
+        "compatible": true,
+        "first_differing_flat_index": null,
+        "first_differing_index": null
+      },
+      "attempt_error": {
+        "bitwise_equal": true,
+        "compatible": true,
+        "first_differing_flat_index": null,
+        "first_differing_index": null,
+        "max_absolute": 0.0,
+        "normalized_max": 0.0,
+        "relative_l2": 0.0
+      },
+      "attempt_error_old": {
+        "bitwise_equal": true,
+        "compatible": true,
+        "first_differing_flat_index": null,
+        "first_differing_index": null,
+        "max_absolute": 0.0,
+        "normalized_max": 0.0,
+        "relative_l2": 0.0
+      },
+      "attempt_h": {
+        "bitwise_equal": true,
+        "compatible": true,
+        "first_differing_flat_index": null,
+        "first_differing_index": null,
+        "max_absolute": 0.0,
+        "normalized_max": 0.0,
+        "relative_l2": 0.0
+      },
+      "attempt_h_next": {
+        "bitwise_equal": true,
+        "compatible": true,
+        "first_differing_flat_index": null,
+        "first_differing_index": null,
+        "max_absolute": 0.0,
+        "normalized_max": 0.0,
+        "relative_l2": 0.0
+      },
+      "attempt_previous_reject": {
+        "bitwise_equal": true,
+        "compatible": true,
+        "first_differing_flat_index": null,
+        "first_differing_index": null
+      },
+      "attempt_state_after": {
+        "bitwise_equal": true,
+        "compatible": true,
+        "first_differing_flat_index": null,
+        "first_differing_index": null,
+        "max_absolute": 0.0,
+        "normalized_max": 0.0,
+        "relative_l2": 0.0
+      },
+      "attempt_state_before": {
+        "bitwise_equal": true,
+        "compatible": true,
+        "first_differing_flat_index": null,
+        "first_differing_index": null,
+        "max_absolute": 0.0,
+        "normalized_max": 0.0,
+        "relative_l2": 0.0
+      },
+      "attempt_t_after": {
+        "bitwise_equal": true,
+        "compatible": true,
+        "first_differing_flat_index": null,
+        "first_differing_index": null,
+        "max_absolute": 0.0,
+        "normalized_max": 0.0,
+        "relative_l2": 0.0
+      },
+      "attempt_t_before": {
+        "bitwise_equal": true,
+        "compatible": true,
+        "first_differing_flat_index": null,
+        "first_differing_index": null,
+        "max_absolute": 0.0,
+        "normalized_max": 0.0,
+        "relative_l2": 0.0
+      },
+      "integrator_times": {
+        "bitwise_equal": true,
+        "compatible": true,
+        "first_differing_flat_index": null,
+        "first_differing_index": null,
+        "max_absolute": 0.0,
+        "normalized_max": 0.0,
+        "relative_l2": 0.0
+      },
+      "p_to_u_probe_inputs": {
+        "bitwise_equal": true,
+        "compatible": true,
+        "first_differing_flat_index": null,
+        "first_differing_index": null,
+        "max_absolute": 0.0,
+        "normalized_max": 0.0,
+        "relative_l2": 0.0
+      },
+      "p_to_u_probe_outputs": {
+        "bitwise_equal": true,
+        "compatible": true,
+        "first_differing_flat_index": null,
+        "first_differing_index": null,
+        "max_absolute": 0.0,
+        "normalized_max": 0.0,
+        "relative_l2": 0.0
+      },
+      "spline_coefficients": {
+        "bitwise_equal": true,
+        "compatible": true,
+        "first_differing_flat_index": null,
+        "first_differing_index": null,
+        "max_absolute": 0.0,
+        "normalized_max": 0.0,
+        "relative_l2": 0.0
+      },
+      "trajectory": {
+        "bitwise_equal": true,
+        "compatible": true,
+        "first_differing_flat_index": null,
+        "first_differing_index": null,
+        "max_absolute": 0.0,
+        "normalized_max": 0.0,
+        "relative_l2": 0.0
+      }
+    },
+    "reference_only": []
+  },
+  "schema": "few-trajectory-reproducibility-v1",
+  "source_files": [
+    {
+      "bytes": 20061,
+      "path": "validation/trajectory_reproducibility.py",
+      "sha256": "ad34c693bdbcf782d60cce1d28754be5a2a7a22d776df0e028ef67799766e01c"
+    },
+    {
+      "bytes": 27412,
+      "path": "src/few/trajectory/ode/flux.py",
+      "sha256": "1f915406bfaa506380e4ce40a638a19fa09a966b2f67defb66165f9fd41e11fe"
+    },
+    {
+      "bytes": 25343,
+      "path": "src/few/trajectory/dopr853.py",
+      "sha256": "d0229fd3ca4d37d250ab2b4779665a23c7f5f3b672408f9892547811a2d04bd2"
+    },
+    {
+      "bytes": 26633,
+      "path": "src/few/trajectory/integrate.py",
+      "sha256": "4a28f6aaadd42b9ad302801513aa7a0b3c7e47766a6800a724925345700703d1"
+    },
+    {
+      "bytes": 15633,
+      "path": "src/few/trajectory/inspiral.py",
+      "sha256": "ebe30aa00b656b4529ba5a0c96377bf2959600d1463952f4cf710350f9678df9"
+    },
+    {
+      "bytes": 8039,
+      "path": "src/few/utils/elliptic.py",
+      "sha256": "8e432b82f884ae3cb73d2a96db448e80217d06ea6461084b2bc02979d553358d"
+    }
+  ],
+  "variants": {
+    "fastmath": {
+      "accepted_attempts": 7,
+      "attempts": 7,
+      "elapsed_seconds": 0.0021559999986493494,
+      "minimum_distance_from_acceptance_boundary": 0.07513375704875513,
+      "p_sep_cache": 3.861718378695971,
+      "rejected_attempts": 0,
+      "trajectory_points": 8,
+      "variant": "fastmath"
+    },
+    "strict": {
+      "accepted_attempts": 7,
+      "attempts": 7,
+      "elapsed_seconds": 0.002007457998843165,
+      "minimum_distance_from_acceptance_boundary": 0.07513375704875513,
+      "p_sep_cache": 3.861718378695971,
+      "rejected_attempts": 0,
+      "trajectory_points": 8,
+      "variant": "strict"
+    }
+  }
+}
