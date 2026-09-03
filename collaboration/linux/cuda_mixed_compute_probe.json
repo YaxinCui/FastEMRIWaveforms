@@ -1,0 +1,310 @@
+{
+  "cases": [
+    {
+      "candidate_repeat_bitwise": true,
+      "candidate_vs_native": {
+        "limit": 5e-12,
+        "normalized_max_abs": 4.426571250644198e-15,
+        "passed": true,
+        "relative_l2": 2.7859822679397753e-15,
+        "shape": [
+          128,
+          3843
+        ]
+      },
+      "cupy_fp64_candidate": {
+        "median_ms": 3.704861970618367,
+        "minimum_ms": 3.632795996963978,
+        "p90_ms": 4.20840863371268
+      },
+      "input_points": 128,
+      "median_speedup": 1.8206467798636536,
+      "native_fp64": {
+        "median_ms": 6.74524501664564,
+        "minimum_ms": 6.617360981181264,
+        "p90_ms": 7.663767656777054
+      }
+    },
+    {
+      "candidate_repeat_bitwise": true,
+      "candidate_vs_native": {
+        "limit": 5e-12,
+        "normalized_max_abs": 4.975645724362192e-15,
+        "passed": true,
+        "relative_l2": 2.7177085224643104e-15,
+        "shape": [
+          1000,
+          3843
+        ]
+      },
+      "cupy_fp64_candidate": {
+        "median_ms": 11.988968937657773,
+        "minimum_ms": 11.597675969824195,
+        "p90_ms": 12.94485793914646
+      },
+      "input_points": 1000,
+      "median_speedup": 1.1802994129434616,
+      "native_fp64": {
+        "median_ms": 14.150572998914868,
+        "minimum_ms": 13.774658087641,
+        "p90_ms": 16.101252229418606
+      }
+    },
+    {
+      "candidate_repeat_bitwise": true,
+      "candidate_vs_native": {
+        "limit": 5e-12,
+        "normalized_max_abs": 5.97505106957877e-15,
+        "passed": true,
+        "relative_l2": 2.307165830819761e-15,
+        "shape": [
+          4096,
+          3843
+        ]
+      },
+      "cupy_fp64_candidate": {
+        "median_ms": 47.696567431557924,
+        "minimum_ms": 46.07843409758061,
+        "p90_ms": 49.047002266161144
+      },
+      "input_points": 4096,
+      "median_speedup": 1.013080502891659,
+      "native_fp64": {
+        "median_ms": 48.320462519768625,
+        "minimum_ms": 47.0098169753328,
+        "p90_ms": 49.61472636787221
+      }
+    }
+  ],
+  "collaboration_note": "2026-09-03 CST (linux): Linux-only exploratory report; no production backend or acceptance threshold is changed.",
+  "cuda_runtime": 12090,
+  "cupy": "14.2.0",
+  "experiment": {
+    "accuracy_limit_source": "validation/dual_host_consistency.py",
+    "candidate": "CuPy ROMAN matrix path",
+    "candidate_storage_compute_accumulation": "FP64/FP64/FP64",
+    "reference": "existing FEW native ROMAN path",
+    "reference_storage_compute_accumulation": "FP64/FP64/FP64",
+    "renormalization_included": false,
+    "repetitions": 20,
+    "timing_scope": "warm synchronized wall time",
+    "waveform_repetitions": 8
+  },
+  "few_version": "2.1.0.post1.dev112+g4219cabf2.d20260903",
+  "gpu": {
+    "compute_capability": [
+      7,
+      5
+    ],
+    "name": "NVIDIA GeForce RTX 2080 Ti"
+  },
+  "interpretation": "A faster same-FP64 candidate at small/medium batches indicates that scheduling, repeated native-wrapper synchronization, or handle lifecycle should be investigated before dtype reduction. The waveform cases test end-to-end engineering consistency but do not replace LISA/TDI or parameter-bias acceptance.",
+  "memory_pool_mib": {
+    "reserved": 1746.8017578125,
+    "used": 366.8212890625
+  },
+  "network": {
+    "break_index": 99,
+    "layer_shapes": [
+      [
+        2,
+        4
+      ],
+      [
+        4,
+        8
+      ],
+      [
+        8,
+        16
+      ],
+      [
+        16,
+        32
+      ],
+      [
+        32,
+        64
+      ],
+      [
+        64,
+        128
+      ],
+      [
+        128,
+        256
+      ],
+      [
+        256,
+        256
+      ],
+      [
+        256,
+        256
+      ],
+      [
+        256,
+        256
+      ],
+      [
+        256,
+        256
+      ],
+      [
+        256,
+        256
+      ],
+      [
+        256,
+        256
+      ],
+      [
+        256,
+        256
+      ],
+      [
+        256,
+        256
+      ],
+      [
+        256,
+        256
+      ],
+      [
+        256,
+        256
+      ],
+      [
+        256,
+        256
+      ],
+      [
+        256,
+        256
+      ],
+      [
+        256,
+        256
+      ],
+      [
+        256,
+        198
+      ]
+    ],
+    "num_teuk_modes": 3843,
+    "transform_dtype": "complex128",
+    "weight_dtypes": [
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64",
+      "float64"
+    ]
+  },
+  "numpy": "2.5.2",
+  "project_commit": "4219cabf2fde9acb81c0773af26ec2e11af33696",
+  "python": "3.12.13",
+  "schema": 1,
+  "source_sha256": {
+    "src/few/amplitude/romannet.py": "3fccfee2c4690630ae639f5975ad3a831a7dfb7ea3972a36e515ba7c17e48835",
+    "src/few/cutils/matmul.cu": "bc1131a903a654090d74c8fd803a5e0882c904da41c7ccc13b8caebaf4b15f0d",
+    "src/few/data/SchwarzschildEccentricInput.hdf5": "edb90365f3a5ee39b92ea1ebeb96c916d059f0835234b768087d9b7e80d1bede"
+  },
+  "timestamp_cst": "2026-09-03T22:24:21.967118+08:00",
+  "waveform_cases": [
+    {
+      "candidate_vs_native": {
+        "flat_weight_mismatch": 1.1102230246251565e-16,
+        "limit": 5e-11,
+        "mismatch_limit": 1e-10,
+        "normalized_max_abs": 4.602590458305083e-15,
+        "passed": true,
+        "relative_l2": 2.1272204763470157e-15,
+        "shape": [
+          2104
+        ]
+      },
+      "cupy_fp64_candidate": {
+        "median_ms": 14.454026997555047,
+        "minimum_ms": 11.479689972475171,
+        "p90_ms": 15.525014197919518
+      },
+      "duration_years": 0.001,
+      "median_speedup": 1.2341494510837347,
+      "native_fp64": {
+        "median_ms": 17.838429484982044,
+        "minimum_ms": 17.238219967111945,
+        "p90_ms": 18.61563987331465
+      },
+      "samples": 2104
+    },
+    {
+      "candidate_vs_native": {
+        "flat_weight_mismatch": 0.0,
+        "limit": 5e-11,
+        "mismatch_limit": 1e-10,
+        "normalized_max_abs": 1.8639336544930156e-14,
+        "passed": true,
+        "relative_l2": 7.917721074891497e-15,
+        "shape": [
+          21039
+        ]
+      },
+      "cupy_fp64_candidate": {
+        "median_ms": 12.224052508827299,
+        "minimum_ms": 11.598764103837311,
+        "p90_ms": 14.517916156910358
+      },
+      "duration_years": 0.01,
+      "median_speedup": 1.2059120730107973,
+      "native_fp64": {
+        "median_ms": 14.741132501512766,
+        "minimum_ms": 14.10636689979583,
+        "p90_ms": 41.62400409113616
+      },
+      "samples": 21039
+    },
+    {
+      "candidate_vs_native": {
+        "flat_weight_mismatch": 0.0,
+        "limit": 5e-11,
+        "mismatch_limit": 1e-10,
+        "normalized_max_abs": 1.109250940950809e-14,
+        "passed": true,
+        "relative_l2": 3.468243048053729e-15,
+        "shape": [
+          528172
+        ]
+      },
+      "cupy_fp64_candidate": {
+        "median_ms": 99.78164895437658,
+        "minimum_ms": 99.30764802265912,
+        "p90_ms": 100.07462161593139
+      },
+      "duration_years": 1.0,
+      "median_speedup": 1.025628079974693,
+      "native_fp64": {
+        "median_ms": 102.33886103378609,
+        "minimum_ms": 100.93820199836046,
+        "p90_ms": 102.7597994892858
+      },
+      "samples": 528172
+    }
+  ]
+}

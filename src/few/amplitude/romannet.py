@@ -42,6 +42,11 @@ class RomanAmplitude(AmplitudeBase, SchwarzschildEccentric):
             user requests more length, a warning will be thrown and the
             buffer_length will be increased accordingly and arrays reallocated.
             Default is 1000.
+        cuda_roman_mode (str, optional): CUDA-only ROMAN matrix execution path.
+            ``"legacy"`` preserves the registered native-wrapper path;
+            ``"cupy_fp64"`` is an opt-in research path that keeps FP64 storage,
+            compute, and accumulation while avoiding per-layer native-wrapper
+            scheduling overhead. Default is ``"legacy"``.
         **kwargs (dict, optional): Keyword arguments for the base classes:
             :class:`few.utils.baseclasses.SchwarzschildEccentric`,
             :class:`few.utils.baseclasses.AmplitudeBase`,
@@ -83,13 +88,45 @@ class RomanAmplitude(AmplitudeBase, SchwarzschildEccentric):
             run_relu_arr  (1D int xp.ndarray): Array holding information about
                 whether each layer will run the relu activation. All layers have
                 value 1, except for the last layer with value 0.
+            cuda_roman_mode (str): Explicit CUDA ROMAN execution policy. The
+                accepted default remains ``"legacy"``.
 
         """
         pass
 
-    def __init__(self, buffer_length=1000, force_backend: BackendLike = None, **kwargs):
+    def __init__(
+        self,
+        buffer_length=1000,
+        force_backend: BackendLike = None,
+        cuda_roman_mode="legacy",
+        **kwargs,
+    ):
         AmplitudeBase.__init__(self)
         SchwarzschildEccentric.__init__(self, **kwargs, force_backend=force_backend)
+
+        # 2026-09-03 22:00 CST (linux): Keep the accepted native FP64 route as
+        # default while exposing the first reversible, same-precision CUDA
+        # scheduling experiment. Precision reduction is deliberately not mixed
+        # into this boundary experiment.
+        allowed_cuda_roman_modes = {"legacy", "cupy_fp64", "cupy_fp32"}
+        if cuda_roman_mode not in allowed_cuda_roman_modes:
+            raise ValueError(
+                "cuda_roman_mode must be one of "
+                f"{sorted(allowed_cuda_roman_modes)}, got {cuda_roman_mode!r}."
+            )
+        if cuda_roman_mode in ["cupy_fp64", "cupy_fp32"] and not self.backend.uses_cupy:
+            raise ValueError(
+                f"cuda_roman_mode={cuda_roman_mode!r} requires a CUDA/CuPy backend."
+            )
+        self.cuda_roman_mode = cuda_roman_mode
+        
+        if self.backend.uses_cupy:
+            self._fused_bias_relu = self.xp.ElementwiseKernel(
+                'T x, T b', 
+                'T y',
+                'T val = x + b; y = val >= 0.0 ? val : (T)0.2 * val',
+                'fused_bias_relu'
+            )
 
         # check if user has the necessary data
         # if not, the data will automatically download
@@ -173,6 +210,10 @@ class RomanAmplitude(AmplitudeBase, SchwarzschildEccentric):
             # get the post network transform matrix
             self.transform_matrix = self.xp.asarray(fp["reduced_basis"])
 
+        if self.cuda_roman_mode == "cupy_fp32":
+            self.weights = [w.astype(self.xp.float32) for w in self.weights]
+            self.bias = [b.astype(self.xp.float32) for b in self.bias]
+
         # longest length in any dimension for buffers
         self.max_num = np.max([self.dim1, self.dim2])
 
@@ -188,7 +229,9 @@ class RomanAmplitude(AmplitudeBase, SchwarzschildEccentric):
         self.run_relu_arr = np.ones(self.num_layers, dtype=int)
         self.run_relu_arr[-1] = 0
 
-    def get_amplitudes(self, a, p, e, xI, *args, specific_modes=None, renormalize_amps=True, **kwargs):
+    def get_amplitudes(
+        self, a, p, e, xI, *args, specific_modes=None, renormalize_amps=True, **kwargs
+    ):
         """Calculate Teukolsky amplitudes for Schwarzschild eccentric.
 
         This function takes the inputs the trajectory in :math:`(p,e)` as arrays
@@ -242,54 +285,84 @@ class RomanAmplitude(AmplitudeBase, SchwarzschildEccentric):
         # the input is (y, e)
         y = schwarzecc_p_to_y(p, e, use_gpu=self.backend.uses_cupy)
 
-        # column-major single dimensional array input
-        input = self.xp.concatenate([y, e])
+        if self.cuda_roman_mode in ["cupy_fp64", "cupy_fp32"]:
+            # 2026-09-03 22:00 CST (linux): Experimental pure-CuPy inference path.
+            # Avoids legacy layer-by-layer C++ synchronization. When in cupy_fp32,
+            # network executes entirely in float32 and casts back to complex128
+            # for the final Teukolsky transformation, ensuring minimum memory-bound overhead.
+            layer = self.xp.stack((y, e), axis=1)
+            
+            if self.cuda_roman_mode == "cupy_fp32":
+                layer = layer.astype(self.xp.float32)
+                
+            for index, (weight, bias) in enumerate(zip(self.weights, self.bias)):
+                layer = layer @ weight
+                
+                # ElementwiseKernel requires identical precision
+                if layer.dtype != weight.dtype:
+                    layer = layer.astype(weight.dtype)
+                    
+                if index + 1 < len(self.weights):
+                    self._fused_bias_relu(layer, bias, layer)
+                else:
+                    layer += bias
+            
+            if layer.dtype != self.xp.float64:
+                layer = layer.astype(self.xp.float64)
+                
+            reduced_modes = (
+                layer[:, : self.break_index] + 1j * layer[:, self.break_index :]
+            ) * self.transform_factor_inv
+            teuk_modes = reduced_modes @ self.transform_matrix
+        else:
+            # column-major single dimensional array input
+            input = self.xp.concatenate([y, e])
 
-        # fill first temporary matrix
-        self.temp_mats[0][: 2 * input_len] = input
+            # fill first temporary matrix
+            self.temp_mats[0][: 2 * input_len] = input
 
-        # setup arrays
-        # teukolsky mode (final output)
-        teuk_modes = self.xp.zeros(
-            (input_len * self.num_teuk_modes,), dtype=self.xp.complex128
-        )
-
-        # neural network output
-        nn_out_mat = self.xp.zeros(
-            (input_len * self.break_index,), dtype=self.xp.complex128
-        )
-
-        # run the neural network
-        for i, (weight, bias, run_relu) in enumerate(
-            zip(self.weights, self.bias, self.run_relu_arr)
-        ):
-            # set temporary input and output matrix
-            mat_in = self.temp_mats[i % 2]
-            mat_out = self.temp_mats[(i + 1) % 2]
-
-            # get shape information
-            m = len(p)
-            k, n = weight.shape
-
-            # run the C++ neural net layer
-            self.neural_layer(
-                mat_out, mat_in, weight.T.flatten(), bias, m, k, n, run_relu
+            # setup arrays
+            # teukolsky mode (final output)
+            teuk_modes = self.xp.zeros(
+                (input_len * self.num_teuk_modes,), dtype=self.xp.complex128
             )
 
-        # transform the neural net ouput back to the amplitude space
-        self.transform_output(
-            teuk_modes,
-            self.transform_matrix.T.flatten(),
-            nn_out_mat,
-            mat_out,
-            input_len,
-            self.break_index,
-            self.transform_factor_inv,
-            self.num_teuk_modes,
-        )
+            # neural network output
+            nn_out_mat = self.xp.zeros(
+                (input_len * self.break_index,), dtype=self.xp.complex128
+            )
 
-        # reshape the teukolsky modes
-        teuk_modes = teuk_modes.reshape(self.num_teuk_modes, input_len).T
+            # run the neural network
+            for i, (weight, bias, run_relu) in enumerate(
+                zip(self.weights, self.bias, self.run_relu_arr)
+            ):
+                # set temporary input and output matrix
+                mat_in = self.temp_mats[i % 2]
+                mat_out = self.temp_mats[(i + 1) % 2]
+
+                # get shape information
+                m = len(p)
+                k, n = weight.shape
+
+                # run the C++ neural net layer
+                self.neural_layer(
+                    mat_out, mat_in, weight.T.flatten(), bias, m, k, n, run_relu
+                )
+
+            # transform the neural net ouput back to the amplitude space
+            self.transform_output(
+                teuk_modes,
+                self.transform_matrix.T.flatten(),
+                nn_out_mat,
+                mat_out,
+                input_len,
+                self.break_index,
+                self.transform_factor_inv,
+                self.num_teuk_modes,
+            )
+
+            # reshape the teukolsky modes
+            teuk_modes = teuk_modes.reshape(self.num_teuk_modes, input_len).T
 
         # norm with respect to the flux interpolated by the bicubic spline
         if renormalize_amps:
@@ -298,9 +371,7 @@ class RomanAmplitude(AmplitudeBase, SchwarzschildEccentric):
                 # bridge CUDA coordinates explicitly and return norms to the
                 # active device instead of relying on a forbidden implicit
                 # CuPy-to-NumPy conversion.
-                amp_norm = self.xp.asarray(
-                    self.amp_norm_spline.ev(y.get(), e.get())
-                )
+                amp_norm = self.xp.asarray(self.amp_norm_spline.ev(y.get(), e.get()))
             else:
                 amp_norm = self.amp_norm_spline.ev(y, e)
             amp_for_norm = self.xp.sum(

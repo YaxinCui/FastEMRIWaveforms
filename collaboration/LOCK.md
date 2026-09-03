@@ -134,11 +134,15 @@ large-file audits; the commit containing this record is the Ubuntu sync point. -
 
 <!-- 2026-09-03 21:34 CST (linux): Release editing after the six-file documentation package passed diff, timestamp-comment, ownership, report-identity, and knowledge-index audits; it is ready for the requested commit and push. -->
 
-- Branch: `codex/apple-silicon-dual-host`
+<!-- 2026-09-03 21:36 CST (linux): Acquire the edit lock on the newly created codex/cuda-mixed-precision branch at 4219cabf. Ubuntu begins with a read-only FP64 CUDA/type/hotspot/test audit before selecting one opt-in, reversible mixed-compute experiment. -->
+
+<!-- 2026-09-03 22:34 CST (linux): Release editing after the first opt-in FP64 CuPy ROMAN candidate passed fresh-wheel build, focused/operator/waveform/dual-host checks, the 53-test fast CUDA suite, Ruff/format/bytecode/JSON/diff audits, and documented performance boundaries. -->
+
+- Branch: `codex/cuda-mixed-precision`
 - Active editor: `none`
 - Last editor: `linux` — Ubuntu x86_64 / NVIDIA GeForce RTX 2080 Ti
-- Last lock acquired: 2026-09-03 21:32 CST (Asia/Shanghai)
-- Lock released: 2026-09-03 21:34 CST (Asia/Shanghai)
-- State: The CPU reports, Mac Metal/PPT/test assignment, and outcome-driven
-  CUDA mixed-compute plan are ready for synchronization on the current branch.
-  No CUDA branch or production source was changed.
+- Last lock acquired: 2026-09-03 21:36 CST (Asia/Shanghai)
+- Lock released: 2026-09-03 22:34 CST (Asia/Shanghai)
+- State: The first opt-in same-FP64 CUDA scheduling candidate is implemented,
+  measured, and regression-tested on `codex/cuda-mixed-precision`. It remains
+  uncommitted; the accepted legacy FP64 path is still the default.

@@ -122,3 +122,42 @@ using double-single arithmetic with NumPy host arrays. It remains opt-in and is
 gated by frozen-input, one-year waveform, packaging, and cross-host validation;
 broader Metal coverage must still be justified by end-to-end measurements rather
 than kernel throughput alone.
+
+<!-- 2026-09-03 CST (linux): Expand knowledge base with comprehensive domain guides, verified local paper archive, and reference engineering repositories. -->
+
+## Accelerated Computing Knowledge Base
+
+To guide subsequent algorithm optimization and GPU mixed-precision acceleration, three deep domain guides, an authenticated 36-paper local PDF archive, and curated open-source reference repositories have been integrated into the local workspace:
+
+1. **[GW Physics & EMRI Theory Guide](guides/GW_PHYSICS_AND_EMRI_THEORY.md)**:
+   - Relativistic black hole perturbation theory, Teukolsky equations, Kerr bound geodesics ($p, e, x_I$), and separatrices.
+   - Adiabatic radiation reaction, multipolar mode decompositions, and mode-selection energy thresholds.
+   - Rigorous scientific error budgets: Lindblom accuracy criteria, noise-weighted inner product, Overlap, and detector-weighted mismatch ($\mathcal{M}$).
+2. **[Signal Processing & Likelihood Acceleration Guide](guides/SIGNAL_PROCESSING_AND_LIKELIHOOD_ACCELERATION.md)**:
+   - Frequency-domain waveform generation (*Fast and Fourier*), Stationary Phase Approximation (SPA), and multivoice decomposition.
+   - Non-Uniform Fast Fourier Transforms (NUFFT / cuFINUFFT) on GPUs.
+   - Likelihood evaluation acceleration for MCMC: Heterodyned Likelihood / Relative Binning, and Reduced Order Quadrature (ROQ).
+   - LISA Time Delay Interferometry (TDI) instrument response modeling on GPUs.
+3. **[Parallel Computing & Mixed-Precision Practice Guide](guides/PARALLEL_COMPUTING_AND_MIXED_PRECISION.md)**:
+   - Modern GPU architecture breakdown (Turing SM 7.5, FP64 vs FP32 vs Tensor Core throughput ratios).
+   - Tiered precision design: rigid FP64 trajectory/phase vs FP32 amplitude tables vs Double-Single compensated mode accumulation.
+   - CUDA engineering patterns: cuBLAS handle lifecycle reuse, stream concurrency, and memory coalescing.
+   - 5GB Kerr table optimization: replacing 13-second eager loading with lazy HDF5 hyperslab slice reads and LRU caching.
+4. **[Curated Engineering Reference Repositories](reference_repos/README.md)**:
+   - `fastlisaresponse` (`lisa-on-gpu`): in-situ CuPy/CUDA instrument response and polynomial interpolation.
+   - `QD`: industrial-strength Double-Double and Quad-Double compensated arithmetic templates.
+   - `sleef`: ultra-fast SIMD/vectorized elementary functions for transcendental kernels.
+5. **[Authenticated Literature Archive (36 Local PDFs)](library/INDEX.md)**:
+   - All 36 primary literature papers (74.05 MB) downloaded and verified with exact SHA-256 digests in [`library/MANIFEST.tsv`](library/MANIFEST.tsv) under `library/downloads/`.
+
+## Classical Textbooks, Comprehensive Monographs, and Official Manuals
+
+To provide foundational theoretical depth beyond research papers, a dedicated archive of **18 classical graduate-level textbooks, comprehensive monographs, and official hardware/library manuals** has been downloaded, verified, and integrated locally:
+
+- **[Textbook Library Index & Reading Map](textbooks/INDEX.md)**: Curated guide mapping standard textbook chapters (GR, self-force, DSP, CUDA) directly to FEW modules and optimization tasks.
+- **[Textbook Manifest](textbooks/MANIFEST.tsv)**: Provenance tracking of all 18 local volumes (35.8 MB), exact URLs, pages, and SHA-256 digests in `textbooks/downloads/`.
+- **[Textbook Deep Synthesis & Derivations](guides/TEXTBOOK_DEEP_SYNTHESIS.md)**: Concise, textbook-level synthesis of key theorems, derivations, and mathematical formalisms:
+  - *Kerr Metric, First Integrals & Mino Time Decoupling* (Carter 1968, Carroll GR).
+  - *Two-Timescale Adiabatic Radiation Reaction & Teukolsky Master Equation* (Poisson 2004, Barack & Pound 2018).
+  - *Matched Filter Theorem, Stationary Gaussian Noise & Fisher Information Matrix* (Jaranowski & Krolak 2012, Cutler & Flanagan 1994).
+  - *IEEE 754 Floating-Point Error-Free Transformations (TwoSum) & GPU Latency Hiding* (Kirk & Hwu PMPP, NVIDIA CUDA Guides).

@@ -987,3 +987,113 @@ the user after Git creates and the remote accepts it. -->
   `knowledge/APPLE_SILICON_CPU_ACCELERATION_TEST_REPORT.md`.
 - The shared lock is released before synchronization. Mac may take over only
   after pulling the pushed commit and confirming a clean worktree.
+
+<!-- 2026-09-03 21:36 CST (linux): Record creation of the user-authorized CUDA
+mixed-compute branch and the evidence-first research start. -->
+
+## 2026-09-03 21:36 CST — CUDA mixed-compute branch created
+
+- Created and pushed `codex/cuda-mixed-precision` from the clean synchronized
+  milestone `4219cabf`; its upstream is
+  `origin/codex/cuda-mixed-precision`. The source collaboration branch remains
+  unchanged at the same commit.
+- Ubuntu acquired the lock on the new branch. The first activity is a read-only
+  audit of the installed RTX 2080 Ti/CUDA environment, current FP64 data paths,
+  likely runtime hotspots, and existing accuracy/performance validators.
+- No dtype conversion is selected yet. The first implementation candidate must
+  be opt-in and independently reversible, preserve the FP64 oracle/default,
+  expose its effective storage/compute/accumulation precision, and demonstrate
+  repeatable end-to-end speedup within a declared scientific error budget.
+
+<!-- 2026-09-03 22:33 CST (linux): Record the first implemented CUDA
+mixed-compute experiment, fresh-wheel provenance, numerical/performance
+results, and regression scope before releasing the branch lock. -->
+
+## 2026-09-03 22:33 CST — first opt-in CUDA execution candidate passed
+
+### Baseline and diagnosis
+
+- The host is an Intel i5-13400F with an NVIDIA GeForce RTX 2080 Ti, compute
+  capability 7.5, driver 595.84, CUDA runtime/toolkit 12.9, CuPy 14.2.0, and
+  CPython 3.12.13 in the project `.venv`. CUDA tools live in the dedicated
+  `few-ubuntu-20260901` micromamba prefix rather than the default shell PATH.
+- A clean pre-edit full-table FP64 Kerr replay against Mac's accepted reference
+  passed all amplitude/waveform limits. It measured model load `13.134 s`, hot
+  6993-mode/four-point amplitude `10.640 ms`, and hot 2104-sample waveform
+  `17.264 ms`, with a 5202.91 MiB reserved CuPy pool. This preserves separate
+  cold-start and warm-inference baselines.
+- Source inspection confirmed FP64 `double`/`complex<double>` buffers,
+  `cublasDgemm`/`cublasZgemm`, and FP64 Kerr interpolation. It also found that
+  every ROMAN neural layer creates/destroys a cuBLAS handle, synchronizes the
+  device, and receives newly flattened weight storage. A layout-cache-only
+  temporary probe helped small batches but was negligible at 4096 points;
+  eliminating the complete per-layer scheduling path was the stronger first
+  candidate.
+
+### Implemented experiment
+
+- Added opt-in `RomanAmplitude(cuda_roman_mode="cupy_fp64")`. It computes the
+  same 21 trained layers and complex projection through the active CuPy backend
+  while preserving float64 weights/intermediates and complex128 amplitudes.
+  `cuda_roman_mode="legacy"` remains the default; unknown policies and use of
+  the CUDA-only candidate with the CPU backend fail explicitly.
+- The option propagates through
+  `FastSchwarzschildEccentricFlux(amplitude_kwargs={...})`. No global dtype,
+  trajectory, phase, Kerr interpolation, summation, tolerance, backend
+  registration, or data file changed.
+- Added six focused CUDA tests for dtype, operator accuracy, end-to-end
+  waveform accuracy, default behavior, CPU rejection, and invalid-policy
+  rejection. Added the reproducible Linux-only probe
+  `collaboration/linux/cuda_mixed_compute_probe.py` and its JSON result.
+
+### Canonical RTX 2080 Ti result
+
+- ROMAN operator, 20 warm synchronized repetitions:
+  - 128 points: `6.7452 ms -> 3.7049 ms`, `1.821x`;
+  - 1000 points: `14.1506 ms -> 11.9890 ms`, `1.180x`;
+  - 4096 points: `48.3205 ms -> 47.6966 ms`, `1.013x`.
+- End-to-end Schwarzschild waveform, eight warm synchronized repetitions:
+  - 0.001 year: `17.8384 ms -> 14.4540 ms`, `1.234x`;
+  - 0.01 year: `14.7411 ms -> 12.2241 ms`, `1.206x`;
+  - 1.0 year: `102.3389 ms -> 99.7816 ms`, `1.026x`.
+- Across operator cases, normalized maximum error was at most `5.98e-15` and
+  relative L2 at most `2.79e-15`, below the unchanged `5e-12` limit. Across
+  waveform cases, normalized maximum was at most `1.86e-14`, relative L2 at
+  most `7.92e-15`, and flat mismatch was numerical zero, below unchanged
+  `5e-11`/`1e-10` gates. Every case passed and candidate repeats were bitwise
+  stable at operator level.
+
+### Build and verification
+
+- Fresh `FEW_WITH_GPU=ON`, `FEW_WITH_METAL=OFF`, `FEW_CUDA_ARCH=75` wheel:
+  4,988,421 bytes, SHA256
+  `3eb0546940ad6ba9ff36f2dd2c14afb97383adbd8306d4dc8a6d86e02fe65604`;
+  it remains outside Git under `/tmp/few-mixed-wheel.Dc3oCx/`.
+- The fresh wheel passed the six focused tests. The default CUDA dual-host
+  validator also passed all six workloads against the Mac reference, including
+  the known AAK implementation split. The final fast CUDA suite passed all 53
+  tests in 128.336 seconds with 23 expected slow/high-memory skips.
+- Probe identities: script 11,725 bytes, SHA256
+  `d2d7383f87fdb36d879049b8ef2561198f825fb1261df75b2ad7a87e13fd8fe4`;
+  JSON 7,404 bytes, SHA256
+  `026a8c2ef98033c2894cb1de3e960bdf4590d25bc6e9e3e7a669ab914b9af636`.
+
+### Decision and next boundary
+
+- Keep `cupy_fp64` as an explicit experimental policy. Its short-waveform gain
+  is real and numerically safe within the tested engineering scope, but the
+  benefit falls to about 2.6% for the one-year case and does not apply to the
+  separate full-table Kerr interpolator. It is not justified as the default.
+- Next isolate persistent native cuBLAS handle/synchronization changes versus
+  CuPy intermediate-allocation cost, then profile Kerr interpolation bandwidth
+  and cold H5/model construction. Only after those profiles should FP32,
+  FP16/matrix modes, double-single, or adaptive precision be ranked.
+- Full LISA/TDI response, PSD-weighted mismatch, SNR, parameter-bias, broader
+  parameter grids, and explicit peak-memory comparison remain future
+  scientific/release gates. No commit or push of this experiment has occurred
+  yet.
+
+<!-- 2026-09-03 22:34 CST (linux): Release the branch lock after Ruff 0.9.2,
+format, Python bytecode, JSON schema/result, source-hash, ownership, and Git
+whitespace audits passed. The experiment remains an uncommitted Ubuntu change
+on codex/cuda-mixed-precision pending review or an explicit commit/push. -->

@@ -37,6 +37,36 @@ named-precision plan. Likewise, kernel fusion, batching, persistent buffers,
 cache layout, fewer conversions, and CPU/GPU scheduling are in scope when they
 produce a larger validated gain than dtype reduction alone.
 
+<!-- 2026-09-03 22:33 CST (linux): Record the first measured experiment on
+codex/cuda-mixed-precision. It isolates execution overhead in full precision;
+the result does not select a reduced-precision policy. -->
+
+## First Ubuntu branch experiment: remove ROMAN scheduling overhead
+
+The first experiment intentionally keeps FP64 storage, FP64 GEMM, FP64
+activation, and complex128 projection. The existing CUDA ROMAN route invokes a
+native wrapper for each of 21 neural layers; that wrapper creates and destroys
+a cuBLAS handle and synchronizes the device on every call. An opt-in
+`cuda_roman_mode="cupy_fp64"` route instead expresses those same trained matrix
+operations through CuPy, while `"legacy"` remains the unchanged default.
+
+On the RTX 2080 Ti, the pinned 20-repeat operator probe measured median
+speedups of `1.821x`, `1.180x`, and `1.013x` for 128, 1000, and 4096 input
+points. The corresponding normalized-maximum differences were
+`4.43e-15`--`5.98e-15`, below the existing `5e-12` ROMAN regression limit.
+Warm end-to-end Schwarzschild waveforms measured `1.234x`, `1.206x`, and
+`1.026x` at 0.001, 0.01, and 1.0 years; normalized maximum error remained at
+or below `1.86e-14`, relative L2 at or below `7.92e-15`, and flat mismatch was
+zero up to floating-point roundoff.
+
+This establishes two useful boundaries. First, mixed-compute research should
+remove unnecessary scheduling and synchronization costs before accepting the
+risk of lower precision. Second, this particular route mainly helps small and
+medium ROMAN batches: its one-year gain is only about 2.6%, and it does not
+accelerate the separate Kerr amplitude interpolator. It therefore remains an
+explicit candidate rather than a new default. Exact measurements and source
+hashes are in `collaboration/linux/cuda_mixed_compute_probe.json`.
+
 ## Post-pull feasibility update
 
 Mac commit `5c872d31` arrived after the initial version of this plan was written.

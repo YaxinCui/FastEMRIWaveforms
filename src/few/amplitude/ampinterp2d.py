@@ -188,6 +188,59 @@ class AmpInterp2D(AmplitudeBase, ParallelModuleBase):
         return z
 
 
+
+class LazySpinInformationHolder:
+    """Lazy-loading proxy list for AmpInterp2D spin slices.
+
+    Instead of eagerly materializing all 5GB of spin-slice interpolants into memory
+    at model construction, this container loads slices from HDF5 on demand when
+    accessed (via __getitem__) and caches them. It is backwards-compatible with
+    a normal Python list.
+    """
+
+    def __init__(self, loader_func, length: int, max_cached: Optional[int] = None):
+        self._loader_func = loader_func
+        self._length = length
+        self._cache = {}
+        self._max_cached = max_cached
+        self._access_order = []
+
+    def __len__(self) -> int:
+        return self._length
+
+    def __getitem__(self, index):
+        if isinstance(index, slice):
+            return [self[i] for i in range(*index.indices(self._length))]
+        if index < 0:
+            index += self._length
+        if index < 0 or index >= self._length:
+            raise IndexError(
+                f"Index {index} out of range for spin holder of length {self._length}"
+            )
+
+        if index not in self._cache:
+            item = self._loader_func(index)
+            if self._max_cached is not None and len(self._cache) >= self._max_cached:
+                oldest = self._access_order.pop(0)
+                if oldest in self._cache:
+                    del self._cache[oldest]
+            self._cache[index] = item
+            self._access_order.append(index)
+        else:
+            if self._max_cached is not None:
+                self._access_order.remove(index)
+                self._access_order.append(index)
+        return self._cache[index]
+
+    def __iter__(self):
+        for i in range(self._length):
+            yield self[i]
+
+    def clear_cache(self):
+        self._cache.clear()
+        self._access_order.clear()
+
+
 class AmpInterpKerrEccEq(AmplitudeBase, KerrEccentricEquatorial):
     """Calculate Teukolsky amplitudes in the Kerr eccentric equatorial regime with a bicubic spline + linear
     interpolation scheme.
@@ -208,7 +261,7 @@ class AmpInterpKerrEccEq(AmplitudeBase, KerrEccentricEquatorial):
 
     filename: str
 
-    spin_information_holder_A: list[AmpInterp2D]
+    spin_information_holder_A: Union[list[AmpInterp2D], LazySpinInformationHolder]
 
     z_values: np.ndarray
 
@@ -217,6 +270,8 @@ class AmpInterpKerrEccEq(AmplitudeBase, KerrEccentricEquatorial):
         filename: Optional[str] = None,
         downsample_Z=1,
         force_backend: BackendLike = None,
+        lazy_loading: bool = True,
+        max_cached_spins: Optional[int] = None,
         **kwargs,
     ):
         AmplitudeBase.__init__(self)
@@ -225,56 +280,51 @@ class AmpInterpKerrEccEq(AmplitudeBase, KerrEccentricEquatorial):
         self.filename = (
             "ZNAmps_l10_m10_n55_DS2Outer.h5" if filename is None else filename
         )
+        self.downsample_Z = downsample_Z
+        self.lazy_loading = lazy_loading
+        self.max_cached_spins = 4 if max_cached_spins is None else max_cached_spins
 
         from few import get_file_manager
 
         file_path = get_file_manager().get_file(self.filename)
+        self.file_path = file_path
 
         with h5py.File(file_path, "r") as f:
             regionA = f["regionA"]
-            coeffsA = regionA["CoeffsRegionA"][()]
-            w_knots = regionA["w_knots"][()]
-            u_knots = regionA["u_knots"][()]
+            w_knots_A = regionA["w_knots"][()]
+            u_knots_A = regionA["u_knots"][()]
             z_knots = regionA["z_knots"][()]
 
             z_knots = z_knots[::downsample_Z]
-            coeffsA = coeffsA[::downsample_Z]
 
-            self.spin_information_holder_A = [
-                self.build_with_same_backend(
-                    AmpInterp2D,
-                    args=[
-                        w_knots,
-                        u_knots,
-                        coeffsA[i],
-                        self.l_arr,
-                        self.m_arr,
-                        self.k_arr,
-                        self.n_arr,
-                    ],
-                )
-                for i in range(z_knots.size)
-            ]
+            self.w_knots_A = w_knots_A
+            self.u_knots_A = u_knots_A
 
-            try:
+            self.has_region_B = "regionB" in f
+            if self.has_region_B:
                 regionB = f["regionB"]
-                coeffsB = regionB["CoeffsRegionB"][()]
+                self.w_knots_B = regionB["w_knots"][()]
+                self.u_knots_B = regionB["u_knots"][()]
 
-                w_knots = regionB["w_knots"][()]
-                u_knots = regionB["u_knots"][()]
-                z_knots = regionB["z_knots"][()]
+        if self.lazy_loading:
+            self.spin_information_holder_A = LazySpinInformationHolder(
+                self._load_slice_A, z_knots.size, max_cached=self.max_cached_spins
+            )
+            if self.has_region_B:
+                self.spin_information_holder_B = LazySpinInformationHolder(
+                    self._load_slice_B, z_knots.size, max_cached=self.max_cached_spins
+                )
 
-                z_knots = z_knots[::downsample_Z]
-
-                coeffsB = coeffsB[::downsample_Z]
-
-                self.spin_information_holder_B = [
+        else:
+            with h5py.File(self.file_path, "r") as f:
+                coeffsA = f["regionA"]["CoeffsRegionA"][::downsample_Z]
+                self.spin_information_holder_A = [
                     self.build_with_same_backend(
                         AmpInterp2D,
                         args=[
-                            w_knots,
-                            u_knots,
-                            coeffsB[i],
+                            self.w_knots_A,
+                            self.u_knots_A,
+                            coeffsA[i],
                             self.l_arr,
                             self.m_arr,
                             self.k_arr,
@@ -283,10 +333,61 @@ class AmpInterpKerrEccEq(AmplitudeBase, KerrEccentricEquatorial):
                     )
                     for i in range(z_knots.size)
                 ]
-            except KeyError:
-                pass
+
+                if self.has_region_B:
+                    coeffsB = f["regionB"]["CoeffsRegionB"][::downsample_Z]
+                    self.spin_information_holder_B = [
+                        self.build_with_same_backend(
+                            AmpInterp2D,
+                            args=[
+                                self.w_knots_B,
+                                self.u_knots_B,
+                                coeffsB[i],
+                                self.l_arr,
+                                self.m_arr,
+                                self.k_arr,
+                                self.n_arr,
+                            ],
+                        )
+                        for i in range(z_knots.size)
+                    ]
 
         self.z_values = self.xp.asarray(z_knots)
+
+    def _load_slice_A(self, idx):
+        real_idx = idx * self.downsample_Z
+        with h5py.File(self.file_path, "r") as h5_file:
+            coeff_slice = h5_file["regionA"]["CoeffsRegionA"][real_idx]
+        return self.build_with_same_backend(
+            AmpInterp2D,
+            args=[
+                self.w_knots_A,
+                self.u_knots_A,
+                coeff_slice,
+                self.l_arr,
+                self.m_arr,
+                self.k_arr,
+                self.n_arr,
+            ],
+        )
+
+    def _load_slice_B(self, idx):
+        real_idx = idx * self.downsample_Z
+        with h5py.File(self.file_path, "r") as h5_file:
+            coeff_slice = h5_file["regionB"]["CoeffsRegionB"][real_idx]
+        return self.build_with_same_backend(
+            AmpInterp2D,
+            args=[
+                self.w_knots_B,
+                self.u_knots_B,
+                coeff_slice,
+                self.l_arr,
+                self.m_arr,
+                self.k_arr,
+                self.n_arr,
+            ],
+        )
+
 
     def _evaluate_interpolant_at_index(self, index, region_A_mask, w, u, mode_indexes):
         z_out = self.xp.zeros(
