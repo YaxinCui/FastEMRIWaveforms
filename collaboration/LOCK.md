@@ -106,10 +106,15 @@ large-file audits; the commit containing this record is the Ubuntu sync point. -
 
 <!-- 2026-09-03 16:24 CST (linux): Release editing after Linux AUTO/OFF portability, final-wheel CPU/CUDA regressions, frozen-sum replay, and authenticated trajectory localization all passed. -->
 
+<!-- 2026-09-03 16:29 CST (linux): Reacquire the lock only for the user-directed hybrid CPU/Metal conclusion, handoff, commit, and push after confirming the remote still ends at c78f00dd. -->
+
+<!-- 2026-09-03 16:30 CST (linux): Release editing after recording the accepted hybrid architecture interpretation and preparing the two-commit Ubuntu synchronization boundary. -->
+
 - Branch: `codex/apple-silicon-dual-host`
 - Active editor: `none`
 - Last editor: `linux` — Ubuntu x86_64 / NVIDIA GeForce RTX 2080 Ti
-- Last lock acquired: 2026-09-03 15:44 CST (Asia/Shanghai)
-- Lock released: 2026-09-03 16:24 CST (Asia/Shanghai)
-- State: Ubuntu acceptance is complete and released for a local handoff commit;
-  the user may direct GitHub synchronization before Mac reacquires the lock.
+- Last lock acquired: 2026-09-03 16:29 CST (Asia/Shanghai)
+- Lock released: 2026-09-03 16:30 CST (Asia/Shanghai)
+- State: Ubuntu acceptance plus the hybrid CPU/Metal conclusion are released
+  for the user-directed push; Mac may reacquire only after pulling both Ubuntu
+  commits from GitHub.

@@ -652,3 +652,32 @@ passed; bind the reviewed payload to the ensuing local handoff commit. -->
   numerical results. For the next numerical investigation, start at the first
   DOP853 attempt's error-estimation inputs rather than `_p_to_u` or the mode-sum
   kernel.
+
+<!-- 2026-09-03 16:30 CST (linux): Record the user-confirmed interpretation
+of the accepted Apple Silicon backend as an explicit hybrid CPU/Metal design,
+including the precision caveat and next-host synchronization boundary. -->
+
+## 2026-09-03 16:30 CST — hybrid CPU/Metal conclusion handed off
+
+- The accepted Apple Silicon implementation is correctly described as a
+  hybrid design. CPU/NumPy performs the trajectory integration, amplitude
+  generation, spline preparation, and other control-heavy or FP64-sensitive
+  work. Metal dispatches the high-throughput, highly parallel time-domain
+  interpolated mode summation to the M-series GPU.
+- Precision wording matters: the Metal stage is not classified as disposable
+  low-precision work. It uses the strict double-single implementation and is
+  held to the frozen `5e-10` elementwise/L2 and `1e-10` overlap contracts. The
+  one-year Mac workload passed those gates and measured a `9.154x` warm
+  speedup over Mac CPU for the accelerated summation path.
+- This remains an explicitly selected `force_backend="metal"` backend. It is
+  not the default, it does not route trajectory or amplitude generation to the
+  GPU, and it is not yet a claim that the entire FEW pipeline is GPU-accelerated.
+- The preceding Ubuntu commit `9cd46422` contains the complete Linux
+  portability, CPU/CUDA, frozen-sum, and trajectory evidence. The commit
+  containing this section is its documentation-only companion; both commits
+  must be pushed and pulled together before Mac reacquires the shared lock.
+- After pulling on Mac, first confirm a clean worktree and the released lock,
+  then rebuild `FEW_WITH_METAL=AUTO` once to verify the strict version-tag
+  policy and retained Metal result. Further optimization should profile the
+  remaining CPU trajectory/amplitude stages independently rather than weaken
+  the already accepted Metal precision contract.
