@@ -18,8 +18,12 @@
 
 #ifdef __CUDACC__
 #define MAX_MODES_BLOCK 450
+// 2026-09-04 16:34 CST (linux): The warp-parallel candidate uses a 128-mode
+// tile so the measured 124 selected modes fit one pass with low shared memory.
+#define MAX_MODES_BLOCK_WARP 128
 #else
 #define MAX_MODES_BLOCK 5000
+#define MAX_MODES_BLOCK_WARP 5000
 #endif
 
 #define NUM_TERMS 4
@@ -438,6 +442,101 @@ __device__ void atomicAddComplex(cmplx *a, cmplx b)
 
 #endif
 
+// 2026-09-04 14:52 CST (linux): Preserve accumulated phases in FP64, reduce
+// each mode phase to [-pi, pi] in FP64, and use the much faster FP32 CUDA
+// sin/cos approximation only after range reduction.  The returned factor is
+// promoted to complex128 before mode multiplication and FP64 accumulation.
+FEW_INLINE CUDA_CALLABLE_MEMBER cmplx phase_factor_mixed32(double phase)
+{
+  constexpr double inv_two_pi = 0.15915494309189533576888376337251;
+  constexpr double two_pi = 6.283185307179586476925286766559;
+  double cycles = phase * inv_two_pi;
+  double reduced = (cycles - nearbyint(cycles)) * two_pi;
+  float sine_value;
+  float cosine_value;
+
+#ifdef __CUDACC__
+  sincosf(-static_cast<float>(reduced), &sine_value, &cosine_value);
+#else
+  sine_value = std::sin(-static_cast<float>(reduced));
+  cosine_value = std::cos(-static_cast<float>(reduced));
+#endif
+  return cmplx(static_cast<double>(cosine_value),
+               static_cast<double>(sine_value));
+}
+
+typedef gcmplx::complex<float> cmplx32;
+
+// 2026-09-04 15:08 CST (linux): In the full mixed32 kernel, reduce the three
+// FP64 phase components once per output sample.  Integer (m,k,n) combinations
+// are then equivalent modulo 2*pi while avoiding FP64 work inside the mode loop.
+FEW_INLINE CUDA_CALLABLE_MEMBER float phase_component_mixed32(double phase)
+{
+  constexpr double inv_two_pi = 0.15915494309189533576888376337251;
+  constexpr double two_pi = 6.283185307179586476925286766559;
+  double cycles = phase * inv_two_pi;
+  return static_cast<float>((cycles - nearbyint(cycles)) * two_pi);
+}
+
+FEW_INLINE CUDA_CALLABLE_MEMBER cmplx32 phase_factor_mixed32_full(float phase)
+{
+  float sine_value;
+  float cosine_value;
+#ifdef __CUDACC__
+  sincosf(-phase, &sine_value, &cosine_value);
+#else
+  sine_value = std::sin(-phase);
+  cosine_value = std::cos(-phase);
+#endif
+  return cmplx32(cosine_value, sine_value);
+}
+
+// 2026-09-04 17:01 CST (linux): CUDA's fast intrinsic is evaluated only after
+// an explicit FP32 reduction to [-pi, pi].  Keeping this in a separate helper
+// makes the accuracy/performance tradeoff opt-in and directly measurable.
+FEW_INLINE CUDA_CALLABLE_MEMBER cmplx32 phase_factor_mixed32_intrinsic(
+    float phase)
+{
+  constexpr float inv_two_pi = 0.15915494309189535f;
+  constexpr float two_pi = 6.2831853071795865f;
+  float cycles = phase * inv_two_pi;
+  float reduced = (cycles - nearbyintf(cycles)) * two_pi;
+  float sine_value;
+  float cosine_value;
+#if defined(__CUDA_ARCH__)
+  __sincosf(-reduced, &sine_value, &cosine_value);
+#else
+  sine_value = std::sin(-reduced);
+  cosine_value = std::cos(-reduced);
+#endif
+  return cmplx32(cosine_value, sine_value);
+}
+
+// 2026-09-04 15:31 CST (linux): Build integer harmonics from one unit phasor
+// with exponentiation by squaring. Kerr mode indices are integers, so this is
+// algebraically equivalent to evaluating sin/cos for every (m,k,n) sum while
+// replacing the mode-loop transcendental operations with FP32 multiplies.
+FEW_INLINE CUDA_CALLABLE_MEMBER cmplx32 integer_phasor_mixed32(
+    cmplx32 base, int exponent)
+{
+  if (exponent < 0)
+  {
+    base = gcmplx::conj(base);
+    exponent = -exponent;
+  }
+
+  cmplx32 result(1.0f, 0.0f);
+  while (exponent > 0)
+  {
+    if (exponent & 1)
+      result *= base;
+    exponent >>= 1;
+    if (exponent > 0)
+      base *= base;
+  }
+  return result;
+}
+
 // make a waveform in parallel
 // this uses an efficient summation by loading mode information into shared memory
 // shared memory is leveraged heavily
@@ -446,7 +545,8 @@ void make_waveform(cmplx *waveform,
                    double *interp_array, double *phase_interp_coeffs,
                    int *m_arr_in, int *k_arr_in, int *n_arr_in, int num_teuk_modes, cmplx *Ylms_in,
                    double delta_t, double start_t, int old_ind, int start_ind, int end_ind, int init_length,
-                   double phase_interp_t_here, double phase_interp_segwidth)
+                   double phase_interp_t_here, double phase_interp_segwidth,
+                   bool use_mixed32_phase, bool use_direct_accumulation)
 {
 
   // int num_pars = 2;
@@ -659,7 +759,11 @@ void make_waveform(cmplx *waveform,
 
         // fod phase = m * Phi_phi_i + n * Phi_r_i;
         // partial_mode = mode_val * gcmplx::exp(minus_I * phase);
-        partial_mode = gcmplx::exp(minus_I * (m * Phi_phi_i + k * Phi_theta_i + n * Phi_r_i)) * (mode_re_y[j] + mode_re_c1[j] * x + mode_re_c2[j] * x2 + mode_re_c3[j] * x3 + complexI * (mode_im_y[j] + mode_im_c1[j] * x + mode_im_c2[j] * x2 + mode_im_c3[j] * x3));
+        double mode_phase = m * Phi_phi_i + k * Phi_theta_i + n * Phi_r_i;
+        cmplx phase_factor = use_mixed32_phase
+          ? phase_factor_mixed32(mode_phase)
+          : gcmplx::exp(minus_I * mode_phase);
+        partial_mode = phase_factor * (mode_re_y[j] + mode_re_c1[j] * x + mode_re_c2[j] * x2 + mode_re_c3[j] * x3 + complexI * (mode_im_y[j] + mode_im_c1[j] * x + mode_im_c2[j] * x2 + mode_im_c3[j] * x3));
         trans_plus_m = partial_mode * Ylm_plus_m;
 
         // minus m if m > 0
@@ -679,7 +783,10 @@ void make_waveform(cmplx *waveform,
 
 // fill waveform
 #ifdef __CUDACC__
-      atomicAddComplex(&waveform[i], trans);
+      if (use_direct_accumulation)
+        waveform[i] += trans;
+      else
+        atomicAddComplex(&waveform[i], trans);
 #else
       waveform[i] += trans;
 #endif
@@ -687,6 +794,440 @@ void make_waveform(cmplx *waveform,
     CUDA_SYNC_THREADS;
   }
 }
+
+// 2026-09-04 15:08 CST (linux): Full mixed32 mode-evaluation kernel.  Phase
+// spline reconstruction and the final mode sum remain FP64.  The amplitude
+// spline, reduced per-mode phase, phasor, and spherical-harmonic products use
+// FP32, then each +/-m contribution is promoted before FP64 accumulation.
+CUDA_KERNEL
+void make_waveform_mixed32_full(
+                   cmplx *waveform,
+                   float *interp_array, double *phase_interp_coeffs,
+                   int *m_arr_in, int *k_arr_in, int *n_arr_in,
+                   int num_teuk_modes, cmplx32 *Ylms_in,
+                   double delta_t, double start_t, int old_ind,
+                   int start_ind, int end_ind, int init_length,
+                   double phase_interp_t_here, double phase_interp_segwidth,
+                   bool use_integer_phasors, bool use_fp32_accumulation,
+                   bool use_fast_intrinsic)
+{
+  CUDA_SHARED double pp_y, pp_c1, pp_c2, pp_c3, pp_c4, pp_c5, pp_c6, pp_c7;
+  CUDA_SHARED double pt_y, pt_c1, pt_c2, pt_c3, pt_c4, pt_c5, pt_c6, pt_c7;
+  CUDA_SHARED double pr_y, pr_c1, pr_c2, pr_c3, pr_c4, pr_c5, pr_c6, pr_c7;
+
+  CUDA_SHARED cmplx32 Ylms[2 * MAX_MODES_BLOCK];
+  CUDA_SHARED float mode_re_y[MAX_MODES_BLOCK];
+  CUDA_SHARED float mode_re_c1[MAX_MODES_BLOCK];
+  CUDA_SHARED float mode_re_c2[MAX_MODES_BLOCK];
+  CUDA_SHARED float mode_re_c3[MAX_MODES_BLOCK];
+  CUDA_SHARED float mode_im_y[MAX_MODES_BLOCK];
+  CUDA_SHARED float mode_im_c1[MAX_MODES_BLOCK];
+  CUDA_SHARED float mode_im_c2[MAX_MODES_BLOCK];
+  CUDA_SHARED float mode_im_c3[MAX_MODES_BLOCK];
+  CUDA_SHARED int m_arr[MAX_MODES_BLOCK];
+  CUDA_SHARED int k_arr[MAX_MODES_BLOCK];
+  CUDA_SHARED int n_arr[MAX_MODES_BLOCK];
+
+  int num_base = init_length * (2 * num_teuk_modes);
+  int num_phase_spline = (init_length - 1) * 3;
+  bool use_fused_symmetry =
+    use_fast_intrinsic && use_fp32_accumulation && !use_integer_phasors;
+
+#ifdef __CUDACC__
+  if (threadIdx.x == 0)
+#else
+  if (true)
+#endif
+  {
+    int ind_Phi_phi = old_ind * 3;
+    int ind_Phi_theta = ind_Phi_phi + 1;
+    int ind_Phi_r = ind_Phi_phi + 2;
+
+    pp_y = phase_interp_coeffs[0 * num_phase_spline + ind_Phi_phi];
+    pp_c1 = phase_interp_coeffs[1 * num_phase_spline + ind_Phi_phi];
+    pp_c2 = phase_interp_coeffs[2 * num_phase_spline + ind_Phi_phi];
+    pp_c3 = phase_interp_coeffs[3 * num_phase_spline + ind_Phi_phi];
+    pp_c4 = phase_interp_coeffs[4 * num_phase_spline + ind_Phi_phi];
+    pp_c5 = phase_interp_coeffs[5 * num_phase_spline + ind_Phi_phi];
+    pp_c6 = phase_interp_coeffs[6 * num_phase_spline + ind_Phi_phi];
+    pp_c7 = phase_interp_coeffs[7 * num_phase_spline + ind_Phi_phi];
+
+    pt_y = phase_interp_coeffs[0 * num_phase_spline + ind_Phi_theta];
+    pt_c1 = phase_interp_coeffs[1 * num_phase_spline + ind_Phi_theta];
+    pt_c2 = phase_interp_coeffs[2 * num_phase_spline + ind_Phi_theta];
+    pt_c3 = phase_interp_coeffs[3 * num_phase_spline + ind_Phi_theta];
+    pt_c4 = phase_interp_coeffs[4 * num_phase_spline + ind_Phi_theta];
+    pt_c5 = phase_interp_coeffs[5 * num_phase_spline + ind_Phi_theta];
+    pt_c6 = phase_interp_coeffs[6 * num_phase_spline + ind_Phi_theta];
+    pt_c7 = phase_interp_coeffs[7 * num_phase_spline + ind_Phi_theta];
+
+    pr_y = phase_interp_coeffs[0 * num_phase_spline + ind_Phi_r];
+    pr_c1 = phase_interp_coeffs[1 * num_phase_spline + ind_Phi_r];
+    pr_c2 = phase_interp_coeffs[2 * num_phase_spline + ind_Phi_r];
+    pr_c3 = phase_interp_coeffs[3 * num_phase_spline + ind_Phi_r];
+    pr_c4 = phase_interp_coeffs[4 * num_phase_spline + ind_Phi_r];
+    pr_c5 = phase_interp_coeffs[5 * num_phase_spline + ind_Phi_r];
+    pr_c6 = phase_interp_coeffs[6 * num_phase_spline + ind_Phi_r];
+    pr_c7 = phase_interp_coeffs[7 * num_phase_spline + ind_Phi_r];
+  }
+  CUDA_SYNC_THREADS;
+
+  int num_breaks = (num_teuk_modes + MAX_MODES_BLOCK - 1) / MAX_MODES_BLOCK;
+  for (int block_y = 0; block_y < num_breaks; block_y++)
+  {
+    int num_teuk_here =
+      (((block_y + 1) * MAX_MODES_BLOCK) <= num_teuk_modes)
+      ? MAX_MODES_BLOCK
+      : num_teuk_modes - block_y * MAX_MODES_BLOCK;
+    int init_ind = block_y * MAX_MODES_BLOCK;
+
+#ifdef __CUDACC__
+    int start = threadIdx.x;
+    int end = num_teuk_here;
+    int diff = blockDim.x;
+#else
+    int start = 0;
+    int end = num_teuk_here;
+    int diff = 1;
+#endif
+
+    for (int i = start; i < end; i += diff)
+    {
+      int ind_re = old_ind * (2 * num_teuk_modes) + init_ind + i;
+      int ind_im = ind_re + num_teuk_modes;
+      mode_re_y[i] = interp_array[0 * num_base + ind_re];
+      mode_re_c1[i] = interp_array[1 * num_base + ind_re];
+      mode_re_c2[i] = interp_array[2 * num_base + ind_re];
+      mode_re_c3[i] = interp_array[3 * num_base + ind_re];
+      mode_im_y[i] = interp_array[0 * num_base + ind_im];
+      mode_im_c1[i] = interp_array[1 * num_base + ind_im];
+      mode_im_c2[i] = interp_array[2 * num_base + ind_im];
+      mode_im_c3[i] = interp_array[3 * num_base + ind_im];
+      m_arr[i] = m_arr_in[init_ind + i];
+      k_arr[i] = k_arr_in[init_ind + i];
+      n_arr[i] = n_arr_in[init_ind + i];
+      cmplx32 plus_ylm = Ylms_in[init_ind + i];
+      cmplx32 minus_ylm = m_arr[i] != 0
+        ? Ylms_in[num_teuk_modes + init_ind + i]
+        : cmplx32(0.0f, 0.0f);
+      if (use_fused_symmetry)
+      {
+        // 2026-09-04 17:15 CST (linux): Precombine +/-m harmonics into the
+        // real 2x2 transform of z*Y+ + conj(z)*Y-. The same two complex64
+        // slots store four real weights, so shared-memory use is unchanged.
+        Ylms[2 * i] = cmplx32(
+          plus_ylm.real() + minus_ylm.real(),
+          minus_ylm.imag() - plus_ylm.imag());
+        Ylms[2 * i + 1] = cmplx32(
+          plus_ylm.imag() + minus_ylm.imag(),
+          plus_ylm.real() - minus_ylm.real());
+      }
+      else
+      {
+        Ylms[2 * i] = plus_ylm;
+        Ylms[2 * i + 1] =
+          Ylms_in[num_teuk_modes + init_ind + i];
+      }
+    }
+    CUDA_SYNC_THREADS;
+
+#ifdef __CUDACC__
+    start = start_ind + blockIdx.x * blockDim.x + threadIdx.x;
+    end = end_ind;
+    diff = blockDim.x * gridDim.x;
+#else
+    start = start_ind;
+    end = end_ind;
+    diff = 1;
+#endif
+
+    for (int i = start; i < end; i += diff)
+    {
+      double t = delta_t * i;
+      double x = t - start_t;
+      float x_f = static_cast<float>(x);
+      float x2_f = x_f * x_f;
+      float x3_f = x2_f * x_f;
+      double s = (t - phase_interp_t_here) / phase_interp_segwidth;
+      double s1 = 1.0 - s;
+
+      double Phi_phi_i = pp_y + s * (pp_c1 + s1 * (pp_c2 + s *
+        (pp_c3 + s1 * (pp_c4 + s * (pp_c5 + s1 *
+        (pp_c6 + s * pp_c7))))));
+      double Phi_theta_i = pt_y + s * (pt_c1 + s1 * (pt_c2 + s *
+        (pt_c3 + s1 * (pt_c4 + s * (pt_c5 + s1 *
+        (pt_c6 + s * pt_c7))))));
+      double Phi_r_i = pr_y + s * (pr_c1 + s1 * (pr_c2 + s *
+        (pr_c3 + s1 * (pr_c4 + s * (pr_c5 + s1 *
+        (pr_c6 + s * pr_c7))))));
+
+      float Phi_phi_f = phase_component_mixed32(Phi_phi_i);
+      float Phi_theta_f = phase_component_mixed32(Phi_theta_i);
+      float Phi_r_f = phase_component_mixed32(Phi_r_i);
+      // 2026-09-04 15:31 CST (linux): The recurrence candidate evaluates only
+      // three transcendental functions per sample. The control path retains
+      // the prior per-mode sincosf implementation for isolated benchmarking.
+      cmplx32 phi_phasor;
+      cmplx32 theta_phasor;
+      cmplx32 radial_phasor;
+      if (use_integer_phasors)
+      {
+        phi_phasor = phase_factor_mixed32_full(Phi_phi_f);
+        theta_phasor = phase_factor_mixed32_full(Phi_theta_f);
+        radial_phasor = phase_factor_mixed32_full(Phi_r_f);
+      }
+      cmplx trans(0.0, 0.0);
+      float trans32_re = 0.0f;
+      float trans32_im = 0.0f;
+      cmplx32 recurrent_phasor(1.0f, 0.0f);
+      int previous_m = 0;
+      int previous_k = 0;
+      int previous_n = 0;
+
+      for (int j = 0; j < num_teuk_here; j++)
+      {
+        float amplitude_re = mode_re_y[j] + mode_re_c1[j] * x_f
+          + mode_re_c2[j] * x2_f + mode_re_c3[j] * x3_f;
+        float amplitude_im = mode_im_y[j] + mode_im_c1[j] * x_f
+          + mode_im_c2[j] * x2_f + mode_im_c3[j] * x3_f;
+        cmplx32 phase_factor;
+        if (use_integer_phasors)
+        {
+          // 2026-09-04 15:39 CST (linux): Mode tables are grouped by harmonic
+          // indices, so update from the previous integer tuple. This remains
+          // correct for arbitrary ordering and avoids rebuilding every power.
+          int delta_m = m_arr[j] - previous_m;
+          int delta_k = k_arr[j] - previous_k;
+          int delta_n = n_arr[j] - previous_n;
+          if (delta_m != 0)
+            recurrent_phasor *= integer_phasor_mixed32(phi_phasor, delta_m);
+          if (delta_k != 0)
+            recurrent_phasor *= integer_phasor_mixed32(theta_phasor, delta_k);
+          if (delta_n != 0)
+            recurrent_phasor *= integer_phasor_mixed32(radial_phasor, delta_n);
+          previous_m = m_arr[j];
+          previous_k = k_arr[j];
+          previous_n = n_arr[j];
+          phase_factor = recurrent_phasor;
+        }
+        else
+        {
+          float mode_phase = m_arr[j] * Phi_phi_f
+            + k_arr[j] * Phi_theta_f + n_arr[j] * Phi_r_f;
+          phase_factor = use_fast_intrinsic
+            ? phase_factor_mixed32_intrinsic(mode_phase)
+            : phase_factor_mixed32_full(mode_phase);
+        }
+        if (use_fused_symmetry)
+        {
+          float partial_re = phase_factor.real() * amplitude_re
+            - phase_factor.imag() * amplitude_im;
+          float partial_im = phase_factor.imag() * amplitude_re
+            + phase_factor.real() * amplitude_im;
+          trans32_re += partial_re * Ylms[2 * j].real()
+            + partial_im * Ylms[2 * j].imag();
+          trans32_im += partial_re * Ylms[2 * j + 1].real()
+            + partial_im * Ylms[2 * j + 1].imag();
+          continue;
+        }
+
+        cmplx32 amplitude_value(amplitude_re, amplitude_im);
+        cmplx32 partial_mode = phase_factor * amplitude_value;
+        cmplx32 plus_mode = partial_mode * Ylms[2 * j];
+        if (use_fp32_accumulation)
+        {
+          trans32_re += plus_mode.real();
+          trans32_im += plus_mode.imag();
+        }
+        else
+          trans += cmplx(plus_mode);
+        if (m_arr[j] != 0)
+        {
+          cmplx32 minus_mode =
+            gcmplx::conj(partial_mode) * Ylms[2 * j + 1];
+          if (use_fp32_accumulation)
+          {
+            trans32_re += minus_mode.real();
+            trans32_im += minus_mode.imag();
+          }
+          else
+            trans += cmplx(minus_mode);
+        }
+      }
+      waveform[i] += use_fp32_accumulation
+        ? cmplx(trans32_re, trans32_im)
+        : trans;
+    }
+    CUDA_SYNC_THREADS;
+  }
+}
+
+#ifdef __CUDACC__
+// 2026-09-04 16:34 CST (linux): Assign one warp to one dense output sample.
+// Lanes evaluate different modes concurrently and a warp shuffle tree reduces
+// their complex64 partial sums before one complex128 output update.  This
+// removes the 124-mode serial dependency chain in the thread-per-sample kernel.
+CUDA_KERNEL
+void make_waveform_mixed32_warp(
+                   cmplx *waveform,
+                   float *interp_array, double *phase_interp_coeffs,
+                   int *m_arr_in, int *k_arr_in, int *n_arr_in,
+                   int num_teuk_modes, cmplx32 *Ylms_in,
+                   double delta_t, double start_t, int old_ind,
+                   int start_ind, int end_ind, int init_length,
+                   double phase_interp_t_here, double phase_interp_segwidth)
+{
+  CUDA_SHARED double pp_y, pp_c1, pp_c2, pp_c3, pp_c4, pp_c5, pp_c6, pp_c7;
+  CUDA_SHARED double pt_y, pt_c1, pt_c2, pt_c3, pt_c4, pt_c5, pt_c6, pt_c7;
+  CUDA_SHARED double pr_y, pr_c1, pr_c2, pr_c3, pr_c4, pr_c5, pr_c6, pr_c7;
+
+  CUDA_SHARED cmplx32 Ylms[2 * MAX_MODES_BLOCK_WARP];
+  CUDA_SHARED float mode_re_y[MAX_MODES_BLOCK_WARP];
+  CUDA_SHARED float mode_re_c1[MAX_MODES_BLOCK_WARP];
+  CUDA_SHARED float mode_re_c2[MAX_MODES_BLOCK_WARP];
+  CUDA_SHARED float mode_re_c3[MAX_MODES_BLOCK_WARP];
+  CUDA_SHARED float mode_im_y[MAX_MODES_BLOCK_WARP];
+  CUDA_SHARED float mode_im_c1[MAX_MODES_BLOCK_WARP];
+  CUDA_SHARED float mode_im_c2[MAX_MODES_BLOCK_WARP];
+  CUDA_SHARED float mode_im_c3[MAX_MODES_BLOCK_WARP];
+  CUDA_SHARED int m_arr[MAX_MODES_BLOCK_WARP];
+  CUDA_SHARED int k_arr[MAX_MODES_BLOCK_WARP];
+  CUDA_SHARED int n_arr[MAX_MODES_BLOCK_WARP];
+
+  int num_base = init_length * (2 * num_teuk_modes);
+  int num_phase_spline = (init_length - 1) * 3;
+  if (threadIdx.x == 0)
+  {
+    int ind_Phi_phi = old_ind * 3;
+    int ind_Phi_theta = ind_Phi_phi + 1;
+    int ind_Phi_r = ind_Phi_phi + 2;
+    pp_y = phase_interp_coeffs[0 * num_phase_spline + ind_Phi_phi];
+    pp_c1 = phase_interp_coeffs[1 * num_phase_spline + ind_Phi_phi];
+    pp_c2 = phase_interp_coeffs[2 * num_phase_spline + ind_Phi_phi];
+    pp_c3 = phase_interp_coeffs[3 * num_phase_spline + ind_Phi_phi];
+    pp_c4 = phase_interp_coeffs[4 * num_phase_spline + ind_Phi_phi];
+    pp_c5 = phase_interp_coeffs[5 * num_phase_spline + ind_Phi_phi];
+    pp_c6 = phase_interp_coeffs[6 * num_phase_spline + ind_Phi_phi];
+    pp_c7 = phase_interp_coeffs[7 * num_phase_spline + ind_Phi_phi];
+    pt_y = phase_interp_coeffs[0 * num_phase_spline + ind_Phi_theta];
+    pt_c1 = phase_interp_coeffs[1 * num_phase_spline + ind_Phi_theta];
+    pt_c2 = phase_interp_coeffs[2 * num_phase_spline + ind_Phi_theta];
+    pt_c3 = phase_interp_coeffs[3 * num_phase_spline + ind_Phi_theta];
+    pt_c4 = phase_interp_coeffs[4 * num_phase_spline + ind_Phi_theta];
+    pt_c5 = phase_interp_coeffs[5 * num_phase_spline + ind_Phi_theta];
+    pt_c6 = phase_interp_coeffs[6 * num_phase_spline + ind_Phi_theta];
+    pt_c7 = phase_interp_coeffs[7 * num_phase_spline + ind_Phi_theta];
+    pr_y = phase_interp_coeffs[0 * num_phase_spline + ind_Phi_r];
+    pr_c1 = phase_interp_coeffs[1 * num_phase_spline + ind_Phi_r];
+    pr_c2 = phase_interp_coeffs[2 * num_phase_spline + ind_Phi_r];
+    pr_c3 = phase_interp_coeffs[3 * num_phase_spline + ind_Phi_r];
+    pr_c4 = phase_interp_coeffs[4 * num_phase_spline + ind_Phi_r];
+    pr_c5 = phase_interp_coeffs[5 * num_phase_spline + ind_Phi_r];
+    pr_c6 = phase_interp_coeffs[6 * num_phase_spline + ind_Phi_r];
+    pr_c7 = phase_interp_coeffs[7 * num_phase_spline + ind_Phi_r];
+  }
+  CUDA_SYNC_THREADS;
+
+  constexpr int warp_size = 32;
+  int lane = threadIdx.x & (warp_size - 1);
+  int warp_in_block = threadIdx.x / warp_size;
+  int warps_per_block = blockDim.x / warp_size;
+  int output_ind = start_ind + blockIdx.x * warps_per_block + warp_in_block;
+  bool active = output_ind < end_ind;
+  float x_f = 0.0f;
+  float Phi_phi_f = 0.0f;
+  float Phi_theta_f = 0.0f;
+  float Phi_r_f = 0.0f;
+
+  if (active && lane == 0)
+  {
+    double t = delta_t * output_ind;
+    x_f = static_cast<float>(t - start_t);
+    double s = (t - phase_interp_t_here) / phase_interp_segwidth;
+    double s1 = 1.0 - s;
+    double Phi_phi_i = pp_y + s * (pp_c1 + s1 * (pp_c2 + s *
+      (pp_c3 + s1 * (pp_c4 + s * (pp_c5 + s1 *
+      (pp_c6 + s * pp_c7))))));
+    double Phi_theta_i = pt_y + s * (pt_c1 + s1 * (pt_c2 + s *
+      (pt_c3 + s1 * (pt_c4 + s * (pt_c5 + s1 *
+      (pt_c6 + s * pt_c7))))));
+    double Phi_r_i = pr_y + s * (pr_c1 + s1 * (pr_c2 + s *
+      (pr_c3 + s1 * (pr_c4 + s * (pr_c5 + s1 *
+      (pr_c6 + s * pr_c7))))));
+    Phi_phi_f = phase_component_mixed32(Phi_phi_i);
+    Phi_theta_f = phase_component_mixed32(Phi_theta_i);
+    Phi_r_f = phase_component_mixed32(Phi_r_i);
+  }
+  unsigned int warp_mask = 0xffffffffu;
+  x_f = __shfl_sync(warp_mask, x_f, 0);
+  Phi_phi_f = __shfl_sync(warp_mask, Phi_phi_f, 0);
+  Phi_theta_f = __shfl_sync(warp_mask, Phi_theta_f, 0);
+  Phi_r_f = __shfl_sync(warp_mask, Phi_r_f, 0);
+  float x2_f = x_f * x_f;
+  float x3_f = x2_f * x_f;
+
+  int num_breaks =
+    (num_teuk_modes + MAX_MODES_BLOCK_WARP - 1) / MAX_MODES_BLOCK_WARP;
+  for (int block_y = 0; block_y < num_breaks; block_y++)
+  {
+    int init_ind = block_y * MAX_MODES_BLOCK_WARP;
+    int num_teuk_here =
+      (((block_y + 1) * MAX_MODES_BLOCK_WARP) <= num_teuk_modes)
+      ? MAX_MODES_BLOCK_WARP
+      : num_teuk_modes - init_ind;
+    for (int j = threadIdx.x; j < num_teuk_here; j += blockDim.x)
+    {
+      int ind_re = old_ind * (2 * num_teuk_modes) + init_ind + j;
+      int ind_im = ind_re + num_teuk_modes;
+      mode_re_y[j] = interp_array[0 * num_base + ind_re];
+      mode_re_c1[j] = interp_array[1 * num_base + ind_re];
+      mode_re_c2[j] = interp_array[2 * num_base + ind_re];
+      mode_re_c3[j] = interp_array[3 * num_base + ind_re];
+      mode_im_y[j] = interp_array[0 * num_base + ind_im];
+      mode_im_c1[j] = interp_array[1 * num_base + ind_im];
+      mode_im_c2[j] = interp_array[2 * num_base + ind_im];
+      mode_im_c3[j] = interp_array[3 * num_base + ind_im];
+      m_arr[j] = m_arr_in[init_ind + j];
+      k_arr[j] = k_arr_in[init_ind + j];
+      n_arr[j] = n_arr_in[init_ind + j];
+      Ylms[2 * j] = Ylms_in[init_ind + j];
+      Ylms[2 * j + 1] = Ylms_in[num_teuk_modes + init_ind + j];
+    }
+    CUDA_SYNC_THREADS;
+
+    cmplx32 lane_sum(0.0f, 0.0f);
+    if (active)
+    {
+      for (int j = lane; j < num_teuk_here; j += warp_size)
+      {
+        float mode_phase = m_arr[j] * Phi_phi_f
+          + k_arr[j] * Phi_theta_f + n_arr[j] * Phi_r_f;
+        cmplx32 amplitude_value(
+          mode_re_y[j] + mode_re_c1[j] * x_f
+            + mode_re_c2[j] * x2_f + mode_re_c3[j] * x3_f,
+          mode_im_y[j] + mode_im_c1[j] * x_f
+            + mode_im_c2[j] * x2_f + mode_im_c3[j] * x3_f);
+        cmplx32 partial_mode =
+          phase_factor_mixed32_full(mode_phase) * amplitude_value;
+        lane_sum += partial_mode * Ylms[2 * j];
+        if (m_arr[j] != 0)
+          lane_sum += gcmplx::conj(partial_mode) * Ylms[2 * j + 1];
+      }
+    }
+
+    float sum_re = lane_sum.real();
+    float sum_im = lane_sum.imag();
+    for (int offset = warp_size / 2; offset > 0; offset >>= 1)
+    {
+      sum_re += __shfl_down_sync(warp_mask, sum_re, offset);
+      sum_im += __shfl_down_sync(warp_mask, sum_im, offset);
+    }
+    if (active && lane == 0)
+      waveform[output_ind] += cmplx(sum_re, sum_im);
+    CUDA_SYNC_THREADS;
+  }
+}
+#endif
 
 // with uneven spacing in t in the sparse arrays, need to determine which timesteps the dense arrays fall into
 // for interpolation
@@ -765,7 +1306,8 @@ void get_waveform(cmplx *d_waveform, double *interp_array, double *phase_interp_
                                                            interp_array, phase_interp_coeffs,
                                                            d_m, d_k, d_n, num_teuk_modes, d_Ylms,
                                                            delta_t, h_t[i], i, start_inds[i], start_inds[i + 1], init_len,
-                                                           phase_interp_t[i], phase_interp_t[i+1] - phase_interp_t[i]);
+                                                           phase_interp_t[i], phase_interp_t[i+1] - phase_interp_t[i],
+                                                           false, false);
     cudaDeviceSynchronize();
     gpuErrchk(cudaGetLastError());
     cudaDeviceSynchronize();
@@ -776,7 +1318,8 @@ void get_waveform(cmplx *d_waveform, double *interp_array, double *phase_interp_
                   interp_array, phase_interp_coeffs,
                   d_m, d_k, d_n, num_teuk_modes, d_Ylms,
                   delta_t, h_t[i], i, start_inds[i], start_inds[i + 1], init_len,
-                  phase_interp_t[i], phase_interp_t[i+1] - phase_interp_t[i]);
+                  phase_interp_t[i], phase_interp_t[i+1] - phase_interp_t[i],
+                  false, false);
 #endif
   }
 
@@ -794,6 +1337,255 @@ void get_waveform(cmplx *d_waveform, double *interp_array, double *phase_interp_
 #endif
   free(unit_length);
   free(start_inds);
+}
+
+// 2026-09-04 14:52 CST (linux): Candidate launcher.  Sparse intervals own
+// disjoint output ranges, so launch them in order on the default stream and
+// synchronize once.  Direct FP64 stores replace uncontended double atomics.
+// The boolean selects only the range-reduced FP32 phase exponential.
+void get_waveform_candidate(cmplx *d_waveform, double *interp_array,
+                  double *phase_interp_t, double *phase_interp_coeffs,
+                  int *d_m, int *d_k, int *d_n, int init_len, int out_len,
+                  int num_teuk_modes, cmplx *d_Ylms, double delta_t,
+                  double *h_t, int dev, bool use_mixed32_phase)
+{
+  int *start_inds = (int*)malloc(init_len * sizeof(int));
+  int *unit_length = (int*)malloc((init_len - 1) * sizeof(int));
+  int number_of_old_spline_points = init_len;
+  find_start_inds(start_inds, unit_length, h_t, delta_t,
+                  &number_of_old_spline_points, out_len);
+
+#ifdef __CUDACC__
+  cudaSetDevice(dev);
+  const int NUM_THREADS = 256;
+#endif
+
+  for (int i = 0; i < number_of_old_spline_points - 1; i++)
+  {
+#ifdef __CUDACC__
+    int num_blocks = std::ceil((unit_length[i] + NUM_THREADS - 1) / NUM_THREADS);
+    if (num_blocks <= 0)
+      continue;
+    dim3 gridDim(num_blocks, 1);
+    make_waveform<<<gridDim, NUM_THREADS>>>(
+        d_waveform, interp_array, phase_interp_coeffs,
+        d_m, d_k, d_n, num_teuk_modes, d_Ylms,
+        delta_t, h_t[i], i, start_inds[i], start_inds[i + 1], init_len,
+        phase_interp_t[i], phase_interp_t[i + 1] - phase_interp_t[i],
+        use_mixed32_phase, true);
+    gpuErrchk(cudaPeekAtLastError());
+#else
+    make_waveform(
+        d_waveform, interp_array, phase_interp_coeffs,
+        d_m, d_k, d_n, num_teuk_modes, d_Ylms,
+        delta_t, h_t[i], i, start_inds[i], start_inds[i + 1], init_len,
+        phase_interp_t[i], phase_interp_t[i + 1] - phase_interp_t[i],
+        use_mixed32_phase, true);
+#endif
+  }
+
+#ifdef __CUDACC__
+  gpuErrchk(cudaDeviceSynchronize());
+  gpuErrchk(cudaGetLastError());
+#endif
+  free(unit_length);
+  free(start_inds);
+}
+
+void get_waveform_optimized(cmplx *d_waveform, double *interp_array,
+                  double *phase_interp_t, double *phase_interp_coeffs,
+                  int *d_m, int *d_k, int *d_n, int init_len, int out_len,
+                  int num_teuk_modes, cmplx *d_Ylms, double delta_t,
+                  double *h_t, int dev)
+{
+  get_waveform_candidate(
+      d_waveform, interp_array, phase_interp_t, phase_interp_coeffs,
+      d_m, d_k, d_n, init_len, out_len, num_teuk_modes, d_Ylms,
+      delta_t, h_t, dev, false);
+}
+
+void get_waveform_mixed32(cmplx *d_waveform, double *interp_array,
+                  double *phase_interp_t, double *phase_interp_coeffs,
+                  int *d_m, int *d_k, int *d_n, int init_len, int out_len,
+                  int num_teuk_modes, cmplx *d_Ylms, double delta_t,
+                  double *h_t, int dev)
+{
+  get_waveform_candidate(
+      d_waveform, interp_array, phase_interp_t, phase_interp_coeffs,
+      d_m, d_k, d_n, init_len, out_len, num_teuk_modes, d_Ylms,
+      delta_t, h_t, dev, true);
+}
+
+void get_waveform_mixed32_full_candidate(
+                  cmplx *d_waveform, float *interp_array,
+                  double *phase_interp_t, double *phase_interp_coeffs,
+                  int *d_m, int *d_k, int *d_n, int init_len, int out_len,
+                  int num_teuk_modes, void *d_Ylms_raw, double delta_t,
+                  double *h_t, int dev, bool use_integer_phasors,
+                  bool use_fp32_accumulation, bool use_fast_intrinsic)
+{
+  // 2026-09-04 15:08 CST (linux): Keep the float-complex type behind an
+  // opaque wrapper ABI so Cython only needs to forward the CuPy complex64
+  // pointer; the compiled kernel performs the typed conversion here.
+  cmplx32 *d_Ylms = static_cast<cmplx32 *>(d_Ylms_raw);
+  int *start_inds = (int*)malloc(init_len * sizeof(int));
+  int *unit_length = (int*)malloc((init_len - 1) * sizeof(int));
+  int number_of_old_spline_points = init_len;
+  find_start_inds(start_inds, unit_length, h_t, delta_t,
+                  &number_of_old_spline_points, out_len);
+
+#ifdef __CUDACC__
+  cudaSetDevice(dev);
+  const int NUM_THREADS = 256;
+#endif
+
+  for (int i = 0; i < number_of_old_spline_points - 1; i++)
+  {
+#ifdef __CUDACC__
+    int num_blocks = std::ceil((unit_length[i] + NUM_THREADS - 1) / NUM_THREADS);
+    if (num_blocks <= 0)
+      continue;
+    dim3 gridDim(num_blocks, 1);
+    make_waveform_mixed32_full<<<gridDim, NUM_THREADS>>>(
+        d_waveform, interp_array, phase_interp_coeffs,
+        d_m, d_k, d_n, num_teuk_modes, d_Ylms,
+        delta_t, h_t[i], i, start_inds[i], start_inds[i + 1], init_len,
+        phase_interp_t[i], phase_interp_t[i + 1] - phase_interp_t[i],
+        use_integer_phasors, use_fp32_accumulation, use_fast_intrinsic);
+    gpuErrchk(cudaPeekAtLastError());
+#else
+    make_waveform_mixed32_full(
+        d_waveform, interp_array, phase_interp_coeffs,
+        d_m, d_k, d_n, num_teuk_modes, d_Ylms,
+        delta_t, h_t[i], i, start_inds[i], start_inds[i + 1], init_len,
+        phase_interp_t[i], phase_interp_t[i + 1] - phase_interp_t[i],
+        use_integer_phasors, use_fp32_accumulation, use_fast_intrinsic);
+#endif
+  }
+
+#ifdef __CUDACC__
+  gpuErrchk(cudaDeviceSynchronize());
+  gpuErrchk(cudaGetLastError());
+#endif
+  free(unit_length);
+  free(start_inds);
+}
+
+void get_waveform_mixed32_full(cmplx *d_waveform, float *interp_array,
+                  double *phase_interp_t, double *phase_interp_coeffs,
+                  int *d_m, int *d_k, int *d_n, int init_len, int out_len,
+                  int num_teuk_modes, void *d_Ylms_raw, double delta_t,
+                  double *h_t, int dev)
+{
+  get_waveform_mixed32_full_candidate(
+      d_waveform, interp_array, phase_interp_t, phase_interp_coeffs,
+      d_m, d_k, d_n, init_len, out_len, num_teuk_modes, d_Ylms_raw,
+      delta_t, h_t, dev, false, false, false);
+}
+
+// 2026-09-04 15:31 CST (linux): Integer-phasor candidate keeps the full
+// mixed32 data path but reduces transcendental work from once per mode to
+// three base rotations per output sample.
+void get_waveform_mixed32_recurrence(cmplx *d_waveform, float *interp_array,
+                  double *phase_interp_t, double *phase_interp_coeffs,
+                  int *d_m, int *d_k, int *d_n, int init_len, int out_len,
+                  int num_teuk_modes, void *d_Ylms_raw, double delta_t,
+                  double *h_t, int dev)
+{
+  get_waveform_mixed32_full_candidate(
+      d_waveform, interp_array, phase_interp_t, phase_interp_coeffs,
+      d_m, d_k, d_n, init_len, out_len, num_teuk_modes, d_Ylms_raw,
+      delta_t, h_t, dev, true, false, false);
+}
+
+// 2026-09-04 15:39 CST (linux): Fast exploratory variant accumulates each
+// shared-memory mode block in complex64, then promotes one partial sum to the
+// complex128 output. This isolates the performance and cancellation risk of
+// narrowing the formerly per-mode FP64 accumulation.
+void get_waveform_mixed32_fast(cmplx *d_waveform, float *interp_array,
+                  double *phase_interp_t, double *phase_interp_coeffs,
+                  int *d_m, int *d_k, int *d_n, int init_len, int out_len,
+                  int num_teuk_modes, void *d_Ylms_raw, double delta_t,
+                  double *h_t, int dev)
+{
+  get_waveform_mixed32_full_candidate(
+      d_waveform, interp_array, phase_interp_t, phase_interp_coeffs,
+      d_m, d_k, d_n, init_len, out_len, num_teuk_modes, d_Ylms_raw,
+      delta_t, h_t, dev, true, true, false);
+}
+
+// 2026-09-04 17:01 CST (linux): Fast CUDA trigonometric intrinsic while
+// retaining the per-mode FP64 accumulation used by mixed32_full.
+void get_waveform_mixed32_intrinsic(cmplx *d_waveform, float *interp_array,
+                  double *phase_interp_t, double *phase_interp_coeffs,
+                  int *d_m, int *d_k, int *d_n, int init_len, int out_len,
+                  int num_teuk_modes, void *d_Ylms_raw, double delta_t,
+                  double *h_t, int dev)
+{
+  get_waveform_mixed32_full_candidate(
+      d_waveform, interp_array, phase_interp_t, phase_interp_coeffs,
+      d_m, d_k, d_n, init_len, out_len, num_teuk_modes, d_Ylms_raw,
+      delta_t, h_t, dev, false, false, true);
+}
+
+// 2026-09-04 17:01 CST (linux): Combine the fast intrinsic with block-local
+// complex64 accumulation as a separate maximum-throughput experiment.
+void get_waveform_mixed32_intrinsic_fast(
+                  cmplx *d_waveform, float *interp_array,
+                  double *phase_interp_t, double *phase_interp_coeffs,
+                  int *d_m, int *d_k, int *d_n, int init_len, int out_len,
+                  int num_teuk_modes, void *d_Ylms_raw, double delta_t,
+                  double *h_t, int dev)
+{
+  get_waveform_mixed32_full_candidate(
+      d_waveform, interp_array, phase_interp_t, phase_interp_coeffs,
+      d_m, d_k, d_n, init_len, out_len, num_teuk_modes, d_Ylms_raw,
+      delta_t, h_t, dev, false, true, true);
+}
+
+// 2026-09-04 16:34 CST (linux): Launch eight output-sample warps per block.
+// CPU builds retain a functionally equivalent scalar fallback so backend
+// registration remains uniform, while the performance candidate is CUDA-only.
+void get_waveform_mixed32_warp(cmplx *d_waveform, float *interp_array,
+                  double *phase_interp_t, double *phase_interp_coeffs,
+                  int *d_m, int *d_k, int *d_n, int init_len, int out_len,
+                  int num_teuk_modes, void *d_Ylms_raw, double delta_t,
+                  double *h_t, int dev)
+{
+#ifdef __CUDACC__
+  cmplx32 *d_Ylms = static_cast<cmplx32 *>(d_Ylms_raw);
+  int *start_inds = (int*)malloc(init_len * sizeof(int));
+  int *unit_length = (int*)malloc((init_len - 1) * sizeof(int));
+  int number_of_old_spline_points = init_len;
+  find_start_inds(start_inds, unit_length, h_t, delta_t,
+                  &number_of_old_spline_points, out_len);
+  cudaSetDevice(dev);
+  constexpr int num_threads = 256;
+  constexpr int warps_per_block = num_threads / 32;
+
+  for (int i = 0; i < number_of_old_spline_points - 1; i++)
+  {
+    int num_blocks =
+      (unit_length[i] + warps_per_block - 1) / warps_per_block;
+    if (num_blocks <= 0)
+      continue;
+    make_waveform_mixed32_warp<<<num_blocks, num_threads>>>(
+        d_waveform, interp_array, phase_interp_coeffs,
+        d_m, d_k, d_n, num_teuk_modes, d_Ylms,
+        delta_t, h_t[i], i, start_inds[i], start_inds[i + 1], init_len,
+        phase_interp_t[i], phase_interp_t[i + 1] - phase_interp_t[i]);
+    gpuErrchk(cudaPeekAtLastError());
+  }
+  gpuErrchk(cudaDeviceSynchronize());
+  gpuErrchk(cudaGetLastError());
+  free(unit_length);
+  free(start_inds);
+#else
+  get_waveform_mixed32_full_candidate(
+      d_waveform, interp_array, phase_interp_t, phase_interp_coeffs,
+      d_m, d_k, d_n, init_len, out_len, num_teuk_modes, d_Ylms_raw,
+      delta_t, h_t, dev, false, false, false);
+#endif
 }
 
 // make a frequency domain waveform in parallel

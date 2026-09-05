@@ -288,7 +288,16 @@ class SphericalHarmonicWaveformBase(
             # get frequencies to pass to mode selection
             # TODO: write a method that just returns the derivatives at each spline knot (vectorises easier).
             if self.mode_selector.mode_selection != "all":
-                freqs = self.inspiral_generator.inspiral_generator.eval_integrator_derivative_spline(t_temp, order=1)[:,3:6] / 2 / np.pi
+                # 2026-09-04 14:42 CST (linux): The DOPR853 trajectory cache
+                # is NumPy-only.  On a CUDA waveform, convert the device query
+                # times to host before evaluating the derivative spline, then
+                # return the frequencies to the selected waveform backend.
+                t_temp_host = t_temp.get() if hasattr(t_temp, "get") else t_temp
+                freqs = self.xp.asarray(
+                    self.inspiral_generator.inspiral_generator.eval_integrator_derivative_spline(
+                        t_temp_host, order=1
+                    )[:, 3:6]
+                ) / (2 * np.pi)
 
                 online_mode_selection_args = dict(
                     f_phi = freqs[:,0],

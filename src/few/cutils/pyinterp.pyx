@@ -14,6 +14,47 @@ cdef extern from "interpolate.hh":
                   int *d_m, int *d_k, int *d_n, int init_len, int out_len, int num_teuk_modes, cmplx *d_Ylms,
                   double delta_t, double *h_t, int dev)
 
+    # 2026-09-04 14:54 CST (linux): Bind the isolated same-FP64 scheduling
+    # control and range-reduced mixed32 phase-exponential candidate.
+    void get_waveform_optimized(cmplx *d_waveform, double *interp_array, double *phase_interp_t, double *phase_interp_coeffs,
+                  int *d_m, int *d_k, int *d_n, int init_len, int out_len, int num_teuk_modes, cmplx *d_Ylms,
+                  double delta_t, double *h_t, int dev)
+
+    void get_waveform_mixed32(cmplx *d_waveform, double *interp_array, double *phase_interp_t, double *phase_interp_coeffs,
+                  int *d_m, int *d_k, int *d_n, int init_len, int out_len, int num_teuk_modes, cmplx *d_Ylms,
+                  double delta_t, double *h_t, int dev)
+
+    # 2026-09-04 15:09 CST (linux): Forward float amplitude splines and opaque
+    # complex64 Ylms to the full mixed32 mode-evaluation kernel.
+    void get_waveform_mixed32_full(cmplx *d_waveform, float *interp_array, double *phase_interp_t, double *phase_interp_coeffs,
+                  int *d_m, int *d_k, int *d_n, int init_len, int out_len, int num_teuk_modes, void *d_Ylms,
+                  double delta_t, double *h_t, int dev)
+
+    # 2026-09-04 15:31 CST (linux): Bind the integer-phasor mixed32 candidate.
+    void get_waveform_mixed32_recurrence(cmplx *d_waveform, float *interp_array, double *phase_interp_t, double *phase_interp_coeffs,
+                  int *d_m, int *d_k, int *d_n, int init_len, int out_len, int num_teuk_modes, void *d_Ylms,
+                  double delta_t, double *h_t, int dev)
+
+    # 2026-09-04 15:39 CST (linux): Bind block-local FP32 accumulation variant.
+    void get_waveform_mixed32_fast(cmplx *d_waveform, float *interp_array, double *phase_interp_t, double *phase_interp_coeffs,
+                  int *d_m, int *d_k, int *d_n, int init_len, int out_len, int num_teuk_modes, void *d_Ylms,
+                  double delta_t, double *h_t, int dev)
+
+    # 2026-09-04 17:01 CST (linux): Bind fast-intrinsic controls with either
+    # FP64 or block-local FP32 mode accumulation.
+    void get_waveform_mixed32_intrinsic(cmplx *d_waveform, float *interp_array, double *phase_interp_t, double *phase_interp_coeffs,
+                  int *d_m, int *d_k, int *d_n, int init_len, int out_len, int num_teuk_modes, void *d_Ylms,
+                  double delta_t, double *h_t, int dev)
+
+    void get_waveform_mixed32_intrinsic_fast(cmplx *d_waveform, float *interp_array, double *phase_interp_t, double *phase_interp_coeffs,
+                  int *d_m, int *d_k, int *d_n, int init_len, int out_len, int num_teuk_modes, void *d_Ylms,
+                  double delta_t, double *h_t, int dev)
+
+    # 2026-09-04 16:34 CST (linux): Bind the warp-per-output CUDA candidate.
+    void get_waveform_mixed32_warp(cmplx *d_waveform, float *interp_array, double *phase_interp_t, double *phase_interp_coeffs,
+                  int *d_m, int *d_k, int *d_n, int init_len, int out_len, int num_teuk_modes, void *d_Ylms,
+                  double delta_t, double *h_t, int dev)
+
     void get_waveform_generic_fd(cmplx *waveform,
              double *interp_array, double *phase_interp_t, double *phase_interp_coeffs,
               int *m_arr_in, int *k_arr_in, int *n_arr_in, int num_teuk_modes,
@@ -58,6 +99,192 @@ def get_waveform_wrap(*args, **kwargs):
 
     get_waveform(<cmplx *>d_waveform_in, <double *>interp_array_in, <double *>phase_interp_t_in, <double *>phase_interp_coeffs_in,
                 <int *>d_m_in, <int *>d_k_in, <int *>d_n_in, init_len, out_len, num_teuk_modes, <cmplx *>d_Ylms_in,
+                delta_t, <double *>h_t_in, dev)
+
+
+def get_waveform_optimized_wrap(*args, **kwargs):
+
+    targs, kwargs = wrapper(*args, **kwargs)
+
+    (d_waveform, interp_array, phase_interp_t, phase_interp_coeffs,
+              d_m, d_k, d_n, init_len, out_len, num_teuk_modes, d_Ylms,
+              delta_t, h_t, dev) = targs
+
+    cdef size_t d_waveform_in = d_waveform
+    cdef size_t interp_array_in = interp_array
+    cdef size_t phase_interp_t_in = phase_interp_t
+    cdef size_t phase_interp_coeffs_in = phase_interp_coeffs
+    cdef size_t d_m_in = d_m
+    cdef size_t d_k_in = d_k
+    cdef size_t d_n_in = d_n
+    cdef size_t d_Ylms_in = d_Ylms
+    cdef size_t h_t_in = h_t
+
+    get_waveform_optimized(<cmplx *>d_waveform_in, <double *>interp_array_in, <double *>phase_interp_t_in, <double *>phase_interp_coeffs_in,
+                <int *>d_m_in, <int *>d_k_in, <int *>d_n_in, init_len, out_len, num_teuk_modes, <cmplx *>d_Ylms_in,
+                delta_t, <double *>h_t_in, dev)
+
+
+def get_waveform_mixed32_wrap(*args, **kwargs):
+
+    targs, kwargs = wrapper(*args, **kwargs)
+
+    (d_waveform, interp_array, phase_interp_t, phase_interp_coeffs,
+              d_m, d_k, d_n, init_len, out_len, num_teuk_modes, d_Ylms,
+              delta_t, h_t, dev) = targs
+
+    cdef size_t d_waveform_in = d_waveform
+    cdef size_t interp_array_in = interp_array
+    cdef size_t phase_interp_t_in = phase_interp_t
+    cdef size_t phase_interp_coeffs_in = phase_interp_coeffs
+    cdef size_t d_m_in = d_m
+    cdef size_t d_k_in = d_k
+    cdef size_t d_n_in = d_n
+    cdef size_t d_Ylms_in = d_Ylms
+    cdef size_t h_t_in = h_t
+
+    get_waveform_mixed32(<cmplx *>d_waveform_in, <double *>interp_array_in, <double *>phase_interp_t_in, <double *>phase_interp_coeffs_in,
+                <int *>d_m_in, <int *>d_k_in, <int *>d_n_in, init_len, out_len, num_teuk_modes, <cmplx *>d_Ylms_in,
+                delta_t, <double *>h_t_in, dev)
+
+
+def get_waveform_mixed32_full_wrap(*args, **kwargs):
+
+    targs, kwargs = wrapper(*args, **kwargs)
+
+    (d_waveform, interp_array, phase_interp_t, phase_interp_coeffs,
+              d_m, d_k, d_n, init_len, out_len, num_teuk_modes, d_Ylms,
+              delta_t, h_t, dev) = targs
+
+    cdef size_t d_waveform_in = d_waveform
+    cdef size_t interp_array_in = interp_array
+    cdef size_t phase_interp_t_in = phase_interp_t
+    cdef size_t phase_interp_coeffs_in = phase_interp_coeffs
+    cdef size_t d_m_in = d_m
+    cdef size_t d_k_in = d_k
+    cdef size_t d_n_in = d_n
+    cdef size_t d_Ylms_in = d_Ylms
+    cdef size_t h_t_in = h_t
+
+    get_waveform_mixed32_full(<cmplx *>d_waveform_in, <float *>interp_array_in, <double *>phase_interp_t_in, <double *>phase_interp_coeffs_in,
+                <int *>d_m_in, <int *>d_k_in, <int *>d_n_in, init_len, out_len, num_teuk_modes, <void *>d_Ylms_in,
+                delta_t, <double *>h_t_in, dev)
+
+
+# 2026-09-04 15:31 CST (linux): Keep a distinct Python entry point so tests and
+# benchmarks can compare the integer-phasor path with mixed32_full.
+def get_waveform_mixed32_recurrence_wrap(*args, **kwargs):
+
+    targs, kwargs = wrapper(*args, **kwargs)
+
+    (d_waveform, interp_array, phase_interp_t, phase_interp_coeffs,
+              d_m, d_k, d_n, init_len, out_len, num_teuk_modes, d_Ylms,
+              delta_t, h_t, dev) = targs
+
+    cdef size_t d_waveform_in = d_waveform
+    cdef size_t interp_array_in = interp_array
+    cdef size_t phase_interp_t_in = phase_interp_t
+    cdef size_t phase_interp_coeffs_in = phase_interp_coeffs
+    cdef size_t d_m_in = d_m
+    cdef size_t d_k_in = d_k
+    cdef size_t d_n_in = d_n
+    cdef size_t d_Ylms_in = d_Ylms
+    cdef size_t h_t_in = h_t
+
+    get_waveform_mixed32_recurrence(<cmplx *>d_waveform_in, <float *>interp_array_in, <double *>phase_interp_t_in, <double *>phase_interp_coeffs_in,
+                <int *>d_m_in, <int *>d_k_in, <int *>d_n_in, init_len, out_len, num_teuk_modes, <void *>d_Ylms_in,
+                delta_t, <double *>h_t_in, dev)
+
+
+# 2026-09-04 15:39 CST (linux): Expose the FP32 mode-block accumulation only
+# through an explicit experimental selector.
+def get_waveform_mixed32_fast_wrap(*args, **kwargs):
+
+    targs, kwargs = wrapper(*args, **kwargs)
+
+    (d_waveform, interp_array, phase_interp_t, phase_interp_coeffs,
+              d_m, d_k, d_n, init_len, out_len, num_teuk_modes, d_Ylms,
+              delta_t, h_t, dev) = targs
+
+    cdef size_t d_waveform_in = d_waveform
+    cdef size_t interp_array_in = interp_array
+    cdef size_t phase_interp_t_in = phase_interp_t
+    cdef size_t phase_interp_coeffs_in = phase_interp_coeffs
+    cdef size_t d_m_in = d_m
+    cdef size_t d_k_in = d_k
+    cdef size_t d_n_in = d_n
+    cdef size_t d_Ylms_in = d_Ylms
+    cdef size_t h_t_in = h_t
+
+    get_waveform_mixed32_fast(<cmplx *>d_waveform_in, <float *>interp_array_in, <double *>phase_interp_t_in, <double *>phase_interp_coeffs_in,
+                <int *>d_m_in, <int *>d_k_in, <int *>d_n_in, init_len, out_len, num_teuk_modes, <void *>d_Ylms_in,
+                delta_t, <double *>h_t_in, dev)
+
+
+# 2026-09-04 17:01 CST (linux): Fast intrinsic with per-mode FP64 accumulation.
+def get_waveform_mixed32_intrinsic_wrap(*args, **kwargs):
+
+    targs, kwargs = wrapper(*args, **kwargs)
+    (d_waveform, interp_array, phase_interp_t, phase_interp_coeffs,
+              d_m, d_k, d_n, init_len, out_len, num_teuk_modes, d_Ylms,
+              delta_t, h_t, dev) = targs
+    cdef size_t d_waveform_in = d_waveform
+    cdef size_t interp_array_in = interp_array
+    cdef size_t phase_interp_t_in = phase_interp_t
+    cdef size_t phase_interp_coeffs_in = phase_interp_coeffs
+    cdef size_t d_m_in = d_m
+    cdef size_t d_k_in = d_k
+    cdef size_t d_n_in = d_n
+    cdef size_t d_Ylms_in = d_Ylms
+    cdef size_t h_t_in = h_t
+    get_waveform_mixed32_intrinsic(<cmplx *>d_waveform_in, <float *>interp_array_in, <double *>phase_interp_t_in, <double *>phase_interp_coeffs_in,
+                <int *>d_m_in, <int *>d_k_in, <int *>d_n_in, init_len, out_len, num_teuk_modes, <void *>d_Ylms_in,
+                delta_t, <double *>h_t_in, dev)
+
+
+# 2026-09-04 17:01 CST (linux): Fast intrinsic with block-local FP32 reduction.
+def get_waveform_mixed32_intrinsic_fast_wrap(*args, **kwargs):
+
+    targs, kwargs = wrapper(*args, **kwargs)
+    (d_waveform, interp_array, phase_interp_t, phase_interp_coeffs,
+              d_m, d_k, d_n, init_len, out_len, num_teuk_modes, d_Ylms,
+              delta_t, h_t, dev) = targs
+    cdef size_t d_waveform_in = d_waveform
+    cdef size_t interp_array_in = interp_array
+    cdef size_t phase_interp_t_in = phase_interp_t
+    cdef size_t phase_interp_coeffs_in = phase_interp_coeffs
+    cdef size_t d_m_in = d_m
+    cdef size_t d_k_in = d_k
+    cdef size_t d_n_in = d_n
+    cdef size_t d_Ylms_in = d_Ylms
+    cdef size_t h_t_in = h_t
+    get_waveform_mixed32_intrinsic_fast(<cmplx *>d_waveform_in, <float *>interp_array_in, <double *>phase_interp_t_in, <double *>phase_interp_coeffs_in,
+                <int *>d_m_in, <int *>d_k_in, <int *>d_n_in, init_len, out_len, num_teuk_modes, <void *>d_Ylms_in,
+                delta_t, <double *>h_t_in, dev)
+
+
+# 2026-09-04 16:34 CST (linux): Expose the warp-parallel kernel through an
+# explicit selector; the default FP64 wrapper is unchanged.
+def get_waveform_mixed32_warp_wrap(*args, **kwargs):
+
+    targs, kwargs = wrapper(*args, **kwargs)
+
+    (d_waveform, interp_array, phase_interp_t, phase_interp_coeffs,
+              d_m, d_k, d_n, init_len, out_len, num_teuk_modes, d_Ylms,
+              delta_t, h_t, dev) = targs
+
+    cdef size_t d_waveform_in = d_waveform
+    cdef size_t interp_array_in = interp_array
+    cdef size_t phase_interp_t_in = phase_interp_t
+    cdef size_t phase_interp_coeffs_in = phase_interp_coeffs
+    cdef size_t d_m_in = d_m
+    cdef size_t d_k_in = d_k
+    cdef size_t d_n_in = d_n
+    cdef size_t d_Ylms_in = d_Ylms
+    cdef size_t h_t_in = h_t
+
+    get_waveform_mixed32_warp(<cmplx *>d_waveform_in, <float *>interp_array_in, <double *>phase_interp_t_in, <double *>phase_interp_coeffs_in,
+                <int *>d_m_in, <int *>d_k_in, <int *>d_n_in, init_len, out_len, num_teuk_modes, <void *>d_Ylms_in,
                 delta_t, <double *>h_t_in, dev)
 
 

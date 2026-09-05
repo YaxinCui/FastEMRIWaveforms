@@ -81,10 +81,24 @@ class AmpInterp2D(AmplitudeBase, ParallelModuleBase):
         m_arr: np.ndarray,
         k_arr: np.ndarray,
         n_arr: np.ndarray,
+        precision: str = "fp64",
         force_backend: BackendLike = None,
     ):
         AmplitudeBase.__init__(self)
         ParallelModuleBase.__init__(self, force_backend=force_backend)
+
+        # 2026-09-04 14:45 CST (linux): Precision reduction is explicit and
+        # local to the 2D amplitude spline.  FP64 remains the API default and
+        # oracle; mixed32 stores/evaluates inputs in FP32 but returns FP64.
+        if precision not in {"fp64", "mixed32"}:
+            raise ValueError(
+                "precision must be either 'fp64' or 'mixed32', "
+                f"received {precision!r}"
+            )
+        self.precision = precision
+        self.storage_dtype = (
+            self.xp.float32 if precision == "mixed32" else self.xp.float64
+        )
 
         self.l_arr = l_arr
         self.m_arr = m_arr
@@ -94,11 +108,11 @@ class AmpInterp2D(AmplitudeBase, ParallelModuleBase):
         self.num_teuk_modes = coefficients.shape[0]
 
         self.knots = [
-            self.xp.asarray(w_knots),
-            self.xp.asarray(u_knots),
+            self.xp.asarray(w_knots, dtype=self.storage_dtype),
+            self.xp.asarray(u_knots, dtype=self.storage_dtype),
         ]
 
-        self.coeff = self.xp.asarray(coefficients)
+        self.coeff = self.xp.asarray(coefficients, dtype=self.storage_dtype)
         """np.ndarray: Array holding all spline coefficient information."""
 
         # for mode_ind in range(self.num_teuk_modes):
@@ -113,7 +127,11 @@ class AmpInterp2D(AmplitudeBase, ParallelModuleBase):
     @property
     def interp2D(self) -> callable:
         """GPU or CPU interp2D"""
-        return self.backend.interp2D
+        return (
+            self.backend.interp2D_mixed32
+            if self.precision == "mixed32"
+            else self.backend.interp2D
+        )
 
     @classmethod
     def module_references(cls) -> list[REFERENCE]:
@@ -142,8 +160,8 @@ class AmpInterp2D(AmplitudeBase, ParallelModuleBase):
         Returns:
             Complex interpolated values at the requested points.
         """
-        w = self.xp.asarray(w)
-        u = self.xp.asarray(u)
+        w = self.xp.asarray(w, dtype=self.storage_dtype)
+        u = self.xp.asarray(u, dtype=self.storage_dtype)
 
         tw, tu = self.knots
         c = self.coeff
@@ -168,15 +186,24 @@ class AmpInterp2D(AmplitudeBase, ParallelModuleBase):
         assert mw == mu
 
         if mode_indexes is None:
-            mode_indexes = self.xp.arange(self.num_teuk_modes)
+            # 2026-09-04 14:50 CST (linux): The coefficient tensor is already
+            # C-contiguous in the all-mode path.  Use a view instead of advanced
+            # indexing plus flattening, which copied roughly 116 MiB for each
+            # active region-A spin slice on every Kerr amplitude evaluation.
+            c_in = c.reshape(-1)
+            num_modes = self.num_teuk_modes
+        else:
+            # A subset or permutation still needs a contiguous gathered buffer
+            # because the native interpolation ABI accepts no index array.
+            c_in = c[mode_indexes].reshape(-1)
+            num_modes = len(mode_indexes)
 
-        # TODO: perform this in the kernel
-        c_in = c[mode_indexes].flatten()
-
-        num_indiv_c = 2 * len(mode_indexes)  # Re and Im
+        num_indiv_c = 2 * num_modes  # Re and Im
         len_indiv_c = self.len_indiv_c
 
-        z = self.xp.zeros((num_indiv_c * mw))
+        # mixed32 writes promoted doubles so all downstream calculations retain
+        # the accepted complex128 interface and FP64 spin interpolation.
+        z = self.xp.zeros((num_indiv_c * mw), dtype=self.xp.float64)
 
         self.interp2D(
             z, tw, nw, tu, nu, c_in, kw, ku, w, mw, u, mu, num_indiv_c, len_indiv_c
@@ -216,11 +243,23 @@ class AmpInterpKerrEccEq(AmplitudeBase, KerrEccentricEquatorial):
         self,
         filename: Optional[str] = None,
         downsample_Z=1,
+        interpolation_precision: str = "fp64",
         force_backend: BackendLike = None,
         **kwargs,
     ):
         AmplitudeBase.__init__(self)
         KerrEccentricEquatorial.__init__(self, force_backend=force_backend, **kwargs)
+
+        # 2026-09-04 14:45 CST (linux): Keep high-risk trajectory/domain/spin
+        # decisions in FP64 and opt only the dense 2D coefficient tables into
+        # mixed32.  Reading them directly as float32 also halves candidate host
+        # and device storage without changing the on-disk oracle.
+        if interpolation_precision not in {"fp64", "mixed32"}:
+            raise ValueError(
+                "interpolation_precision must be either 'fp64' or 'mixed32', "
+                f"received {interpolation_precision!r}"
+            )
+        self.interpolation_precision = interpolation_precision
 
         self.filename = (
             "ZNAmps_l10_m10_n55_DS2Outer.h5" if filename is None else filename
@@ -232,7 +271,12 @@ class AmpInterpKerrEccEq(AmplitudeBase, KerrEccentricEquatorial):
 
         with h5py.File(file_path, "r") as f:
             regionA = f["regionA"]
-            coeffsA = regionA["CoeffsRegionA"][()]
+            coeffsA_dataset = regionA["CoeffsRegionA"]
+            coeffsA = (
+                coeffsA_dataset.astype(np.float32)[()]
+                if interpolation_precision == "mixed32"
+                else coeffsA_dataset[()]
+            )
             w_knots = regionA["w_knots"][()]
             u_knots = regionA["u_knots"][()]
             z_knots = regionA["z_knots"][()]
@@ -252,13 +296,19 @@ class AmpInterpKerrEccEq(AmplitudeBase, KerrEccentricEquatorial):
                         self.k_arr,
                         self.n_arr,
                     ],
+                    kwargs={"precision": interpolation_precision},
                 )
                 for i in range(z_knots.size)
             ]
 
             try:
                 regionB = f["regionB"]
-                coeffsB = regionB["CoeffsRegionB"][()]
+                coeffsB_dataset = regionB["CoeffsRegionB"]
+                coeffsB = (
+                    coeffsB_dataset.astype(np.float32)[()]
+                    if interpolation_precision == "mixed32"
+                    else coeffsB_dataset[()]
+                )
 
                 w_knots = regionB["w_knots"][()]
                 u_knots = regionB["u_knots"][()]
@@ -280,6 +330,7 @@ class AmpInterpKerrEccEq(AmplitudeBase, KerrEccentricEquatorial):
                             self.k_arr,
                             self.n_arr,
                         ],
+                        kwargs={"precision": interpolation_precision},
                     )
                     for i in range(z_knots.size)
                 ]
@@ -326,7 +377,16 @@ class AmpInterpKerrEccEq(AmplitudeBase, KerrEccentricEquatorial):
             An array of complex mode amplitudes.
         """
         if specific_modes is None:
-            specific_modes = self.xp.arange(self.num_teuk_modes)
+            self.num_modes_eval = self.num_teuk_modes
+            mode_indexes = None
+        elif specific_modes is self.mode_indexes:
+            # 2026-09-04 14:50 CST (linux): AmplitudeBase supplies the identity
+            # index array for the normal positive-xI all-mode request.  Preserve
+            # that public behavior while signaling AmpInterp2D that it can use
+            # the zero-copy contiguous coefficient view.
+            mode_indexes = None
+        else:
+            mode_indexes = specific_modes
 
         assert self.xp.all(a == a[0]), "All spins must be the same value."
         assert self.xp.all(a * xI <= 0.0) or self.xp.all(
@@ -377,7 +437,7 @@ class AmpInterpKerrEccEq(AmplitudeBase, KerrEccentricEquatorial):
                 ind_1 = self.xp.where(self.z_values == z_check)[0][0]
 
             Amp_z = self._evaluate_interpolant_at_index(
-                ind_1, region_mask, w, u, mode_indexes=specific_modes
+                ind_1, region_mask, w, u, mode_indexes=mode_indexes
             )
 
         else:
@@ -391,12 +451,12 @@ class AmpInterpKerrEccEq(AmplitudeBase, KerrEccentricEquatorial):
 
             z_above = self.z_values[ind_above]
             Amp_above = self._evaluate_interpolant_at_index(
-                ind_above, region_mask, w, u, specific_modes
+                ind_above, region_mask, w, u, mode_indexes
             )
 
             z_below = self.z_values[ind_below]
             Amp_below = self._evaluate_interpolant_at_index(
-                ind_below, region_mask, w, u, specific_modes
+                ind_below, region_mask, w, u, mode_indexes
             )
 
             Amp_z = ((Amp_above - Amp_below) / (z_above - z_below)) * (

@@ -1,0 +1,127 @@
+{
+  "metadata": {
+    "generated_at_cst": "2026-09-04T18:50:34.582801+08:00",
+    "git_branch": "codex/cuda-mixed-precision-5x",
+    "git_head": "47e4fea4bb3e5fbe1ba34e5e399ed37c97814191",
+    "few_version": "2.1.0.post1.dev91+g47e4fea4b",
+    "few_module": "/tmp/few-cuda5x-master.cAk3cK/runtime/few/__init__.py",
+    "scope": "Low-cost contract probes only; no high-memory table, waveform accuracy, or scientific impact is tested."
+  },
+  "input_validation": {
+    "nominal": {
+      "accepted": true,
+      "result_repr": "(0.6, 1.0)"
+    },
+    "nan_m1": {
+      "accepted": true,
+      "result_repr": "(0.6, 1.0)"
+    },
+    "nan_m2": {
+      "accepted": true,
+      "result_repr": "(0.6, 1.0)"
+    },
+    "equal_masses": {
+      "accepted": true,
+      "result_repr": "(0.6, 1.0)"
+    },
+    "negative_m2": {
+      "accepted": false,
+      "exception": "ValueError",
+      "message": "m2 is negative. It must be positive."
+    }
+  },
+  "mode_policy": {
+    "cases": [
+      {
+        "requested_threshold": -0.1,
+        "accepted": true,
+        "effective_mode_selection": "threshold",
+        "effective_threshold": -0.1,
+        "requested_include_minus_mkn": false,
+        "effective_include_minus_mkn": false,
+        "mode_array_is_none": true
+      },
+      {
+        "requested_threshold": 0.0,
+        "accepted": true,
+        "effective_mode_selection": "threshold",
+        "effective_threshold": 0.0,
+        "requested_include_minus_mkn": false,
+        "effective_include_minus_mkn": false,
+        "mode_array_is_none": true
+      },
+      {
+        "requested_threshold": 1e-05,
+        "accepted": true,
+        "effective_mode_selection": "threshold",
+        "effective_threshold": 1e-05,
+        "requested_include_minus_mkn": false,
+        "effective_include_minus_mkn": false,
+        "mode_array_is_none": true
+      },
+      {
+        "requested_threshold": 1.0,
+        "accepted": true,
+        "effective_mode_selection": "threshold",
+        "effective_threshold": 1.0,
+        "requested_include_minus_mkn": false,
+        "effective_include_minus_mkn": false,
+        "mode_array_is_none": true
+      },
+      {
+        "requested_threshold": 1.1,
+        "accepted": true,
+        "effective_mode_selection": "threshold",
+        "effective_threshold": 1.1,
+        "requested_include_minus_mkn": false,
+        "effective_include_minus_mkn": false,
+        "mode_array_is_none": true
+      },
+      {
+        "requested_threshold": "NaN",
+        "accepted": true,
+        "effective_mode_selection": "threshold",
+        "effective_threshold": "NaN",
+        "requested_include_minus_mkn": false,
+        "effective_include_minus_mkn": false,
+        "mode_array_is_none": true
+      },
+      {
+        "requested_threshold": "Infinity",
+        "accepted": true,
+        "effective_mode_selection": "threshold",
+        "effective_threshold": "Infinity",
+        "requested_include_minus_mkn": false,
+        "effective_include_minus_mkn": false,
+        "mode_array_is_none": true
+      }
+    ]
+  },
+  "exception_state": {
+    "state_before": null,
+    "injected_call": {
+      "accepted": false,
+      "exception": "RuntimeError",
+      "message": "injected integration failure"
+    },
+    "state_after_caught_exception": true,
+    "expected_for_clean_reuse": false,
+    "state_restored_by_run_inspiral": false
+  },
+  "preprocessing_import": {
+    "imported": false,
+    "exception": "ImportError",
+    "message": "cannot import name 'AmpInterpKerrEqEcc' from 'few.amplitude.ampinterp2d' (/tmp/few-cuda5x-master.cAk3cK/runtime/few/amplitude/ampinterp2d.py)",
+    "source_import": "from few.amplitude.ampinterp2d import AmpInterpKerrEqEcc"
+  },
+  "amplitude_test_structure": {
+    "test_path": "/home/ubuntu/Desktop/FastEMRIWaveforms/tests/test_amplitudes.py",
+    "reference_loop_lines": [
+      62,
+      66
+    ],
+    "following_statement_type": "Expr",
+    "following_statement_line": 67,
+    "assertion_is_inside_reference_loop": false
+  }
+}

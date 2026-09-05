@@ -268,12 +268,54 @@ class InterpolatedModeSum(SummationBase):
 
     """
 
-    def __init__(self, force_backend: BackendLike = None, **kwargs):
+    def __init__(
+        self,
+        summation_precision: str = "fp64",
+        force_backend: BackendLike = None,
+        **kwargs,
+    ):
         SummationBase.__init__(self, **kwargs, force_backend=force_backend)
+
+        # 2026-09-04 14:56 CST (linux): Keep the production FP64 launcher as
+        # default.  fp64_optimized isolates scheduling/direct-store effects;
+        # mixed32_phase additionally uses FP32 sin/cos after FP64 range reduction.
+        allowed = {
+            "fp64",
+            "fp64_optimized",
+            "mixed32_phase",
+            "mixed32_full",
+            "mixed32_recurrence",
+            "mixed32_fast",
+            "mixed32_intrinsic",
+            "mixed32_intrinsic_fast",
+            "mixed32_warp",
+        }
+        if summation_precision not in allowed:
+            raise ValueError(
+                f"summation_precision must be one of {sorted(allowed)}, "
+                f"received {summation_precision!r}"
+            )
+        self.summation_precision = summation_precision
 
     @property
     def get_waveform(self) -> callable:
         """GPU or CPU waveform generation."""
+        if self.summation_precision == "fp64_optimized":
+            return self.backend.get_waveform_optimized_wrap
+        if self.summation_precision == "mixed32_phase":
+            return self.backend.get_waveform_mixed32_wrap
+        if self.summation_precision == "mixed32_full":
+            return self.backend.get_waveform_mixed32_full_wrap
+        if self.summation_precision == "mixed32_recurrence":
+            return self.backend.get_waveform_mixed32_recurrence_wrap
+        if self.summation_precision == "mixed32_fast":
+            return self.backend.get_waveform_mixed32_fast_wrap
+        if self.summation_precision == "mixed32_intrinsic":
+            return self.backend.get_waveform_mixed32_intrinsic_wrap
+        if self.summation_precision == "mixed32_intrinsic_fast":
+            return self.backend.get_waveform_mixed32_intrinsic_fast_wrap
+        if self.summation_precision == "mixed32_warp":
+            return self.backend.get_waveform_mixed32_warp_wrap
         return self.backend.get_waveform_wrap
 
     @classmethod
@@ -336,6 +378,25 @@ class InterpolatedModeSum(SummationBase):
 
         spline = self.build_with_same_backend(CubicSplineInterpolant, args=[t, y_all])
 
+        # 2026-09-04 15:10 CST (linux): Solve the sparse cubic splines in FP64,
+        # then narrow only the dense per-mode evaluation inputs for the full
+        # mixed32 kernel.  Phase splines and the final waveform remain FP64.
+        # 2026-09-04 15:31 CST (linux): Both full mixed32 candidates consume
+        # narrowed amplitude-spline coefficients and complex64 harmonics.
+        if self.summation_precision in {
+            "mixed32_full",
+            "mixed32_recurrence",
+            "mixed32_fast",
+            "mixed32_intrinsic",
+            "mixed32_intrinsic_fast",
+            "mixed32_warp",
+        }:
+            interp_array_in = spline.interp_array.astype(self.xp.float32)
+            ylm_dtype = self.xp.complex64
+        else:
+            interp_array_in = spline.interp_array
+            ylm_dtype = self.xp.complex128
+
         h_t = t.get() if self.backend.uses_cupy else t
 
         if integrate_backwards:
@@ -359,7 +420,7 @@ class InterpolatedModeSum(SummationBase):
 
         self.get_waveform(
             self.waveform,
-            spline.interp_array,
+            interp_array_in,
             phase_interp_t,
             phase_interp_coeffs_in,
             m_arr.astype(self.xp.int32),
@@ -368,7 +429,7 @@ class InterpolatedModeSum(SummationBase):
             init_len,
             num_pts,
             num_teuk_modes,
-            ylms.astype(self.xp.complex128),
+            ylms.astype(ylm_dtype),
             dt,
             h_t,
             dev,

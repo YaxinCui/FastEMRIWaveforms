@@ -83,6 +83,87 @@ void fpbisp(
     *z = sp;
 }
 
+// 2026-09-04 14:43 CST (linux): Keep the accepted FP64 implementation above
+// untouched and add an isolated FP32 spline path for explicit mixed-compute
+// experiments.  The wrapper promotes each result to double before returning to
+// Python, so downstream spin interpolation and summation remain complex128.
+FEW_INLINE CUDA_CALLABLE_MEMBER void fpbspl_mixed32(
+    const float* t, int k, float x, int l, float* h)
+{
+  int i, j, li, lj;
+  float f;
+  float hh[5] = {0.0f};
+  h[0] = 1.0f;
+  for (j = 1; j <= k; j++) {
+    for (i = 0; i < k; i++)
+      hh[i] = h[i];
+    h[0] = 0.0f;
+    for (i = 0; i < j; i++) {
+      li = l + i;
+      lj = li - j;
+      f = hh[i] / (t[li] - t[lj]);
+      h[i] += f * (t[li] - x);
+      h[i + 1] = f * (x - t[lj]);
+    }
+  }
+}
+
+CUDA_CALLABLE_MEMBER
+void fpbisp_mixed32(
+             float* z,
+             const float* tx, int nx, const float* ty, int ny, float *c,
+             int kx, int ky, const float x, int mx,
+             const float y, int my)
+{
+  int i1, j1, kx1, ky1, l, l1, l2, nkx1, nky1;
+  float arg, sp, tb, te;
+
+  float wx[6] = {0.0f};
+  float wy[6] = {0.0f};
+  int lx, ly;
+
+  kx1 = kx + 1;
+  nkx1 = nx - kx1;
+  tb = tx[kx1 - 1];
+  te = tx[nkx1];
+  l = kx1;
+  arg = x;
+  if (arg < tb)
+    arg = tb;
+  if (arg > te)
+    arg = te;
+  while (!(arg < tx[l] || l == nkx1))
+    l++;
+  fpbspl_mixed32(tx, kx, arg, l, wx);
+  lx = l - kx1;
+
+  ky1 = ky + 1;
+  nky1 = ny - ky1;
+  tb = ty[ky1 - 1];
+  te = ty[nky1];
+  l = ky1;
+  arg = y;
+  if (arg < tb)
+    arg = tb;
+  if (arg > te)
+    arg = te;
+  while (!(arg < ty[l] || l == nky1))
+    l++;
+  fpbspl_mixed32(ty, ky, arg, l, wy);
+  ly = l - ky1;
+
+  l = lx * nky1;
+  l1 = l + ly;
+  sp = 0.0f;
+  for (i1 = 0; i1 < kx1; i1++) {
+    l2 = l1;
+    for (j1 = 0; j1 < ky1; j1++)
+      sp += c[l2++] * wx[i1] * wy[j1];
+    l1 += nky1;
+  }
+  *z = sp;
+}
+
 CUDA_KERNEL
 void interp2D(double* z, const double* tx, int nx, const double* ty, int ny,
              double* c, int kx, int ky, const double* x, int mx,
@@ -167,6 +248,63 @@ void interp2D(double* z, const double* tx, int nx, const double* ty, int ny,
     #endif
 }
 
+CUDA_KERNEL
+void interp2D_mixed32(double* z, const float* tx, int nx, const float* ty,
+             int ny, float* c, int kx, int ky, const float* x, int mx,
+             const float* y, int my, int num_indiv_c, int len_indiv_c)
+{
+    #ifdef __CUDACC__
+    extern __shared__ unsigned char shared_mem[];
+    float *shared_mem_in = (float*) shared_mem;
+    #else
+    float* shared_mem_in = new float[nx + ny + len_indiv_c];
+    #endif
+
+    float *tx_shared = &shared_mem_in[0];
+    float *ty_shared = &shared_mem_in[nx];
+    float *c_indiv = &ty_shared[ny];
+    float z_temp;
+
+    #ifdef __CUDACC__
+    int start_block = blockIdx.y;
+    int block_inc = gridDim.y;
+    int start_thread = threadIdx.x;
+    int thread_inc = blockDim.x;
+    int full_loop_start = threadIdx.x + blockDim.x * blockIdx.x;
+    int full_loop_inc = blockDim.x * gridDim.x;
+    #else
+    int start_block = 0;
+    int block_inc = 1;
+    int start_thread = 0;
+    int thread_inc = 1;
+    int full_loop_start = 0;
+    int full_loop_inc = 1;
+    #endif
+
+    for (int c_i = start_block; c_i < num_indiv_c; c_i += block_inc)
+    {
+        for (int i = start_thread; i < nx; i += thread_inc)
+            tx_shared[i] = tx[i];
+        for (int i = start_thread; i < ny; i += thread_inc)
+            ty_shared[i] = ty[i];
+        for (int i = start_thread; i < len_indiv_c; i += thread_inc)
+            c_indiv[i] = c[c_i * len_indiv_c + i];
+        CUDA_SYNC_THREADS;
+
+        for (int i = full_loop_start; i < mx; i += full_loop_inc)
+        {
+            fpbisp_mixed32(
+                &z_temp, tx_shared, nx, ty_shared, ny, c_indiv,
+                kx, ky, x[i], 1, y[i], 1);
+            z[c_i * mx + i] = static_cast<double>(z_temp);
+        }
+    }
+
+    #ifndef __CUDACC__
+    delete[] shared_mem_in;
+    #endif
+}
+
 void interp2D_wrap(double* z, const double* tx, int nx, const double* ty, int ny, double* c,
              int kx, int ky, const double* x, int mx,
              const double* y, int my, int num_indiv_c, int len_indiv_c)
@@ -205,4 +343,37 @@ void interp2D_wrap(double* z, const double* tx, int nx, const double* ty, int ny
 
     #endif
 
+}
+
+void interp2D_mixed32_wrap(double* z, const float* tx, int nx,
+             const float* ty, int ny, float* c, int kx, int ky,
+             const float* x, int mx, const float* y, int my,
+             int num_indiv_c, int len_indiv_c)
+{
+    if (mx != my)
+    {
+        throw std::invalid_argument("mx and my must be the same value.");
+    }
+
+    #ifdef __CUDACC__
+    auto shared_memory_size =
+        (nx + ny + len_indiv_c) * sizeof(float);
+
+    gpuErrchk(cudaFuncSetAttribute(
+        interp2D_mixed32,
+        cudaFuncAttributeMaxDynamicSharedMemorySize,
+        shared_memory_size));
+
+    int num_blocks = std::ceil((mx + NUM_THREADS - 1.0) / NUM_THREADS);
+    dim3 grid(num_blocks, num_indiv_c);
+    interp2D_mixed32<<<grid, NUM_THREADS, shared_memory_size>>>(
+        z, tx, nx, ty, ny, c, kx, ky, x, mx, y, my,
+        num_indiv_c, len_indiv_c);
+    gpuErrchk(cudaPeekAtLastError());
+    gpuErrchk(cudaDeviceSynchronize());
+    #else
+    interp2D_mixed32(
+        z, tx, nx, ty, ny, c, kx, ky, x, mx, y, my,
+        num_indiv_c, len_indiv_c);
+    #endif
 }

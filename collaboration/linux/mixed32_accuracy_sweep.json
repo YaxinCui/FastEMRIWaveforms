@@ -1,0 +1,614 @@
+{
+  "metadata": {
+    "generated_at_cst": "2026-09-04T18:05:57.329838+08:00",
+    "script": "/home/ubuntu/Desktop/FastEMRIWaveforms/collaboration/linux/mixed32_accuracy_sweep.py",
+    "git_branch": "codex/cuda-mixed-precision-5x",
+    "git_head": "47e4fea4bb3e5fbe1ba34e5e399ed37c97814191",
+    "git_status_short": "M src/few/amplitude/ampinterp2d.py\n M src/few/cutils/AmpInterp2D.cu\n M src/few/cutils/AmpInterp2D.hh\n M src/few/cutils/__init__.py\n M src/few/cutils/interpolate.cu\n M src/few/cutils/interpolate.hh\n M src/few/cutils/pyampinterp2D.pyx\n M src/few/cutils/pyinterp.pyx\n M src/few/summation/interpolatedmodesum.py\n M src/few/waveform/base.py\n M tests/test_amplitudes.py\n M tests/test_mode_summation.py\n?? collaboration/\n?? deep_verify_lazy_loading.py\n?? knowledge/\n?? roman_fusion_probe.py\n?? roman_graph_probe.py\n?? roman_mismatch_test.py\n?? roman_mixed_precision_probe.py",
+    "few_version": "2.1.0.post1.dev91+g47e4fea4b.d20260904",
+    "python": "3.12.13 (main, Jul 23 2026, 14:43:28) [Clang 22.1.3 ]",
+    "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
+    "nvidia_smi": "NVIDIA GeForce RTX 2080 Ti, 595.84, 22528 MiB, 7.5",
+    "data_path": "/home/ubuntu/.local/share/few/v2.1.0.post1.dev93+g92af2f42c.d20260901/download/ZNAmps_l10_m10_n55_DS2Outer.h5",
+    "data_size_bytes": 5089095248,
+    "data_sha256": "3236d8b5eff618242291e9eeb24638dbbbb82fac464ae575dc3f2ba158c54834"
+  },
+  "threshold_interpretation": {
+    "strict_pointwise": "Inherited FP64-regression threshold; failure prevents claiming drop-in numerical equivalence.",
+    "flat_weight_mismatch": "Diagnostic unweighted overlap only; passing is not a substitute for detector-noise-weighted scientific validation."
+  },
+  "fp64": {
+    "label": "fp64",
+    "construction_seconds": 9.467955593994702,
+    "waveform_cases": [
+      {
+        "name": "nominal",
+        "a": 0.6,
+        "p0": 8.0,
+        "e0": 0.3,
+        "xI": 1.0,
+        "T": 0.1,
+        "initial_amplitude_region": "A",
+        "elapsed_ms": 8888.549028008129,
+        "samples": 210388,
+        "modes_kept": 112,
+        "finite": true
+      },
+      {
+        "name": "schwarzschild_limit",
+        "a": 0.0,
+        "p0": 10.0,
+        "e0": 0.4,
+        "xI": 1.0,
+        "T": 0.1,
+        "initial_amplitude_region": "A",
+        "elapsed_ms": 35.95312200195622,
+        "samples": 210388,
+        "modes_kept": 148,
+        "finite": true
+      },
+      {
+        "name": "high_spin_prograde",
+        "a": 0.99,
+        "p0": 9.0,
+        "e0": 0.2,
+        "xI": 1.0,
+        "T": 0.1,
+        "initial_amplitude_region": "A",
+        "elapsed_ms": 23.94038299098611,
+        "samples": 210388,
+        "modes_kept": 67,
+        "finite": true
+      },
+      {
+        "name": "high_eccentricity",
+        "a": 0.5,
+        "p0": 12.0,
+        "e0": 0.8,
+        "xI": 1.0,
+        "T": 0.1,
+        "initial_amplitude_region": "A",
+        "elapsed_ms": 865.6169460009551,
+        "samples": 210388,
+        "modes_kept": 548,
+        "finite": true
+      },
+      {
+        "name": "retrograde",
+        "a": 0.7,
+        "p0": 11.0,
+        "e0": 0.4,
+        "xI": -1.0,
+        "T": 0.1,
+        "initial_amplitude_region": "A",
+        "elapsed_ms": 38.357169993105344,
+        "samples": 210388,
+        "modes_kept": 148,
+        "finite": true
+      },
+      {
+        "name": "weak_field_region_b",
+        "a": 0.36158837,
+        "p0": 72.94420732,
+        "e0": 0.39375,
+        "xI": 1.0,
+        "T": 0.1,
+        "initial_amplitude_region": "B",
+        "elapsed_ms": 17.76842300023418,
+        "samples": 210388,
+        "modes_kept": 65,
+        "finite": true
+      },
+      {
+        "name": "near_separatrix",
+        "a": 0.94071396,
+        "p0": 3.03167504,
+        "e0": 0.23666111,
+        "xI": 1.0,
+        "T": 0.001,
+        "initial_amplitude_region": "A",
+        "elapsed_ms": 14.381313987541944,
+        "samples": 2104,
+        "modes_kept": 213,
+        "finite": true
+      }
+    ],
+    "amplitude_reference_points": [
+      {
+        "lmkn": [
+          3,
+          2,
+          0,
+          4
+        ],
+        "ape": [
+          0.94071396,
+          3.03167504,
+          0.23666111
+        ],
+        "value": [
+          0.0027533363495207313,
+          0.0041432608787941175
+        ],
+        "tabulated_value": [
+          0.002753336140076555,
+          0.004143260615912325
+        ],
+        "absolute_error_vs_tabulated": 3.361156050798001e-10,
+        "tabulated_atol_1e-9_passed": true
+      },
+      {
+        "lmkn": [
+          2,
+          -2,
+          0,
+          5
+        ],
+        "ape": [
+          0.77593827,
+          5.44830674,
+          0.39950367
+        ],
+        "value": [
+          -0.0001975310641821237,
+          4.80658810441802e-05
+        ],
+        "tabulated_value": [
+          -0.0001975310651632842,
+          4.806588136412258e-05
+        ],
+        "absolute_error_vs_tabulated": 1.032007286883459e-12,
+        "tabulated_atol_1e-9_passed": true
+      },
+      {
+        "lmkn": [
+          2,
+          2,
+          0,
+          0
+        ],
+        "ape": [
+          0.99090693,
+          1.81708312,
+          0.25313127
+        ],
+        "value": [
+          -0.05104330844531107,
+          -0.40484839592479177
+        ],
+        "tabulated_value": [
+          -0.09712303568244392,
+          0.0004771647068539275
+        ],
+        "absolute_error_vs_tabulated": 0.4079364550559394,
+        "tabulated_atol_1e-9_passed": false
+      },
+      {
+        "lmkn": [
+          4,
+          -3,
+          0,
+          1
+        ],
+        "ape": [
+          0.87600927,
+          43.70360964,
+          0.478125
+        ],
+        "value": [
+          -9.892768070411627e-07,
+          1.750474689550898e-05
+        ],
+        "tabulated_value": [
+          -9.89242565478408e-07,
+          1.750469365836169e-05
+        ],
+        "absolute_error_vs_tabulated": 6.329832913537483e-11,
+        "tabulated_atol_1e-9_passed": true
+      },
+      {
+        "lmkn": [
+          3,
+          3,
+          0,
+          0
+        ],
+        "ape": [
+          0.36158837,
+          72.94420732,
+          0.39375
+        ],
+        "value": [
+          5.869887392604356e-05,
+          0.0013601062037293039
+        ],
+        "tabulated_value": [
+          5.869887391976143e-05,
+          0.00136010620358342
+        ],
+        "absolute_error_vs_tabulated": 1.4601915524599488e-13,
+        "tabulated_atol_1e-9_passed": true
+      }
+    ]
+  },
+  "candidate": {
+    "label": "mixed32_intrinsic_fast",
+    "construction_seconds": 6.325217097008135,
+    "waveform_cases": [
+      {
+        "name": "nominal",
+        "a": 0.6,
+        "p0": 8.0,
+        "e0": 0.3,
+        "xI": 1.0,
+        "T": 0.1,
+        "initial_amplitude_region": "A",
+        "elapsed_ms": 11.248381997575052,
+        "samples": 210388,
+        "modes_kept": 112,
+        "finite": true
+      },
+      {
+        "name": "schwarzschild_limit",
+        "a": 0.0,
+        "p0": 10.0,
+        "e0": 0.4,
+        "xI": 1.0,
+        "T": 0.1,
+        "initial_amplitude_region": "A",
+        "elapsed_ms": 10.164047009311616,
+        "samples": 210388,
+        "modes_kept": 148,
+        "finite": true
+      },
+      {
+        "name": "high_spin_prograde",
+        "a": 0.99,
+        "p0": 9.0,
+        "e0": 0.2,
+        "xI": 1.0,
+        "T": 0.1,
+        "initial_amplitude_region": "A",
+        "elapsed_ms": 9.772745004738681,
+        "samples": 210388,
+        "modes_kept": 67,
+        "finite": true
+      },
+      {
+        "name": "high_eccentricity",
+        "a": 0.5,
+        "p0": 12.0,
+        "e0": 0.8,
+        "xI": 1.0,
+        "T": 0.1,
+        "initial_amplitude_region": "A",
+        "elapsed_ms": 14.746744011063129,
+        "samples": 210388,
+        "modes_kept": 548,
+        "finite": true
+      },
+      {
+        "name": "retrograde",
+        "a": 0.7,
+        "p0": 11.0,
+        "e0": 0.4,
+        "xI": -1.0,
+        "T": 0.1,
+        "initial_amplitude_region": "A",
+        "elapsed_ms": 10.064091009553522,
+        "samples": 210388,
+        "modes_kept": 148,
+        "finite": true
+      },
+      {
+        "name": "weak_field_region_b",
+        "a": 0.36158837,
+        "p0": 72.94420732,
+        "e0": 0.39375,
+        "xI": 1.0,
+        "T": 0.1,
+        "initial_amplitude_region": "B",
+        "elapsed_ms": 9.745667994138785,
+        "samples": 210388,
+        "modes_kept": 65,
+        "finite": true
+      },
+      {
+        "name": "near_separatrix",
+        "a": 0.94071396,
+        "p0": 3.03167504,
+        "e0": 0.23666111,
+        "xI": 1.0,
+        "T": 0.001,
+        "initial_amplitude_region": "A",
+        "elapsed_ms": 8.990490998257883,
+        "samples": 2104,
+        "modes_kept": 213,
+        "finite": true
+      }
+    ],
+    "amplitude_reference_points": [
+      {
+        "lmkn": [
+          3,
+          2,
+          0,
+          4
+        ],
+        "ape": [
+          0.94071396,
+          3.03167504,
+          0.23666111
+        ],
+        "value": [
+          0.002753336319503,
+          0.004143260901184871
+        ],
+        "tabulated_value": [
+          0.002753336140076555,
+          0.004143260615912325
+        ],
+        "absolute_error_vs_tabulated": 3.3700782588509007e-10,
+        "tabulated_atol_1e-9_passed": true
+      },
+      {
+        "lmkn": [
+          2,
+          -2,
+          0,
+          5
+        ],
+        "ape": [
+          0.77593827,
+          5.44830674,
+          0.39950367
+        ],
+        "value": [
+          -0.00019753107213872108,
+          4.806588145845601e-05
+        ],
+        "tabulated_value": [
+          -0.0001975310651632842,
+          4.806588136412258e-05
+        ],
+        "absolute_error_vs_tabulated": 6.976074721318275e-12,
+        "tabulated_atol_1e-9_passed": true
+      },
+      {
+        "lmkn": [
+          2,
+          2,
+          0,
+          0
+        ],
+        "ape": [
+          0.99090693,
+          1.81708312,
+          0.25313127
+        ],
+        "value": [
+          -0.051043340747375925,
+          -0.40484838663502726
+        ],
+        "tabulated_value": [
+          -0.09712303568244392,
+          0.0004771647068539275
+        ],
+        "absolute_error_vs_tabulated": 0.407936442176853,
+        "tabulated_atol_1e-9_passed": false
+      },
+      {
+        "lmkn": [
+          4,
+          -3,
+          0,
+          1
+        ],
+        "ape": [
+          0.87600927,
+          43.70360964,
+          0.478125
+        ],
+        "value": [
+          -9.892770518677989e-07,
+          1.750474799310896e-05
+        ],
+        "tabulated_value": [
+          -9.89242565478408e-07,
+          1.750469365836169e-05
+        ],
+        "absolute_error_vs_tabulated": 6.435507605503101e-11,
+        "tabulated_atol_1e-9_passed": true
+      },
+      {
+        "lmkn": [
+          3,
+          3,
+          0,
+          0
+        ],
+        "ape": [
+          0.36158837,
+          72.94420732,
+          0.39375
+        ],
+        "value": [
+          5.8698875459871846e-05,
+          0.0013601062831341483
+        ],
+        "tabulated_value": [
+          5.869887391976143e-05,
+          0.00136010620358342
+        ],
+        "absolute_error_vs_tabulated": 7.956563537031848e-11,
+        "tabulated_atol_1e-9_passed": true
+      }
+    ]
+  },
+  "comparisons": {
+    "waveforms": [
+      {
+        "name": "nominal",
+        "comparable": true,
+        "automatic_mode_selection_equal": true,
+        "candidate_vs_fp64": {
+          "normalized_max_abs": 1.4147815641797345e-06,
+          "relative_l2": 8.425476366063772e-07,
+          "flat_weight_mismatch": 3.375077994860476e-13,
+          "pointwise_limit": 5e-10,
+          "pointwise_gate_passed": false,
+          "mismatch_limit": 1e-10,
+          "mismatch_gate_passed": true
+        }
+      },
+      {
+        "name": "schwarzschild_limit",
+        "comparable": true,
+        "automatic_mode_selection_equal": true,
+        "candidate_vs_fp64": {
+          "normalized_max_abs": 1.3955833851112936e-06,
+          "relative_l2": 5.872993631393135e-07,
+          "flat_weight_mismatch": 1.7286172493413687e-13,
+          "pointwise_limit": 5e-10,
+          "pointwise_gate_passed": false,
+          "mismatch_limit": 1e-10,
+          "mismatch_gate_passed": true
+        }
+      },
+      {
+        "name": "high_spin_prograde",
+        "comparable": true,
+        "automatic_mode_selection_equal": true,
+        "candidate_vs_fp64": {
+          "normalized_max_abs": 7.729723555401365e-07,
+          "relative_l2": 3.475971520306881e-07,
+          "flat_weight_mismatch": 5.562217353372034e-14,
+          "pointwise_limit": 5e-10,
+          "pointwise_gate_passed": false,
+          "mismatch_limit": 1e-10,
+          "mismatch_gate_passed": true
+        }
+      },
+      {
+        "name": "high_eccentricity",
+        "comparable": true,
+        "automatic_mode_selection_equal": true,
+        "candidate_vs_fp64": {
+          "normalized_max_abs": 5.176192207834431e-06,
+          "relative_l2": 2.55302486451277e-06,
+          "flat_weight_mismatch": 3.233635581523231e-12,
+          "pointwise_limit": 5e-10,
+          "pointwise_gate_passed": false,
+          "mismatch_limit": 1e-10,
+          "mismatch_gate_passed": true
+        }
+      },
+      {
+        "name": "retrograde",
+        "comparable": true,
+        "automatic_mode_selection_equal": true,
+        "candidate_vs_fp64": {
+          "normalized_max_abs": 1.4132927130214283e-06,
+          "relative_l2": 6.141741808954674e-07,
+          "flat_weight_mismatch": 1.539879335155092e-13,
+          "pointwise_limit": 5e-10,
+          "pointwise_gate_passed": false,
+          "mismatch_limit": 1e-10,
+          "mismatch_gate_passed": true
+        }
+      },
+      {
+        "name": "weak_field_region_b",
+        "comparable": true,
+        "automatic_mode_selection_equal": true,
+        "candidate_vs_fp64": {
+          "normalized_max_abs": 7.932339925220939e-07,
+          "relative_l2": 3.9184213626093344e-07,
+          "flat_weight_mismatch": 6.683542608243442e-14,
+          "pointwise_limit": 5e-10,
+          "pointwise_gate_passed": false,
+          "mismatch_limit": 1e-10,
+          "mismatch_gate_passed": true
+        }
+      },
+      {
+        "name": "near_separatrix",
+        "comparable": true,
+        "automatic_mode_selection_equal": true,
+        "candidate_vs_fp64": {
+          "normalized_max_abs": 8.580659885581923e-07,
+          "relative_l2": 4.887731814630406e-07,
+          "flat_weight_mismatch": 1.156852391659413e-13,
+          "pointwise_limit": 5e-10,
+          "pointwise_gate_passed": false,
+          "mismatch_limit": 1e-10,
+          "mismatch_gate_passed": true
+        }
+      }
+    ],
+    "amplitudes": [
+      {
+        "lmkn": [
+          3,
+          2,
+          0,
+          4
+        ],
+        "comparable": true,
+        "absolute_error_vs_fp64": 3.744876539667618e-11,
+        "relative_error_vs_fp64": 7.527869571118406e-09
+      },
+      {
+        "lmkn": [
+          2,
+          -2,
+          0,
+          5
+        ],
+        "comparable": true,
+        "absolute_error_vs_fp64": 7.967375117209192e-12,
+        "relative_error_vs_fp64": 3.919120377509823e-08
+      },
+      {
+        "lmkn": [
+          2,
+          2,
+          0,
+          0
+        ],
+        "comparable": true,
+        "absolute_error_vs_fp64": 3.3611354014520497e-08,
+        "relative_error_vs_fp64": 8.236997259793772e-08
+      },
+      {
+        "lmkn": [
+          4,
+          -3,
+          0,
+          1
+        ],
+        "comparable": true,
+        "absolute_error_vs_fp64": 1.1245736077391929e-12,
+        "relative_error_vs_fp64": 6.414157291903405e-08
+      },
+      {
+        "lmkn": [
+          3,
+          3,
+          0,
+          0
+        ],
+        "comparable": true,
+        "absolute_error_vs_fp64": 7.941965722176454e-11,
+        "relative_error_vs_fp64": 5.8337942734941786e-08
+      }
+    ],
+    "summary": {
+      "waveform_cases_requested": 7,
+      "waveform_cases_comparable": 7,
+      "all_mode_selections_equal": true,
+      "all_flat_mismatch_gates_passed": true,
+      "all_strict_pointwise_gates_passed": false
+    }
+  }
+}

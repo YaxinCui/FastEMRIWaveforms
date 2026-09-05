@@ -1,0 +1,563 @@
+{
+  "amplitude_cases": [
+    {
+      "output_dtype": "complex128",
+      "output_shape": [
+        1,
+        6993
+      ],
+      "timing": {
+        "median_ms": 6.7520169977797195,
+        "minimum_ms": 6.738349002262112,
+        "p90_ms": 6.81875380105339,
+        "samples_ms": [
+          6.787933001760393,
+          6.744272002833895,
+          6.738349002262112,
+          6.746780003595632,
+          6.864984999992885,
+          6.7520169977797195,
+          6.772991000616457
+        ]
+      },
+      "trajectory_points": 1
+    },
+    {
+      "output_dtype": "complex128",
+      "output_shape": [
+        32,
+        6993
+      ],
+      "timing": {
+        "median_ms": 6.08975700015435,
+        "minimum_ms": 6.049536001228262,
+        "p90_ms": 6.1336048020166345,
+        "samples_ms": [
+          6.100199003412854,
+          6.121976002759766,
+          6.049536001228262,
+          6.083196996769402,
+          6.08975700015435,
+          6.1510480009019375,
+          6.063902001187671
+        ]
+      },
+      "trajectory_points": 32
+    },
+    {
+      "output_dtype": "complex128",
+      "output_shape": [
+        128,
+        6993
+      ],
+      "timing": {
+        "median_ms": 9.675043998868205,
+        "minimum_ms": 9.619320000638254,
+        "p90_ms": 9.846536198165268,
+        "samples_ms": [
+          9.665956000389997,
+          9.65178199840011,
+          9.675043998868205,
+          9.619320000638254,
+          9.796467995329294,
+          9.875622999970801,
+          9.827144996961579
+        ]
+      },
+      "trajectory_points": 128
+    }
+  ],
+  "branch": "codex/cuda-mixed-precision-5x",
+  "collaboration_note": "2026-09-04 14:37 CST (linux): Linux-owned master-rooted FP64 control for the codex 5x mixed-compute branch. The only source change is the required host/device frequency-spline compatibility fix; no precision or arithmetic path is changed.",
+  "construction": {
+    "standalone_amplitude_seconds": 2.049879291000252,
+    "waveform_seconds": 7.857373691003886
+  },
+  "cuda_runtime": 12090,
+  "cupy": "14.2.0",
+  "data": {
+    "path": "/home/ubuntu/.local/share/few/v2.1.0.post1.dev93+g92af2f42c.d20260901/download/ZNAmps_l10_m10_n55_DS2Outer.h5",
+    "sha256": "3236d8b5eff618242291e9eeb24638dbbbb82fac464ae575dc3f2ba158c54834",
+    "size_bytes": 5089095248
+  },
+  "environment": {
+    "FEW_FILE_ALLOW_DOWNLOAD": "false",
+    "FEW_FILE_EXTRA_PATHS": "/home/ubuntu/.local/share/few/v2.1.0.post1.dev93+g92af2f42c.d20260901/download",
+    "FEW_FILE_INTEGRITY_CHECK": "never",
+    "PYTHONPATH": "/tmp/few-cuda5x-master.cAk3cK/runtime"
+  },
+  "few_module": "/tmp/few-cuda5x-master.cAk3cK/runtime/few/__init__.py",
+  "few_version": "2.1.0.post1.dev91+g47e4fea4b",
+  "gpu": {
+    "compute_capability": [
+      7,
+      5
+    ],
+    "name": "NVIDIA GeForce RTX 2080 Ti",
+    "total_memory_mib": 21997.0625
+  },
+  "measurement_contract": {
+    "dt_seconds": 15.0,
+    "durations_years": [
+      0.001,
+      0.01,
+      1.0
+    ],
+    "five_x_gate": "candidate median <= 0.20 * this baseline median for each declared representative workload",
+    "profile_warning": "cProfile reports Python/C-extension wall time and cannot attribute individual asynchronous GPU kernels",
+    "reference": "origin/master FP64 CUDA path plus the required host-eval frequency-spline compatibility fix",
+    "repetitions": 7,
+    "timing_scope": "warm synchronized end-to-end wall time",
+    "warmups": 2
+  },
+  "memory": {
+    "cupy_pool_reserved_mib": 5255.48193359375,
+    "cupy_pool_used_mib": 4886.17431640625,
+    "process_after_amplitude_mib": {
+      "VmHWM": 6139.37109375,
+      "VmRSS": 1287.88671875,
+      "VmSize": 14351.671875
+    },
+    "process_after_waveform_mib": {
+      "VmHWM": 7013.6640625,
+      "VmRSS": 2162.31640625,
+      "VmSize": 15286.35546875
+    },
+    "process_before_amplitude_mib": {
+      "VmHWM": 574.4765625,
+      "VmRSS": 574.4765625,
+      "VmSize": 8361.41796875
+    }
+  },
+  "numpy": "2.5.2",
+  "project_commit": "47e4fea4bb3e5fbe1ba34e5e399ed37c97814191",
+  "python": "3.12.13",
+  "python_profile_duration_years": 0.01,
+  "python_profile_top_cumulative": [
+    {
+      "calls": 1,
+      "cumulative_ms": 16.741421,
+      "file": "/home/ubuntu/Desktop/FastEMRIWaveforms/collaboration/linux/master_cuda_baseline.py",
+      "function": "<lambda>",
+      "line": 214,
+      "primitive_calls": 1,
+      "self_ms": 0.003942
+    },
+    {
+      "calls": 1,
+      "cumulative_ms": 16.737479,
+      "file": "/tmp/few-cuda5x-master.cAk3cK/runtime/few/waveform/waveform.py",
+      "function": "__call__",
+      "line": 463,
+      "primitive_calls": 1,
+      "self_ms": 0.019116
+    },
+    {
+      "calls": 1,
+      "cumulative_ms": 16.718363,
+      "file": "/tmp/few-cuda5x-master.cAk3cK/runtime/few/waveform/base.py",
+      "function": "_generate_waveform",
+      "line": 112,
+      "primitive_calls": 1,
+      "self_ms": 0.28145000000000003
+    },
+    {
+      "calls": 1,
+      "cumulative_ms": 7.563039000000001,
+      "file": "/tmp/few-cuda5x-master.cAk3cK/runtime/few/utils/modeselector.py",
+      "function": "__call__",
+      "line": 252,
+      "primitive_calls": 1,
+      "self_ms": 0.8371970000000001
+    },
+    {
+      "calls": 1,
+      "cumulative_ms": 5.857452,
+      "file": "/tmp/few-cuda5x-master.cAk3cK/runtime/few/amplitude/base.py",
+      "function": "__call__",
+      "line": 28,
+      "primitive_calls": 1,
+      "self_ms": 0.07775
+    },
+    {
+      "calls": 1,
+      "cumulative_ms": 5.639654,
+      "file": "/tmp/few-cuda5x-master.cAk3cK/runtime/few/summation/base.py",
+      "function": "__call__",
+      "line": 66,
+      "primitive_calls": 1,
+      "self_ms": 0.06468900000000001
+    },
+    {
+      "calls": 1,
+      "cumulative_ms": 5.610903,
+      "file": "/tmp/few-cuda5x-master.cAk3cK/runtime/few/amplitude/ampinterp2d.py",
+      "function": "get_amplitudes",
+      "line": 308,
+      "primitive_calls": 1,
+      "self_ms": 0.9105030000000001
+    },
+    {
+      "calls": 1,
+      "cumulative_ms": 5.535405,
+      "file": "/tmp/few-cuda5x-master.cAk3cK/runtime/few/summation/interpolatedmodesum.py",
+      "function": "sum",
+      "line": 283,
+      "primitive_calls": 1,
+      "self_ms": 3.607545
+    },
+    {
+      "calls": 2,
+      "cumulative_ms": 4.204498,
+      "file": "/tmp/few-cuda5x-master.cAk3cK/runtime/few/amplitude/ampinterp2d.py",
+      "function": "_evaluate_interpolant_at_index",
+      "line": 291,
+      "primitive_calls": 2,
+      "self_ms": 0.39607200000000004
+    },
+    {
+      "calls": 2,
+      "cumulative_ms": 3.645674,
+      "file": "/tmp/few-cuda5x-master.cAk3cK/runtime/few/amplitude/ampinterp2d.py",
+      "function": "__call__",
+      "line": 127,
+      "primitive_calls": 2,
+      "self_ms": 0.12441700000000001
+    },
+    {
+      "calls": 2,
+      "cumulative_ms": 3.4324250000000003,
+      "file": "/tmp/few-cuda5x-master.cAk3cK/runtime/few/cutils/wrappers.py",
+      "function": "func_wrapper",
+      "line": 72,
+      "primitive_calls": 2,
+      "self_ms": 3.407246
+    },
+    {
+      "calls": 1,
+      "cumulative_ms": 2.5974180000000002,
+      "file": "/tmp/few-cuda5x-master.cAk3cK/runtime/few/trajectory/base.py",
+      "function": "__call__",
+      "line": 35,
+      "primitive_calls": 1,
+      "self_ms": 0.011497
+    },
+    {
+      "calls": 1,
+      "cumulative_ms": 2.5859210000000004,
+      "file": "/tmp/few-cuda5x-master.cAk3cK/runtime/few/trajectory/inspiral.py",
+      "function": "get_inspiral",
+      "line": 185,
+      "primitive_calls": 1,
+      "self_ms": 0.019607
+    },
+    {
+      "calls": 1,
+      "cumulative_ms": 2.486984,
+      "file": "/tmp/few-cuda5x-master.cAk3cK/runtime/few/trajectory/integrate.py",
+      "function": "run_inspiral",
+      "line": 562,
+      "primitive_calls": 1,
+      "self_ms": 0.110582
+    },
+    {
+      "calls": 1,
+      "cumulative_ms": 2.154477,
+      "file": "/tmp/few-cuda5x-master.cAk3cK/runtime/few/trajectory/integrate.py",
+      "function": "integrate",
+      "line": 239,
+      "primitive_calls": 1,
+      "self_ms": 0.042651
+    },
+    {
+      "calls": 1,
+      "cumulative_ms": 1.7876740000000002,
+      "file": "/tmp/few-cuda5x-master.cAk3cK/runtime/few/utils/baseclasses.py",
+      "function": "build_with_same_backend",
+      "line": 96,
+      "primitive_calls": 1,
+      "self_ms": 0.007915000000000002
+    },
+    {
+      "calls": 1,
+      "cumulative_ms": 1.7744380000000002,
+      "file": "/tmp/few-cuda5x-master.cAk3cK/runtime/few/summation/interpolatedmodesum.py",
+      "function": "__init__",
+      "line": 35,
+      "primitive_calls": 1,
+      "self_ms": 1.6005930000000002
+    },
+    {
+      "calls": 4,
+      "cumulative_ms": 1.321406,
+      "file": "/tmp/few-cuda5x-master.cAk3cK/runtime/few/trajectory/dopr853.py",
+      "function": "take_step_single",
+      "line": 460,
+      "primitive_calls": 4,
+      "self_ms": 0.015997
+    },
+    {
+      "calls": 4,
+      "cumulative_ms": 1.295492,
+      "file": "/tmp/few-cuda5x-master.cAk3cK/runtime/few/trajectory/dopr853.py",
+      "function": "take_step",
+      "line": 484,
+      "primitive_calls": 4,
+      "self_ms": 0.081709
+    },
+    {
+      "calls": 66,
+      "cumulative_ms": 0.9165570000000001,
+      "file": "/tmp/few-cuda5x-master.cAk3cK/runtime/few/trajectory/ode/base.py",
+      "function": "__call__",
+      "line": 315,
+      "primitive_calls": 66,
+      "self_ms": 0.106291
+    },
+    {
+      "calls": 64,
+      "cumulative_ms": 0.8627280000000002,
+      "file": "/tmp/few-cuda5x-master.cAk3cK/runtime/few/trajectory/integrate.py",
+      "function": "_dopr_ode_wrap",
+      "line": 156,
+      "primitive_calls": 64,
+      "self_ms": 0.040784
+    },
+    {
+      "calls": 4,
+      "cumulative_ms": 0.855646,
+      "file": "/tmp/few-cuda5x-master.cAk3cK/runtime/few/trajectory/dopr853.py",
+      "function": "dormandPrinceSteps",
+      "line": 227,
+      "primitive_calls": 4,
+      "self_ms": 0.23006500000000002
+    },
+    {
+      "calls": 66,
+      "cumulative_ms": 0.6104890000000001,
+      "file": "/tmp/few-cuda5x-master.cAk3cK/runtime/few/trajectory/ode/flux.py",
+      "function": "evaluate_rhs",
+      "line": 709,
+      "primitive_calls": 66,
+      "self_ms": 0.083205
+    },
+    {
+      "calls": 4,
+      "cumulative_ms": 0.5212200000000001,
+      "file": "/tmp/few-cuda5x-master.cAk3cK/runtime/few/trajectory/dopr853.py",
+      "function": "prep_evaluate_single",
+      "line": 606,
+      "primitive_calls": 4,
+      "self_ms": 0.014519
+    },
+    {
+      "calls": 4,
+      "cumulative_ms": 0.5008100000000001,
+      "file": "/tmp/few-cuda5x-master.cAk3cK/runtime/few/trajectory/dopr853.py",
+      "function": "prep_evaluate",
+      "line": 621,
+      "primitive_calls": 4,
+      "self_ms": 0.24170900000000003
+    },
+    {
+      "calls": 66,
+      "cumulative_ms": 0.39452600000000004,
+      "file": "/tmp/few-cuda5x-master.cAk3cK/runtime/few/trajectory/ode/flux.py",
+      "function": "interpolate_flux_grids",
+      "line": 645,
+      "primitive_calls": 66,
+      "self_ms": 0.18771300000000002
+    },
+    {
+      "calls": 27,
+      "cumulative_ms": 0.382881,
+      "file": "/home/ubuntu/Desktop/FastEMRIWaveforms/.venv/lib/python3.12/site-packages/cupy/_creation/from_data.py",
+      "function": "asarray",
+      "line": 59,
+      "primitive_calls": 27,
+      "self_ms": 0.010362
+    },
+    {
+      "calls": 29,
+      "cumulative_ms": 0.377479,
+      "file": "~",
+      "function": "<built-in method cupy._core.core.array>",
+      "line": 0,
+      "primitive_calls": 29,
+      "self_ms": 0.367133
+    },
+    {
+      "calls": 1,
+      "cumulative_ms": 0.36020800000000003,
+      "file": "/home/ubuntu/Desktop/FastEMRIWaveforms/.venv/lib/python3.12/site-packages/cupy/_manipulation/add_remove.py",
+      "function": "unique",
+      "line": 196,
+      "primitive_calls": 1,
+      "self_ms": 0.00595
+    },
+    {
+      "calls": 1,
+      "cumulative_ms": 0.354258,
+      "file": "/home/ubuntu/Desktop/FastEMRIWaveforms/.venv/lib/python3.12/site-packages/cupy/_manipulation/add_remove.py",
+      "function": "_unique_1d",
+      "line": 347,
+      "primitive_calls": 1,
+      "self_ms": 0.211463
+    },
+    {
+      "calls": 78,
+      "cumulative_ms": 0.292879,
+      "file": "/tmp/few-cuda5x-master.cAk3cK/runtime/few/utils/baseclasses.py",
+      "function": "xp",
+      "line": 82,
+      "primitive_calls": 78,
+      "self_ms": 0.025605000000000003
+    },
+    {
+      "calls": 85,
+      "cumulative_ms": 0.287975,
+      "file": "/tmp/few-cuda5x-master.cAk3cK/runtime/few/utils/baseclasses.py",
+      "function": "backend",
+      "line": 50,
+      "primitive_calls": 85,
+      "self_ms": 0.029691000000000002
+    },
+    {
+      "calls": 86,
+      "cumulative_ms": 0.260756,
+      "file": "/tmp/few-cuda5x-master.cAk3cK/runtime/few/utils/globals.py",
+      "function": "get_backend",
+      "line": 378,
+      "primitive_calls": 86,
+      "self_ms": 0.08103300000000001
+    },
+    {
+      "calls": 75,
+      "cumulative_ms": 0.232823,
+      "file": "~",
+      "function": "<built-in method numpy.zeros>",
+      "line": 0,
+      "primitive_calls": 75,
+      "self_ms": 0.232823
+    },
+    {
+      "calls": 1,
+      "cumulative_ms": 0.21769100000000002,
+      "file": "/tmp/few-cuda5x-master.cAk3cK/runtime/few/trajectory/integrate.py",
+      "function": "initialize_integrator",
+      "line": 399,
+      "primitive_calls": 1,
+      "self_ms": 0.004174
+    },
+    {
+      "calls": 2,
+      "cumulative_ms": 0.200379,
+      "file": "/tmp/few-cuda5x-master.cAk3cK/runtime/few/utils/mappings/kerrecceq.py",
+      "function": "kerrecceq_forward_map",
+      "line": 65,
+      "primitive_calls": 2,
+      "self_ms": 0.105976
+    },
+    {
+      "calls": 66,
+      "cumulative_ms": 0.18793300000000002,
+      "file": "/tmp/few-cuda5x-master.cAk3cK/runtime/few/trajectory/ode/base.py",
+      "function": "cache_values_and_check_bounds",
+      "line": 290,
+      "primitive_calls": 66,
+      "self_ms": 0.05164900000000001
+    },
+    {
+      "calls": 138,
+      "cumulative_ms": 0.16831800000000002,
+      "file": "/tmp/few-cuda5x-master.cAk3cK/runtime/few/utils/geodesic.py",
+      "function": "get_separatrix",
+      "line": 1366,
+      "primitive_calls": 138,
+      "self_ms": 0.134878
+    },
+    {
+      "calls": 4,
+      "cumulative_ms": 0.163122,
+      "file": "/tmp/few-cuda5x-master.cAk3cK/runtime/few/trajectory/dopr853.py",
+      "function": "error",
+      "line": 349,
+      "primitive_calls": 4,
+      "self_ms": 0.120816
+    },
+    {
+      "calls": 8,
+      "cumulative_ms": 0.155946,
+      "file": "/home/ubuntu/Desktop/FastEMRIWaveforms/.venv/lib/python3.12/site-packages/cupy/_logic/truth.py",
+      "function": "any",
+      "line": 55,
+      "primitive_calls": 8,
+      "self_ms": 0.011666000000000001
+    }
+  ],
+  "schema": 1,
+  "timestamp_cst": "2026-09-04T14:37:44.115718+08:00",
+  "waveform_cases": [
+    {
+      "duration_years": 0.001,
+      "modes_kept": 113,
+      "output_dtype": "complex128",
+      "samples": 2104,
+      "timing": {
+        "median_ms": 16.10668200009968,
+        "minimum_ms": 15.593648997310083,
+        "p90_ms": 16.387843601114582,
+        "samples_ms": [
+          15.593648997310083,
+          16.593717999057844,
+          16.232948000833858,
+          15.782064998347778,
+          16.25059400248574,
+          16.00029100518441,
+          16.10668200009968
+        ]
+      }
+    },
+    {
+      "duration_years": 0.01,
+      "modes_kept": 113,
+      "output_dtype": "complex128",
+      "samples": 21039,
+      "timing": {
+        "median_ms": 15.486873999179807,
+        "minimum_ms": 15.418824004882481,
+        "p90_ms": 15.852481998445002,
+        "samples_ms": [
+          15.953122994687874,
+          15.486873999179807,
+          15.438770002219826,
+          15.47226999537088,
+          15.715515000920277,
+          15.785388000949752,
+          15.418824004882481
+        ]
+      }
+    },
+    {
+      "duration_years": 1.0,
+      "modes_kept": 124,
+      "output_dtype": "complex128",
+      "samples": 2103877,
+      "timing": {
+        "median_ms": 153.73202900082106,
+        "minimum_ms": 152.07824199751485,
+        "p90_ms": 154.03760919871274,
+        "samples_ms": [
+          153.8135910013807,
+          152.07824199751485,
+          152.1022009983426,
+          154.33516900520772,
+          152.23651500127744,
+          153.83923599438276,
+          153.73202900082106
+        ]
+      }
+    }
+  ],
+  "working_tree_status": "M src/few/waveform/base.py\n?? collaboration/\n?? deep_verify_lazy_loading.py\n?? knowledge/\n?? roman_fusion_probe.py\n?? roman_graph_probe.py\n?? roman_mismatch_test.py\n?? roman_mixed_precision_probe.py"
+}

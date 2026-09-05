@@ -1,0 +1,260 @@
+{
+  "amplitude_cases": [
+    {
+      "candidate_vs_reference": {
+        "bitwise_equal": true,
+        "max_abs": 0.0,
+        "relative_l2": 0.0
+      },
+      "legacy_gather_fp64": {
+        "median_ms": 4.829650002648123,
+        "minimum_ms": 4.805524993571453,
+        "p90_ms": 4.870659997686744,
+        "samples_ms": [
+          4.81391300127143,
+          4.829650002648123,
+          4.916931997286156,
+          4.805524993571453,
+          4.836724001506809,
+          4.839811997953802,
+          4.819305002456531
+        ]
+      },
+      "median_speedup": 1.2696134005042408,
+      "trajectory_points": 1,
+      "zero_copy_fp64": {
+        "median_ms": 3.804031999607105,
+        "minimum_ms": 3.7599280040012673,
+        "p90_ms": 3.907587601861451,
+        "samples_ms": [
+          3.8410729976021685,
+          3.7870750020374544,
+          3.804031999607105,
+          3.785645996686071,
+          3.7599280040012673,
+          3.9025560035952367,
+          3.915134999260772
+        ]
+      }
+    },
+    {
+      "candidate_vs_reference": {
+        "bitwise_equal": true,
+        "max_abs": 0.0,
+        "relative_l2": 0.0
+      },
+      "legacy_gather_fp64": {
+        "median_ms": 4.476651003642473,
+        "minimum_ms": 4.41055199917173,
+        "p90_ms": 4.520980603410862,
+        "samples_ms": [
+          4.52309800311923,
+          4.41055199917173,
+          4.441848999704234,
+          4.519569003605284,
+          4.446042999916244,
+          4.489389997615945,
+          4.476651003642473
+        ]
+      },
+      "median_speedup": 1.2496168108728065,
+      "trajectory_points": 32,
+      "zero_copy_fp64": {
+        "median_ms": 3.582418998121284,
+        "minimum_ms": 3.5578379975049756,
+        "p90_ms": 3.603037401626352,
+        "samples_ms": [
+          3.582418998121284,
+          3.604801997425966,
+          3.5735239944187924,
+          3.6018610044266097,
+          3.571116001694463,
+          3.5578379975049756,
+          3.587639002944343
+        ]
+      }
+    },
+    {
+      "candidate_vs_reference": {
+        "bitwise_equal": true,
+        "max_abs": 0.0,
+        "relative_l2": 0.0
+      },
+      "legacy_gather_fp64": {
+        "median_ms": 7.433555001625791,
+        "minimum_ms": 7.3032130021601915,
+        "p90_ms": 7.48208400036674,
+        "samples_ms": [
+          7.341055999859236,
+          7.3032130021601915,
+          7.389336999040097,
+          7.433555001625791,
+          7.451478995790239,
+          7.472878001863137,
+          7.4958929981221445
+        ]
+      },
+      "median_speedup": 1.140761587141612,
+      "trajectory_points": 128,
+      "zero_copy_fp64": {
+        "median_ms": 6.516309003927745,
+        "minimum_ms": 6.456957999034785,
+        "p90_ms": 6.531376196653582,
+        "samples_ms": [
+          6.516309003927745,
+          6.505653000203893,
+          6.518467002024408,
+          6.544985997607,
+          6.52230299601797,
+          6.456957999034785,
+          6.468229999882169
+        ]
+      }
+    }
+  ],
+  "baseline_report": "/home/ubuntu/Desktop/FastEMRIWaveforms/collaboration/linux/master_cuda_baseline.json",
+  "branch": "codex/cuda-mixed-precision-5x",
+  "collaboration_note": "2026-09-04 14:40 CST (linux): Linux-owned FP64 zero-copy experiment on the codex 5x branch; default numerical precision and native kernels remain unchanged.",
+  "experiment": {
+    "candidate": "contiguous identity coefficient view, FP64 kernel",
+    "precision_changed": false,
+    "reference": "legacy identity advanced-index gather, FP64 kernel",
+    "repetitions": 7,
+    "timing_scope": "warm synchronized wall time",
+    "warmups": 2
+  },
+  "few_module": "/tmp/few-cuda5x-master.cAk3cK/runtime/few/__init__.py",
+  "few_version": "2.1.0.post1.dev91+g47e4fea4b",
+  "memory_pool_mib": {
+    "reserved": 5086.92041015625,
+    "used": 4950.05908203125
+  },
+  "project_commit": "47e4fea4bb3e5fbe1ba34e5e399ed37c97814191",
+  "schema": 1,
+  "source_sha256": {
+    "/home/ubuntu/Desktop/FastEMRIWaveforms/src/few/amplitude/ampinterp2d.py": "3fde6125fd199d1bf575eaf54c7446924f33e81c1f326d6abca9be5d313db935"
+  },
+  "timestamp_cst": "2026-09-04T14:40:42.373145+08:00",
+  "waveform_cases": [
+    {
+      "candidate_vs_reference": {
+        "bitwise_equal": true,
+        "max_abs": 0.0,
+        "relative_l2": 0.0
+      },
+      "duration_years": 0.001,
+      "five_x_target_ms": 3.2213364000199363,
+      "legacy_gather_fp64": {
+        "median_ms": 14.988667993748095,
+        "minimum_ms": 14.921695001248736,
+        "p90_ms": 15.862168400781231,
+        "samples_ms": [
+          14.971684999181889,
+          15.837578001082875,
+          15.89905400032876,
+          14.963159999751952,
+          14.988667993748095,
+          14.921695001248736,
+          15.104021003935486
+        ]
+      },
+      "original_baseline_median_speedup": 1.3095601236263843,
+      "same_process_median_speedup": 1.218659554510737,
+      "samples": 2104,
+      "zero_copy_fp64": {
+        "median_ms": 12.299307003559079,
+        "minimum_ms": 12.238914998306427,
+        "p90_ms": 13.533800997538494,
+        "samples_ms": [
+          14.037585002370179,
+          13.197944994317368,
+          12.299307003559079,
+          12.238914998306427,
+          12.482172998716123,
+          12.277806999918539,
+          12.272193001990672
+        ]
+      }
+    },
+    {
+      "candidate_vs_reference": {
+        "bitwise_equal": true,
+        "max_abs": 0.0,
+        "relative_l2": 0.0
+      },
+      "duration_years": 0.01,
+      "five_x_target_ms": 3.0973747998359613,
+      "legacy_gather_fp64": {
+        "median_ms": 14.570156003173906,
+        "minimum_ms": 14.534440997522324,
+        "p90_ms": 14.622794598108158,
+        "samples_ms": [
+          14.640691995737143,
+          14.570156003173906,
+          14.534440997522324,
+          14.535347996570636,
+          14.610862999688834,
+          14.55331000033766,
+          14.601064001908526
+        ]
+      },
+      "original_baseline_median_speedup": 1.1733907927039853,
+      "same_process_median_speedup": 1.1039340091028311,
+      "samples": 21039,
+      "zero_copy_fp64": {
+        "median_ms": 13.198394000937697,
+        "minimum_ms": 13.127425001584925,
+        "p90_ms": 13.291281399142463,
+        "samples_ms": [
+          13.14484800241189,
+          13.127425001584925,
+          13.201355999626685,
+          13.144901000487152,
+          13.198394000937697,
+          13.24906700028805,
+          13.354602997424081
+        ]
+      }
+    },
+    {
+      "candidate_vs_reference": {
+        "bitwise_equal": true,
+        "max_abs": 0.0,
+        "relative_l2": 0.0
+      },
+      "duration_years": 1.0,
+      "five_x_target_ms": 30.74640580016421,
+      "legacy_gather_fp64": {
+        "median_ms": 152.80796299339272,
+        "minimum_ms": 152.67351999500534,
+        "p90_ms": 153.00492259848397,
+        "samples_ms": [
+          152.80796299339272,
+          152.67351999500534,
+          152.7243179953075,
+          153.0555680001271,
+          152.72338900103932,
+          152.97115899738856,
+          152.86173999629682
+        ]
+      },
+      "original_baseline_median_speedup": 1.0181366129944749,
+      "same_process_median_speedup": 1.0120167078510816,
+      "samples": 2103877,
+      "zero_copy_fp64": {
+        "median_ms": 150.99351800017757,
+        "minimum_ms": 150.0335710006766,
+        "p90_ms": 152.03842760092812,
+        "samples_ms": [
+          151.32701699621975,
+          152.00644000287866,
+          152.0864089980023,
+          150.25678600068204,
+          150.64838700345717,
+          150.0335710006766,
+          150.99351800017757
+        ]
+      }
+    }
+  ]
+}

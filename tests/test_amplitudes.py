@@ -1,6 +1,6 @@
 import numpy as np
 
-from few.amplitude.ampinterp2d import AmpInterpKerrEccEq
+from few.amplitude.ampinterp2d import AmpInterp2D, AmpInterpKerrEccEq
 from few.tests.base import FewBackendTest
 
 KERRECCEQ_AMP_TEST_POINTS = [
@@ -81,3 +81,37 @@ class AmplitudesTest(FewBackendTest):
                 -specific_amplitudes[(3, -2, 0, -1)].conj(),
                 rtol=1e-10,
             )
+
+    def test_interp2d_mixed32_is_explicit_and_close_to_fp64(self):
+        # 2026-09-04 14:46 CST (linux): Exercise the small synthetic spline
+        # through both compiled backends.  This validates the new ABI without
+        # requiring the 5 GB Kerr table; full-table waveform accuracy is gated
+        # separately by the Linux mixed-compute probe.
+        knots = np.concatenate((np.zeros(4), np.ones(4)))
+        coefficients = np.linspace(-0.75, 0.9, 2 * 2 * 16).reshape(2, 2, 16)
+        mode_indices = np.zeros(2, dtype=np.int32)
+        args = (
+            knots,
+            knots,
+            coefficients,
+            mode_indices,
+            mode_indices,
+            mode_indices,
+            mode_indices,
+        )
+        fp64 = AmpInterp2D(*args, precision="fp64", force_backend=self.backend)
+        mixed32 = AmpInterp2D(
+            *args, precision="mixed32", force_backend=self.backend
+        )
+        w = np.asarray([0.1, 0.5, 0.9])
+        u = np.asarray([0.8, 0.4, 0.2])
+        expected = fp64(w, u)
+        actual = mixed32(w, u)
+        if self.backend.uses_gpu:
+            expected = expected.get()
+            actual = actual.get()
+
+        self.assertEqual(actual.dtype, np.complex128)
+        np.testing.assert_allclose(actual, expected, rtol=3e-6, atol=1e-7)
+        with self.assertRaises(ValueError):
+            AmpInterp2D(*args, precision="fp16", force_backend=self.backend)

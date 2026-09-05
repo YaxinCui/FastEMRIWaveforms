@@ -150,6 +150,48 @@ class SummationTest(FewBackendTest):
 
         np.testing.assert_allclose(manual_sum[:-1], few_sum[:-1], rtol=1e-8)
 
+        # 2026-09-04 14:57 CST (linux): Validate both opt-in launch paths on a
+        # compact physical phase spline.  The scheduling-only path must retain
+        # FP64 agreement; mixed32_phase receives a bounded FP32 trig tolerance.
+        for precision, rtol, atol in (
+            ("fp64_optimized", 1e-12, 1e-12),
+            ("mixed32_phase", 3e-6, 3e-7),
+            ("mixed32_full", 3e-5, 3e-6),
+            # 2026-09-04 15:31 CST (linux): Integer phasor powers can accumulate
+            # several FP32 rounding steps, so test a bounded explicit tolerance.
+            ("mixed32_recurrence", 8e-5, 8e-6),
+            # 2026-09-04 15:39 CST (linux): The fast variant intentionally
+            # narrows the mode-block reduction and therefore has a wider gate.
+            ("mixed32_fast", 2e-4, 2e-5),
+            # 2026-09-04 17:01 CST (linux): Explicit fast-intrinsic paths are
+            # checked separately for FP64 and FP32 block accumulation.
+            ("mixed32_intrinsic", 2e-4, 2e-5),
+            ("mixed32_intrinsic_fast", 3e-4, 3e-5),
+            # 2026-09-04 16:34 CST (linux): Warp-tree reduction changes the
+            # FP32 addition order but remains bounded against the FP64 oracle.
+            ("mixed32_warp", 2e-4, 2e-5),
+        ):
+            candidate_sum = InterpolatedModeSum(
+                summation_precision=precision, force_backend=self.backend
+            )(
+                summation.xp.asarray(t_spl),
+                amplitude_spl,
+                ylms,
+                t_spl,
+                coeff_spl,
+                l_arr,
+                m_arr,
+                k_arr,
+                n_arr,
+                T=t_spl[-1] / YRSID_SI,
+                dt=dt,
+            )
+            if self.backend.uses_gpu:
+                candidate_sum = candidate_sum.get()
+            np.testing.assert_allclose(
+                candidate_sum[:-1], few_sum[:-1], rtol=rtol, atol=atol
+            )
+
     def test_direct_mode_sum(self):
         # check that the directmodesum accurately computes a dummy case
         summation = DirectModeSum(force_backend=self.backend)

@@ -63,8 +63,21 @@ class MissingHardware(BackendUnavailableException):
 class BackendMethods:
     pyWaveform: typing.Callable[(...), None]
     interp2D: typing.Callable[(...), None]
+    # 2026-09-04 14:44 CST (linux): Optional mixed32 interpolation entry point;
+    # the existing interp2D field remains the default FP64 implementation.
+    interp2D_mixed32: typing.Callable[(...), None]
     interpolate_arrays_wrap: typing.Callable[(...), None]
     get_waveform_wrap: typing.Callable[(...), None]
+    # 2026-09-04 14:55 CST (linux): Opt-in summation controls; the existing
+    # get_waveform_wrap remains the accepted FP64/default implementation.
+    get_waveform_optimized_wrap: typing.Callable[(...), None]
+    get_waveform_mixed32_wrap: typing.Callable[(...), None]
+    get_waveform_mixed32_full_wrap: typing.Callable[(...), None]
+    get_waveform_mixed32_recurrence_wrap: typing.Callable[(...), None]
+    get_waveform_mixed32_fast_wrap: typing.Callable[(...), None]
+    get_waveform_mixed32_intrinsic_wrap: typing.Callable[(...), None]
+    get_waveform_mixed32_intrinsic_fast_wrap: typing.Callable[(...), None]
+    get_waveform_mixed32_warp_wrap: typing.Callable[(...), None]
     get_waveform_generic_fd_wrap: typing.Callable[(...), None]
     neural_layer_wrap: typing.Callable[(...), None]
     transform_output_wrap: typing.Callable[(...), None]
@@ -79,8 +92,17 @@ class Backend:
 
     pyWaveform: typing.Callable[(...), None]
     interp2D: typing.Callable[(...), None]
+    interp2D_mixed32: typing.Callable[(...), None]
     interpolate_arrays_wrap: typing.Callable[(...), None]
     get_waveform_wrap: typing.Callable[(...), None]
+    get_waveform_optimized_wrap: typing.Callable[(...), None]
+    get_waveform_mixed32_wrap: typing.Callable[(...), None]
+    get_waveform_mixed32_full_wrap: typing.Callable[(...), None]
+    get_waveform_mixed32_recurrence_wrap: typing.Callable[(...), None]
+    get_waveform_mixed32_fast_wrap: typing.Callable[(...), None]
+    get_waveform_mixed32_intrinsic_wrap: typing.Callable[(...), None]
+    get_waveform_mixed32_intrinsic_fast_wrap: typing.Callable[(...), None]
+    get_waveform_mixed32_warp_wrap: typing.Callable[(...), None]
     get_waveform_generic_fd_wrap: typing.Callable[(...), None]
     neural_layer_wrap: typing.Callable[(...), None]
     transform_output_wrap: typing.Callable[(...), None]
@@ -112,8 +134,17 @@ class Backend:
 
         self.pyWaveform = methods.pyWaveform
         self.interp2D = methods.interp2D
+        self.interp2D_mixed32 = methods.interp2D_mixed32
         self.interpolate_arrays_wrap = methods.interpolate_arrays_wrap
         self.get_waveform_wrap = methods.get_waveform_wrap
+        self.get_waveform_optimized_wrap = methods.get_waveform_optimized_wrap
+        self.get_waveform_mixed32_wrap = methods.get_waveform_mixed32_wrap
+        self.get_waveform_mixed32_full_wrap = methods.get_waveform_mixed32_full_wrap
+        self.get_waveform_mixed32_recurrence_wrap = methods.get_waveform_mixed32_recurrence_wrap
+        self.get_waveform_mixed32_fast_wrap = methods.get_waveform_mixed32_fast_wrap
+        self.get_waveform_mixed32_intrinsic_wrap = methods.get_waveform_mixed32_intrinsic_wrap
+        self.get_waveform_mixed32_intrinsic_fast_wrap = methods.get_waveform_mixed32_intrinsic_fast_wrap
+        self.get_waveform_mixed32_warp_wrap = methods.get_waveform_mixed32_warp_wrap
         self.get_waveform_generic_fd_wrap = methods.get_waveform_generic_fd_wrap
         self.neural_layer_wrap = methods.neural_layer_wrap
         self.transform_output_wrap = methods.transform_output_wrap
@@ -183,8 +214,17 @@ class CpuBackend(Backend):
         return BackendMethods(
             pyWaveform=few_backend_cpu.pyAAK.pyWaveform,
             interp2D=few_backend_cpu.pyAmpInterp2D.interp2D,
+            interp2D_mixed32=few_backend_cpu.pyAmpInterp2D.interp2D_mixed32,
             interpolate_arrays_wrap=few_backend_cpu.pyinterp.interpolate_arrays_wrap,
             get_waveform_wrap=few_backend_cpu.pyinterp.get_waveform_wrap,
+            get_waveform_optimized_wrap=few_backend_cpu.pyinterp.get_waveform_optimized_wrap,
+            get_waveform_mixed32_wrap=few_backend_cpu.pyinterp.get_waveform_mixed32_wrap,
+            get_waveform_mixed32_full_wrap=few_backend_cpu.pyinterp.get_waveform_mixed32_full_wrap,
+            get_waveform_mixed32_recurrence_wrap=few_backend_cpu.pyinterp.get_waveform_mixed32_recurrence_wrap,
+            get_waveform_mixed32_fast_wrap=few_backend_cpu.pyinterp.get_waveform_mixed32_fast_wrap,
+            get_waveform_mixed32_intrinsic_wrap=few_backend_cpu.pyinterp.get_waveform_mixed32_intrinsic_wrap,
+            get_waveform_mixed32_intrinsic_fast_wrap=few_backend_cpu.pyinterp.get_waveform_mixed32_intrinsic_fast_wrap,
+            get_waveform_mixed32_warp_wrap=few_backend_cpu.pyinterp.get_waveform_mixed32_warp_wrap,
             get_waveform_generic_fd_wrap=few_backend_cpu.pyinterp.get_waveform_generic_fd_wrap,
             neural_layer_wrap=few_backend_cpu.pymatmul.neural_layer_wrap,
             transform_output_wrap=few_backend_cpu.pymatmul.transform_output_wrap,
@@ -438,8 +478,17 @@ class Cuda12xBackend(_CudaBackend):
         return BackendMethods(
             pyWaveform=few_backend_cuda12x.pyAAK.pyWaveform,
             interp2D=few_backend_cuda12x.pyAmpInterp2D.interp2D,
+            interp2D_mixed32=few_backend_cuda12x.pyAmpInterp2D.interp2D_mixed32,
             interpolate_arrays_wrap=few_backend_cuda12x.pyinterp.interpolate_arrays_wrap,
             get_waveform_wrap=few_backend_cuda12x.pyinterp.get_waveform_wrap,
+            get_waveform_optimized_wrap=few_backend_cuda12x.pyinterp.get_waveform_optimized_wrap,
+            get_waveform_mixed32_wrap=few_backend_cuda12x.pyinterp.get_waveform_mixed32_wrap,
+            get_waveform_mixed32_full_wrap=few_backend_cuda12x.pyinterp.get_waveform_mixed32_full_wrap,
+            get_waveform_mixed32_recurrence_wrap=few_backend_cuda12x.pyinterp.get_waveform_mixed32_recurrence_wrap,
+            get_waveform_mixed32_fast_wrap=few_backend_cuda12x.pyinterp.get_waveform_mixed32_fast_wrap,
+            get_waveform_mixed32_intrinsic_wrap=few_backend_cuda12x.pyinterp.get_waveform_mixed32_intrinsic_wrap,
+            get_waveform_mixed32_intrinsic_fast_wrap=few_backend_cuda12x.pyinterp.get_waveform_mixed32_intrinsic_fast_wrap,
+            get_waveform_mixed32_warp_wrap=few_backend_cuda12x.pyinterp.get_waveform_mixed32_warp_wrap,
             get_waveform_generic_fd_wrap=few_backend_cuda12x.pyinterp.get_waveform_generic_fd_wrap,
             neural_layer_wrap=few_backend_cuda12x.pymatmul.neural_layer_wrap,
             transform_output_wrap=few_backend_cuda12x.pymatmul.transform_output_wrap,
